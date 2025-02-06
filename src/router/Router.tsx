@@ -4,6 +4,7 @@ import NotFoundPage from "../components/common/NotFoundPage";
 import Login from "../features/auth/Login";
 import Register from "../features/auth/Register";
 import ProtectedRoute from "./ProtectedRoute";
+import UserPage from "../features/users/UserPage";
 
 const Router = () => {
   return (
@@ -17,7 +18,7 @@ const Router = () => {
             path="/users"
             element={
               <ProtectedRoute allowedRoles={["Admin"]}>
-                <h1>Users</h1>
+                <UserPage />
               </ProtectedRoute>
             }
           />
