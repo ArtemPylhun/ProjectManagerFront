@@ -8,7 +8,7 @@ export class UserService {
     const httpClient = new HttpClient({
       baseURL: `${apiUrl}/users`
     },signal);
-    return await httpClient.get("get-all");
+    return await httpClient.get("get-all-with-roles");
   }
 
   static async loginUser(user: UserLoginInterface, signal: AbortSignal): Promise<string> {

@@ -1,6 +1,6 @@
 import React from "react";
 import UserInterface from "../../interfaces/UserInterface";
-import { Table, TableColumnsType } from "antd";
+import { Table, TableColumnsType, Space, Tag } from "antd";
 
 interface UsersTableProps {
   users: UserInterface[] | undefined;
@@ -23,37 +23,31 @@ const UsersTable: React.FC<UsersTableProps> = ({ users }) => {
       key: "email",
     },
     {
+      title: "Roles",
+      dataIndex: "roles",
+      key: "roles",
+      render: (roles: string[]) => (
+        <Space>
+          {roles.map((role) => {
+            let color =
+              role === "Admin" ? "red" : role === "User" ? "blue" : "green";
+            return (
+              <Tag color={color} key={role}>
+                {role}
+              </Tag>
+            );
+          })}
+        </Space>
+      ),
+    },
+    {
       title: "Actions",
       dataIndex: "actions",
       key: "actions",
     },
   ];
 
-  return (
-    <Table columns={columns} dataSource={users} rowKey="id" />
-
-    // <TableContainer component={Paper} sx={{ marginY: "1rem" }}>
-    //   <Table>
-    //     <TableHead>
-    //       <TableRow>
-    //         <TableCell align="center">Username</TableCell>
-    //         <TableCell align="center">Email</TableCell>
-    //         <TableCell align="center">Actions</TableCell>
-    //       </TableRow>
-    //     </TableHead>
-    //     <TableBody>
-    //       {users.map((user) => (
-    //         <UserTableRow
-    //           key={user.id}
-    //           user={user}
-    //           onUserDelete={onUserItemDelete}
-    //           onUserUpdate={onUserUpdate}
-    //         />
-    //       ))}
-    //     </TableBody>
-    //   </Table>
-    // </TableContainer>
-  );
+  return <Table columns={columns} dataSource={users} rowKey="id" />;
 };
 
 export default UsersTable;
