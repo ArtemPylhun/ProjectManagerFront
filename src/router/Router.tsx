@@ -5,6 +5,7 @@ import Login from "../features/auth/Login";
 import Register from "../features/auth/Register";
 import ProtectedRoute from "./ProtectedRoute";
 import UserPage from "../features/users/UserPage";
+import RolePage from "../features/roles/RolePage";
 
 const Router = () => {
   return (
@@ -19,6 +20,14 @@ const Router = () => {
             element={
               <ProtectedRoute allowedRoles={["Admin"]}>
                 <UserPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/roles"
+            element={
+              <ProtectedRoute allowedRoles={["Admin"]}>
+                <RolePage />
               </ProtectedRoute>
             }
           />
