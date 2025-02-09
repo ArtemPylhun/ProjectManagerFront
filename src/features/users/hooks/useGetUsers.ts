@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { UserService } from "../services/user.service";
 import { useLoading } from "../../../hooks/useLoading";
 import UserInterface from "../interfaces/UserInterface";
+import { message } from "antd";
 export const useGetUsers = () => {
   const [users, setUsers] = useState<UserInterface[] | null>(null);
 
@@ -15,15 +16,11 @@ export const useGetUsers = () => {
       if (Array.isArray(response)) {
         setUsers(response as UserInterface[]);
       } else {
-        console.error("Invalid response format", response);
+        message.error(`Invalid response format: ${response}`);
         setUsers(null);
       }
     } catch (error) {
-      // showNotification(error.message, {
-      //   severity: "error",
-      //   autoHideDuration: 5000,
-      // });
-      console.error("Error fetching users:", error);
+      message.error(`Error fetching users: ${error}`);
       setUsers(null);
     } finally {
       turnOffLoading();

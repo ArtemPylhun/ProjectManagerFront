@@ -28,9 +28,12 @@ const ProtectedRoute = ({ children, allowedRoles }: ProtectedRouteProps) => {
     return null;
   }
 
+  const userRoles = Array.isArray(user?.roles)
+    ? user.roles.map((role: string) => role.trim())
+    : [];
   return (
     <>
-      {allowedRoles?.includes(user?.role ?? "") ? (
+      {allowedRoles?.some((role) => userRoles?.includes(role)) ? (
         children
       ) : (
         <h1>Unauthorized</h1>

@@ -1,4 +1,9 @@
-import axios, { AxiosError, AxiosHeaders, AxiosInstance, AxiosRequestConfig } from "axios";
+import axios, {
+  AxiosError,
+  AxiosHeaders,
+  AxiosInstance,
+  AxiosRequestConfig,
+} from "axios";
 
 export class HttpClient {
   private axiosInstance: AxiosInstance;
@@ -23,11 +28,19 @@ export class HttpClient {
     return this.request<T>({ method: "GET", url, ...config });
   }
 
-  async post<T>(url: string, data: unknown, config?: AxiosRequestConfig): Promise<T> {
+  async post<T>(
+    url: string,
+    data: unknown,
+    config?: AxiosRequestConfig
+  ): Promise<T> {
     return this.request<T>({ method: "POST", url, data, ...config });
   }
 
-  async put<T>(url: string, data: unknown, config?: AxiosRequestConfig): Promise<T> {
+  async put<T>(
+    url: string,
+    data: unknown,
+    config?: AxiosRequestConfig
+  ): Promise<T> {
     return this.request<T>({ method: "PUT", url, data, ...config });
   }
 
@@ -97,5 +110,3 @@ export class HttpClient {
     );
   }
 }
-
-

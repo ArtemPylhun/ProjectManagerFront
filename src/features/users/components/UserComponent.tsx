@@ -14,9 +14,13 @@ const UserComponent = () => {
     setFilterQuery(event.target.value);
   };
 
-  const filteredUsers = users?.filter((user) => {
-    return user.userName.toLowerCase().includes(filterQuery.toLowerCase());
-  });
+  const filteredUsers = users
+    ? users.filter(
+        (user) =>
+          user.userName.toLowerCase().includes(filterQuery.toLowerCase()) ||
+          user.email.toLowerCase().includes(filterQuery.toLowerCase())
+      )
+    : null;
 
   return (
     <div>
@@ -25,7 +29,7 @@ const UserComponent = () => {
         onQueryChange={handleFilterQueryChange}
       />
       <LoaderComponent loading={loading}>
-        <UsersTable users={filteredUsers} />
+        <UsersTable users={filteredUsers} setUsers={setUsers} />
       </LoaderComponent>
     </div>
   );
