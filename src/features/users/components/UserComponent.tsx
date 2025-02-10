@@ -2,10 +2,17 @@ import { useState } from "react";
 import SearchInput from "../../../components/common/SearchInput";
 import LoaderComponent from "../../../components/common/Loader";
 import UsersTable from "./table/UsersTable";
-import { useGetUsers } from "../hooks/useGetUsers";
+import useUsers from "../hooks/useUsers";
+
 const UserComponent = () => {
-  const { users, loading, setUsers, turnOffLoading, turnOnLoading } =
-    useGetUsers();
+  const {
+    users,
+    loading,
+    handleCreateUser,
+    handleUpdateUser,
+    handleUpdateRoles,
+    handleDeleteUser,
+  } = useUsers();
   const [filterQuery, setFilterQuery] = useState<string>("");
 
   const handleFilterQueryChange = (
@@ -29,9 +36,16 @@ const UserComponent = () => {
         onQueryChange={handleFilterQueryChange}
       />
       <LoaderComponent loading={loading}>
-        <UsersTable users={filteredUsers} setUsers={setUsers} />
+        <UsersTable
+          users={filteredUsers}
+          handleCreateUser={handleCreateUser}
+          handleUpdateUser={handleUpdateUser}
+          handleUpdateRoles={handleUpdateRoles}
+          handleDeleteUser={handleDeleteUser}
+        />
       </LoaderComponent>
     </div>
   );
 };
+
 export default UserComponent;

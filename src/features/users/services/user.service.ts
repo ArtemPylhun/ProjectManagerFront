@@ -61,7 +61,7 @@ export class UserService {
     userId: string,
     roles: string[],
     signal: AbortSignal
-  ): Promise<void> {
+  ): Promise<any> {
     const apiUrl = import.meta.env.VITE_API_BASE_URL;
     const httpClient = new HttpClient(
       {
