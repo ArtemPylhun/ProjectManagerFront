@@ -2,10 +2,17 @@ import { useState } from "react";
 import SearchInput from "../../../components/common/SearchInput";
 import LoaderComponent from "../../../components/common/Loader";
 import UsersTable from "./table/UsersTable";
-import { useGetUsers } from "../hooks/useGetUsers";
+import useUsers from "../hooks/useUsers";
+
 const UserComponent = () => {
-  const { users, loading, setUsers, turnOffLoading, turnOnLoading } =
-    useGetUsers();
+  const {
+    users,
+    loading,
+    handleCreateUser,
+    handleUpdateUser,
+    handleUpdateRoles,
+    handleDeleteUser,
+  } = useUsers();
   const [filterQuery, setFilterQuery] = useState<string>("");
 
   const handleFilterQueryChange = (
@@ -14,9 +21,13 @@ const UserComponent = () => {
     setFilterQuery(event.target.value);
   };
 
-  const filteredUsers = users?.filter((user) => {
-    return user.userName.toLowerCase().includes(filterQuery.toLowerCase());
-  });
+  const filteredUsers = users
+    ? users.filter(
+        (user) =>
+          user.userName.toLowerCase().includes(filterQuery.toLowerCase()) ||
+          user.email.toLowerCase().includes(filterQuery.toLowerCase())
+      )
+    : null;
 
   return (
     <div>
@@ -25,9 +36,16 @@ const UserComponent = () => {
         onQueryChange={handleFilterQueryChange}
       />
       <LoaderComponent loading={loading}>
-        <UsersTable users={filteredUsers} />
+        <UsersTable
+          users={filteredUsers}
+          handleCreateUser={handleCreateUser}
+          handleUpdateUser={handleUpdateUser}
+          handleUpdateRoles={handleUpdateRoles}
+          handleDeleteUser={handleDeleteUser}
+        />
       </LoaderComponent>
     </div>
   );
 };
+
 export default UserComponent;

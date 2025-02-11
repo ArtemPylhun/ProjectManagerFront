@@ -1,6 +1,7 @@
 export default interface UserInterface {
-    id: string;
-    userName: string;
-    email: string;
-    roles: string[];
+  id: string;
+  userName: string;
+  email: string;
+  password: string;
+  roles: string[];
 }
