@@ -8,7 +8,7 @@ import {
   Input,
   Select,
 } from "antd";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { EditOutlined, DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import CustomModal from "../../../../components/common/CustomModal";
 import useUserModal from "../../hooks/useUserModal";
 import UserInterface from "../../interfaces/UserInterface";
@@ -104,7 +104,7 @@ const UsersTable: React.FC<UsersTableProps> = ({
         <Button
           className="md-2"
           type="default"
-          icon={<EditOutlined />}
+          icon={<PlusOutlined />}
           onClick={() => showModal(null, "create")}
         >
           Create User
@@ -197,6 +197,7 @@ const UsersTable: React.FC<UsersTableProps> = ({
                 }))
               }
             />
+            <Space />
             <Input
               placeholder="Email"
               value={selectedUser?.email || ""}
@@ -204,6 +205,7 @@ const UsersTable: React.FC<UsersTableProps> = ({
                 setSelectedUser((prev) => ({ ...prev!, email: e.target.value }))
               }
             />
+            <Space />
             <Input.Password
               placeholder="Password"
               value={selectedUser?.password || ""}
@@ -214,16 +216,6 @@ const UsersTable: React.FC<UsersTableProps> = ({
                 }))
               }
             />
-            <Select
-              mode="multiple"
-              style={{ width: "100%" }}
-              placeholder="Select roles"
-              value={selectedRoles}
-              onChange={setSelectedRoles}
-            >
-              <Select.Option value="Admin">Admin</Select.Option>
-              <Select.Option value="User">User</Select.Option>
-            </Select>
           </>
         )}
 
