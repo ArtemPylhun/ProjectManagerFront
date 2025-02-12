@@ -3,11 +3,14 @@ import { Table, TableColumnsType, Space, Button, Input } from "antd";
 import { EditOutlined, DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import CustomModal from "../../../../components/common/CustomModal";
 import useRoleModal from "../../hooks/useRoleModal";
-import RoleInterface from "../../interfaces/RoleInterface";
+import {
+  RoleInterface,
+  RoleCreateInterface,
+} from "../../interfaces/RoleInterface";
 
 interface RolesTableProps {
   roles: RoleInterface[] | undefined;
-  handleCreateRole: (role: RoleInterface) => Promise<boolean>;
+  handleCreateRole: (role: RoleCreateInterface) => Promise<boolean>;
   handleUpdateRole: (role: RoleInterface) => Promise<boolean>;
   handleDeleteRole: (roleId: string) => Promise<boolean>;
 }
