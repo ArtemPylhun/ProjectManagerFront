@@ -1,12 +1,17 @@
 import { useState } from "react";
 import SearchInput from "../../../components/common/SearchInput";
 import LoaderComponent from "../../../components/common/Loader";
-import UsersTable from "./table/RolesTable";
-import { useGetRoles } from "../hooks/useGetRoles";
 import RolesTable from "./table/RolesTable";
+import useRoles from "../hooks/useRoles";
+
 const UserComponent = () => {
-  const { roles, loading, setRoles, turnOffLoading, turnOnLoading } =
-    useGetRoles();
+  const {
+    roles,
+    loading,
+    handleCreateRole,
+    handleUpdateRole,
+    handleDeleteRole,
+  } = useRoles();
   const [filterQuery, setFilterQuery] = useState<string>("");
 
   const handleFilterQueryChange = (
@@ -26,7 +31,12 @@ const UserComponent = () => {
         onQueryChange={handleFilterQueryChange}
       />
       <LoaderComponent loading={loading}>
-        <RolesTable roles={filteredRoles} />
+        <RolesTable
+          roles={filteredRoles}
+          handleCreateRole={handleCreateRole}
+          handleUpdateRole={handleUpdateRole}
+          handleDeleteRole={handleDeleteRole}
+        />
       </LoaderComponent>
     </div>
   );
