@@ -6,6 +6,7 @@ import Register from "../features/auth/Register";
 import ProtectedRoute from "./ProtectedRoute";
 import UserPage from "../features/users/UserPage";
 import RolePage from "../features/roles/RolePage";
+import ProjectPage from "../features/projects/ProjectPage";
 
 const Router = () => {
   return (
@@ -28,6 +29,14 @@ const Router = () => {
             element={
               <ProtectedRoute allowedRoles={["Admin"]}>
                 <RolePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/projects"
+            element={
+              <ProtectedRoute allowedRoles={["Admin"]}>
+                <ProjectPage />
               </ProtectedRoute>
             }
           />
