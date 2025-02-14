@@ -1,5 +1,13 @@
 import React, { useMemo } from "react";
-import { Table, TableColumnsType, Space, Button, Input } from "antd";
+import {
+  Table,
+  TableColumnsType,
+  Space,
+  Button,
+  Input,
+  Form,
+  Select,
+} from "antd";
 import { EditOutlined, DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import CustomModal from "../../../../components/common/CustomModal";
 import useRoleModal from "../../hooks/useRoleModal";
@@ -7,9 +15,11 @@ import {
   RoleInterface,
   RoleCreateInterface,
 } from "../../interfaces/RoleInterface";
+import { RoleGroupInterface } from "../../interfaces/RoleGroupIntreface";
 
 interface RolesTableProps {
   roles: RoleInterface[] | undefined;
+  roleGroups: RoleGroupInterface[] | null;
   handleCreateRole: (role: RoleCreateInterface) => Promise<boolean>;
   handleUpdateRole: (role: RoleInterface) => Promise<boolean>;
   handleDeleteRole: (roleId: string) => Promise<boolean>;
@@ -17,6 +27,7 @@ interface RolesTableProps {
 
 const RolesTable: React.FC<RolesTableProps> = ({
   roles,
+  roleGroups,
   handleCreateRole,
   handleUpdateRole,
   handleDeleteRole,
@@ -38,6 +49,13 @@ const RolesTable: React.FC<RolesTableProps> = ({
         title: "Name",
         dataIndex: "name",
         key: "name",
+      },
+      {
+        title: "Role Group",
+        dataIndex: "roleGroup",
+        key: "roleGroup",
+        render: (roleGroup: number) =>
+          roleGroups?.find((g) => g.id === roleGroup)?.name,
       },
       {
         title: "Actions",
@@ -108,31 +126,64 @@ const RolesTable: React.FC<RolesTableProps> = ({
         }}
         onCancel={hideModal}
       >
-        {modalMode === "create" && (
-          <>
-            <Input
-              placeholder="Name"
-              value={newRole?.name || ""}
-              onChange={(e) =>
-                setNewRole((prev) => ({ ...prev!, name: e.target.value }))
-              }
-            />
-          </>
-        )}
+        {(modalMode === "create" || modalMode === "update") && (
+          <Form layout="vertical">
+            <Form.Item label="Name" required>
+              <Input
+                placeholder="Name"
+                value={
+                  (modalMode === "create"
+                    ? newRole?.name
+                    : selectedRole?.name) || ""
+                }
+                onChange={(e) =>
+                  modalMode === "create"
+                    ? setNewRole((prev) => ({
+                        ...prev!,
+                        name: e.target.value,
+                      }))
+                    : setSelectedRole((prev) => ({
+                        ...prev!,
+                        name: e.target.value,
+                      }))
+                }
+              />
+            </Form.Item>
 
-        {modalMode === "update" && selectedRole && (
-          <>
-            <Input
-              placeholder="Name"
-              value={selectedRole?.name || ""}
-              onChange={(e) =>
-                setSelectedRole((prev) => ({
-                  ...prev!,
-                  name: e.target.value,
-                }))
-              }
-            />
-          </>
+            <Form.Item label="Role group" required>
+              <Select
+                style={{ width: "100%" }}
+                placeholder="Select Role group"
+                value={
+                  modalMode === "create" ? undefined : selectedRole?.roleGroup
+                }
+                onChange={(value) => {
+                  const selectedGroup = roleGroups?.find(
+                    (group) => group.id === value
+                  );
+                  if (!selectedGroup) return;
+
+                  if (modalMode === "update") {
+                    setSelectedRole((prev) => ({
+                      ...prev!,
+                      roleGroup: selectedGroup.id,
+                    }));
+                  } else {
+                    setNewRole((prev) => ({
+                      ...prev!,
+                      roleGroup: selectedGroup.id,
+                    }));
+                  }
+                }}
+              >
+                {roleGroups?.map((group) => (
+                  <Select.Option key={Math.random()} value={group.id}>
+                    {group.name}
+                  </Select.Option>
+                ))}
+              </Select>
+            </Form.Item>
+          </Form>
         )}
 
         {modalMode === "delete" && selectedRole && (

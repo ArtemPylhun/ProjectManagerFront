@@ -7,6 +7,7 @@ import useRoles from "../hooks/useRoles";
 const UserComponent = () => {
   const {
     roles,
+    roleGroups,
     loading,
     handleCreateRole,
     handleUpdateRole,
@@ -33,6 +34,7 @@ const UserComponent = () => {
       <LoaderComponent loading={loading}>
         <RolesTable
           roles={filteredRoles}
+          roleGroups={roleGroups}
           handleCreateRole={handleCreateRole}
           handleUpdateRole={handleUpdateRole}
           handleDeleteRole={handleDeleteRole}

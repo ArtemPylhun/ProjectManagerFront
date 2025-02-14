@@ -12,6 +12,7 @@ const useRoleModal = () => {
   const [selectedRole, setSelectedRole] = useState<RoleInterface | null>(null);
   const [newRole, setNewRole] = useState<RoleCreateInterface>({
     name: "",
+    roleGroup: -1,
   });
 
   const showModal = (role: RoleInterface | null, mode: typeof modalMode) => {
@@ -19,7 +20,7 @@ const useRoleModal = () => {
     if (mode !== "create" && role) {
       setSelectedRole({ ...role });
     } else {
-      setNewRole({ name: "" });
+      setNewRole({ name: "", roleGroup: -1 });
     }
     setIsModalVisible(true);
   };

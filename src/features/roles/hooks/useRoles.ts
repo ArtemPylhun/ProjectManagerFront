@@ -6,9 +6,14 @@ import {
   RoleInterface,
 } from "../interfaces/RoleInterface";
 import { useLoading } from "../../../hooks/useLoading";
+import { RoleGroupInterface } from "../interfaces/RoleGroupIntreface";
 
 const useRoles = () => {
   const [roles, setRoles] = useState<RoleInterface[] | null>(null);
+
+  const [roleGroups, setRoleGroups] = useState<RoleGroupInterface[] | null>(
+    null
+  );
 
   const { loading, turnOnLoading, turnOffLoading } = useLoading();
 
@@ -17,6 +22,7 @@ const useRoles = () => {
       turnOnLoading();
       try {
         const response = await RoleService.getAllRoles(signal);
+        console.log("Roles: ", response);
         if (Array.isArray(response)) {
           setRoles(response as RoleInterface[]);
           return true;
@@ -34,11 +40,32 @@ const useRoles = () => {
     []
   );
 
+  const fetchRoleGroups = useCallback(
+    async (signal: AbortSignal): Promise<boolean> => {
+      try {
+        const response = await RoleService.getRoleGroups(signal);
+        console.log("Role Groups: ", response);
+        if (Array.isArray(response)) {
+          setRoleGroups(response);
+          return true;
+        } else {
+          console.error("Invalid response format", response);
+          return false;
+        }
+      } catch (error) {
+        console.error("Error fetching role groups:", error);
+        return false;
+      }
+    },
+    []
+  );
+
   useEffect(() => {
     const abortController = new AbortController();
     fetchRoles(abortController.signal);
+    fetchRoleGroups(abortController.signal);
     return () => abortController.abort();
-  }, [fetchRoles]);
+  }, [fetchRoles, fetchRoleGroups]);
 
   const handleCreateRole = async (
     newRole: RoleCreateInterface
@@ -105,8 +132,10 @@ const useRoles = () => {
 
   return {
     roles,
+    roleGroups,
     loading,
     fetchRoles,
+    fetchRoleGroups,
     handleCreateRole,
     handleUpdateRole,
     handleDeleteRole,

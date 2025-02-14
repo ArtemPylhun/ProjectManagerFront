@@ -3,7 +3,7 @@ import {
   ProjectInterface,
   ProjectCreateInterface,
 } from "../interfaces/ProjectInterface";
-import UserInterface from "../../users/interfaces/UserInterface";
+import { UserInterface } from "../../users/interfaces/UserInterface";
 
 const useProjectModal = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
