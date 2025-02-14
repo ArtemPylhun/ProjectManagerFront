@@ -18,9 +18,9 @@ const useProjects = () => {
       turnOnLoading();
       try {
         const response = await ProjectService.getAllProjects(signal);
+        console.log("Projects: ", response);
         if (Array.isArray(response)) {
           setProjects(response as ProjectInterface[]);
-          console.log("Projects: ", response);
           return true;
         } else {
           console.error("Invalid response format", response);

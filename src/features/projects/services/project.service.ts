@@ -57,4 +57,26 @@ export class ProjectService {
     );
     return await httpClient.delete(`/delete/${id}`);
   }
+
+  static async addUserToProject(id: string, signal: AbortSignal) {
+    const apiUrl = import.meta.env.VITE_API_BASE_URL;
+    const httpClient = new HttpClient(
+      {
+        baseURL: `${apiUrl}/projects`,
+      },
+      signal
+    );
+    return await httpClient.post(`/add-user-to-project`, {});
+  }
+
+  static async removeUserFromProject(id: string, signal: AbortSignal) {
+    const apiUrl = import.meta.env.VITE_API_BASE_URL;
+    const httpClient = new HttpClient(
+      {
+        baseURL: `${apiUrl}/projects`,
+      },
+      signal
+    );
+    return await httpClient.delete(`/delete/${id}`);
+  }
 }

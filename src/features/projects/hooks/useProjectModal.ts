@@ -28,13 +28,13 @@ const useProjectModal = () => {
   });
 
   const showModal = (
-    Project: ProjectInterface | null,
+    project: ProjectInterface | null,
     mode: typeof modalMode
   ) => {
     setModalMode(mode);
-    if (mode !== "create" && Project) {
-      setSelectedClient(Project.client);
-      setSelectedProject({ ...Project });
+    if (mode !== "create" && project) {
+      setSelectedClient(project.client);
+      setSelectedProject({ ...project });
     } else {
       setSelectedClient(null);
       setSelectedCreator(null);
