@@ -123,7 +123,7 @@ const ProjectComponent = () => {
       >
         {(modalMode === "create" || modalMode === "update") && (
           <Form layout="vertical">
-            <Form.Item label="Name required" required>
+            <Form.Item label="Name" required>
               <Input
                 placeholder="Name"
                 value={
