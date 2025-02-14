@@ -36,9 +36,16 @@ const RoleComponent = () => {
     setFilterQuery(event.target.value);
   };
 
-  const filteredRoles = roles?.filter((role) => {
-    return role.name.toLowerCase().includes(filterQuery.toLowerCase());
-  });
+  const filteredRoles = roles
+    ? roles.filter((role) => {
+        const roleGroup = roleGroups?.find((g) => g.id === role.roleGroup);
+        return (
+          role.name.toLowerCase().includes(filterQuery.toLowerCase()) ||
+          (roleGroup &&
+            roleGroup.name.toLowerCase().includes(filterQuery.toLowerCase()))
+        );
+      })
+    : [];
 
   const handleSave = useCallback(async () => {
     if (!modalMode) return;
