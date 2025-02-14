@@ -25,7 +25,7 @@ const useRoles = () => {
           return false;
         }
       } catch (error) {
-        console.error("Error fetching users:", error);
+        console.error("Error fetching roles:", error);
         return false;
       } finally {
         turnOffLoading();
