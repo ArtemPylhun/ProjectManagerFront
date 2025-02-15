@@ -1,21 +1,35 @@
 import React, { useMemo } from "react";
-import { Table, TableColumnsType, Space, Button, Tooltip } from "antd";
+import {
+  Table,
+  TableColumnsType,
+  Space,
+  Button,
+  Tooltip,
+  Avatar,
+  Tag,
+} from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { ProjectInterface } from "../../interfaces/ProjectInterface";
 import { UserInterface } from "../../../users/interfaces/UserInterface";
+import { RoleInterface } from "../../../roles/interfaces/RoleInterface";
+import { ProjectUserInterface } from "../../interfaces/ProjectUserInterface";
 import "./ProjectsTable.css";
 
 interface ProjectsTableProps {
   projects: ProjectInterface[] | undefined;
-
+  users: UserInterface[] | undefined;
+  roles: RoleInterface[] | undefined;
   showModal: (
     project: ProjectInterface | null,
-    mode: "create" | "update" | "delete"
+    projectUser: ProjectUserInterface | null,
+    mode: "create" | "update" | "delete" | "add_user" | "remove_user"
   ) => void;
 }
 
 const ProjectsTable: React.FC<ProjectsTableProps> = ({
   projects,
+  users,
+  roles,
   showModal,
 }) => {
   const columns: TableColumnsType<ProjectInterface> = useMemo(
@@ -69,6 +83,52 @@ const ProjectsTable: React.FC<ProjectsTableProps> = ({
         render: (client: UserInterface) => client.userName,
       },
       {
+        title: "Users",
+        dataIndex: "projectUsers",
+        key: "projectUsers",
+        render: (
+          projectUsers: ProjectUserInterface[],
+          record: ProjectInterface
+        ) => (
+          <Space direction="vertical" style={{ width: "100%" }}>
+            {projectUsers.map((projectUser) => {
+              const user = users?.find(
+                (user) => user.id === projectUser.userId
+              );
+              const role = roles?.find(
+                (role) => role.id === projectUser.roleId
+              );
+              if (!user) return null;
+
+              return (
+                <div key={user.id} className="user-role-item">
+                  <Avatar
+                    size={30}
+                    src={`https://ui-avatars.com/api/?name=${user.userName}`}
+                  />
+                  <span className="user-name">{user.userName}</span>
+                  <Tag color="blue">{role?.name || "No role"}</Tag>
+                  <Button
+                    danger
+                    size="small"
+                    onClick={() => showModal(null, projectUser, "remove_user")}
+                  >
+                    Remove
+                  </Button>
+                </div>
+              );
+            })}
+            <Button
+              type="dashed"
+              size="small"
+              onClick={() => showModal(record, null, "add_user")}
+            >
+              + Add User
+            </Button>
+          </Space>
+        ),
+      },
+      {
         title: "Actions",
         key: "actions",
         render: (project: ProjectInterface) => (
@@ -76,13 +136,13 @@ const ProjectsTable: React.FC<ProjectsTableProps> = ({
             <Button
               type="default"
               icon={<EditOutlined />}
-              onClick={() => showModal(project, "update")}
+              onClick={() => showModal(project, null, "update")}
             />
             <Button
               danger
               type="default"
               icon={<DeleteOutlined />}
-              onClick={() => showModal(project, "delete")}
+              onClick={() => showModal(project, null, "delete")}
             />
           </Space>
         ),

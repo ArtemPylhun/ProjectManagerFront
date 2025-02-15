@@ -1,5 +1,5 @@
 import { useState } from "react";
-import UserInterface from "../interfaces/UserInterface";
+import { UserInterface } from "../interfaces/UserInterface";
 
 const useUserModal = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);

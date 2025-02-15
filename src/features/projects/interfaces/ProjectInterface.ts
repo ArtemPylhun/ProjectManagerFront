@@ -1,4 +1,5 @@
-import UserInterface from "../../users/interfaces/UserInterface";
+import { UserInterface } from "../../users/interfaces/UserInterface";
+import { ProjectUserInterface } from "./ProjectUserInterface";
 
 export interface ProjectInterface {
   id: string;
@@ -7,6 +8,7 @@ export interface ProjectInterface {
   colorHex: string;
   creator: UserInterface;
   client: UserInterface;
+  projectUsers: ProjectUserInterface[];
 }
 
 export interface ProjectCreateInterface {
