@@ -5,6 +5,16 @@ import {
 } from "../interfaces/RoleInterface";
 import { RoleGroupInterface } from "../interfaces/RoleGroupIntreface";
 export class RoleService {
+  static async getProjectRoles(signal: AbortSignal): Promise<RoleInterface[]> {
+    const apiUrl = import.meta.env.VITE_API_BASE_URL;
+    const httpClient = new HttpClient(
+      {
+        baseURL: `${apiUrl}/roles`,
+      },
+      signal
+    );
+    return await httpClient.get("get-project-roles");
+  }
   static async getAllRoles(signal: AbortSignal): Promise<RoleInterface[]> {
     const apiUrl = import.meta.env.VITE_API_BASE_URL;
     const httpClient = new HttpClient(

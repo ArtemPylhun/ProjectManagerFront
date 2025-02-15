@@ -4,6 +4,10 @@ import {
   ProjectInterface,
   ProjectUpdateInterface,
 } from "../interfaces/ProjectInterface.ts";
+import {
+  ProjectUserInterface,
+  ProjectUserCreateInterface,
+} from "../interfaces/ProjectUserInterface";
 
 export class ProjectService {
   static async getAllProjects(
@@ -58,7 +62,10 @@ export class ProjectService {
     return await httpClient.delete(`/delete/${id}`);
   }
 
-  static async addUserToProject(id: string, signal: AbortSignal) {
+  static async addUserToProject(
+    projectUser: ProjectUserCreateInterface,
+    signal: AbortSignal
+  ): Promise<ProjectUserInterface> {
     const apiUrl = import.meta.env.VITE_API_BASE_URL;
     const httpClient = new HttpClient(
       {
@@ -66,10 +73,13 @@ export class ProjectService {
       },
       signal
     );
-    return await httpClient.post(`/add-user-to-project`, {});
+    return await httpClient.post(`/add-user-to-project`, { ...projectUser });
   }
 
-  static async removeUserFromProject(id: string, signal: AbortSignal) {
+  static async removeUserFromProject(
+    projectUserId: string,
+    signal: AbortSignal
+  ): Promise<ProjectUserInterface> {
     const apiUrl = import.meta.env.VITE_API_BASE_URL;
     const httpClient = new HttpClient(
       {
@@ -77,6 +87,8 @@ export class ProjectService {
       },
       signal
     );
-    return await httpClient.delete(`/delete/${id}`);
+    return await httpClient.delete(
+      `/remove-user-from-project/${projectUserId}`
+    );
   }
 }

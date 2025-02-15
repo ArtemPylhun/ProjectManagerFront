@@ -77,3 +77,18 @@
 .projects-header button:hover {
   background: #125acb;
 }
+
+.user-role-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.user-name {
+  font-weight: 600;
+}
+
+.user-role {
+  font-size: 12px;
+  color: #888;
+}

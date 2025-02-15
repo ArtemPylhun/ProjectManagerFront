@@ -8,6 +8,7 @@ import {
 import { ProjectService } from "../services/project.service";
 import { UserService } from "../../users/services/user.service";
 import { useLoading } from "../../../hooks/useLoading";
+import { ProjectUserCreateInterface } from "../interfaces/ProjectUserInterface";
 const useProjects = () => {
   const [projects, setProjects] = useState<ProjectInterface[] | null>(null);
 
@@ -86,6 +87,7 @@ const useProjects = () => {
                     ...updatedProject,
                     creator: project.creator,
                     client: updatedClient,
+                    projectUsers: project.projectUsers,
                   }
                 : project
             )
@@ -119,6 +121,77 @@ const useProjects = () => {
     }
   };
 
+  const handleAddUserToProject = async (
+    projectUser: ProjectUserCreateInterface
+  ): Promise<boolean> => {
+    try {
+      console.log("projectUser: ", projectUser);
+      const response = await ProjectService.addUserToProject(
+        projectUser,
+        new AbortController().signal
+      );
+      if (!response) throw new Error("Project deletion failed");
+
+      setProjects((prevProjects) =>
+        prevProjects
+          ? prevProjects.map((project) =>
+              project.id === projectUser.projectId
+                ? {
+                    ...project,
+                    projectUsers: [
+                      ...project.projectUsers,
+                      {
+                        id: response.id,
+                        projectId: response.projectId,
+                        roleId: response.roleId,
+                        userId: response.userId,
+                      },
+                    ],
+                  }
+                : project
+            )
+          : []
+      );
+      message.success("User added to project successfully");
+      return true;
+    } catch (error) {
+      message.error(`Failed to add user to project: ${error}`);
+      return false;
+    }
+  };
+
+  const handleRemoveUserFromProject = async (
+    projectUserId: string
+  ): Promise<boolean> => {
+    try {
+      const response = await ProjectService.removeUserFromProject(
+        projectUserId,
+        new AbortController().signal
+      );
+      if (!response) throw new Error("Project deletion failed");
+
+      setProjects((prevProjects) =>
+        prevProjects
+          ? prevProjects.map((project) =>
+              project.id === response.projectId
+                ? {
+                    ...project,
+                    projectUsers: project.projectUsers.filter(
+                      (projectUser) => projectUser.id !== projectUserId
+                    ),
+                  }
+                : project
+            )
+          : []
+      );
+      message.success("User removed from project successfully");
+      return true;
+    } catch (error) {
+      message.error(`Failed to remove user from project: ${error}`);
+      return false;
+    }
+  };
+
   return {
     projects,
     loading,
@@ -126,6 +199,8 @@ const useProjects = () => {
     handleDeleteProject,
     handleCreateProject,
     handleUpdateProject,
+    handleAddUserToProject,
+    handleRemoveUserFromProject,
   };
 };
 

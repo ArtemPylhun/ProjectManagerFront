@@ -9,6 +9,7 @@ import useProjects from "../hooks/useProjects";
 import useProjectModal from "../hooks/useProjectModal";
 import useUsers from "../../users/hooks/useUsers";
 import "./table/ProjectsTable.css";
+import useRoles from "../../roles/hooks/useRoles";
 
 const { TextArea } = Input;
 
@@ -19,6 +20,8 @@ const ProjectComponent = () => {
     handleDeleteProject,
     handleCreateProject,
     handleUpdateProject,
+    handleAddUserToProject,
+    handleRemoveUserFromProject,
   } = useProjects();
 
   const {
@@ -27,17 +30,20 @@ const ProjectComponent = () => {
     selectedProject,
     selectedClient,
     selectedCreator,
+    selectedProjectUser,
     newProject,
+    newProjectUser,
     showModal,
     hideModal,
     setNewProject,
     setSelectedProject,
     setSelectedClient,
     setSelectedCreator,
+    setNewProjectUser,
   } = useProjectModal();
 
   const { users } = useUsers();
-
+  const { roles } = useRoles(true);
   const [filterQuery, setFilterQuery] = useState<string>("");
 
   const handleFilterQueryChange = (
@@ -73,6 +79,13 @@ const ProjectComponent = () => {
       });
     } else if (modalMode === "delete" && selectedProject) {
       result = await handleDeleteProject(selectedProject.id);
+    } else if (modalMode === "add_user" && newProjectUser && selectedProject) {
+      result = await handleAddUserToProject({
+        ...newProjectUser,
+        projectId: selectedProject.id,
+      });
+    } else if (modalMode === "remove_user" && selectedProjectUser) {
+      result = await handleRemoveUserFromProject(selectedProjectUser.id);
     }
 
     if (result) hideModal();
@@ -98,7 +111,7 @@ const ProjectComponent = () => {
         <Button
           type="primary"
           icon={<PlusOutlined />}
-          onClick={() => showModal(null, "create")}
+          onClick={() => showModal(null, null, "create")}
           style={{ height: "40px", display: "flex", alignItems: "center" }}
         >
           Create Project
@@ -106,7 +119,12 @@ const ProjectComponent = () => {
       </div>
 
       <LoaderComponent loading={loading}>
-        <ProjectsTable projects={filteredProjects} showModal={showModal} />
+        <ProjectsTable
+          projects={filteredProjects}
+          users={users!}
+          roles={roles!}
+          showModal={showModal}
+        />
       </LoaderComponent>
 
       <CustomModal
@@ -116,6 +134,10 @@ const ProjectComponent = () => {
             ? "Create New Project"
             : modalMode === "update"
             ? "Update Project"
+            : modalMode === "add_user"
+            ? "Add User to Project"
+            : modalMode === "remove_user"
+            ? "Remove User from Project"
             : "Delete Project"
         }
         onOk={handleSave}
@@ -248,6 +270,70 @@ const ProjectComponent = () => {
 
         {modalMode === "delete" && selectedProject && (
           <p>Are you sure you want to delete this project?</p>
+        )}
+
+        {modalMode === "add_user" && (
+          <Form layout="vertical">
+            <Form.Item label="Project" required>
+              <Select
+                style={{ width: "100%" }}
+                placeholder="Select Project"
+                value={selectedProject?.id}
+                disabled
+              >
+                <Select.Option
+                  key={selectedProject?.id}
+                  value={selectedProject?.id}
+                >
+                  {selectedProject?.name}
+                </Select.Option>
+              </Select>
+            </Form.Item>
+            <Form.Item label="User" required>
+              <Select
+                style={{ width: "100%" }}
+                placeholder="Select User"
+                value={newProjectUser?.userId}
+                onChange={(value) =>
+                  setNewProjectUser((prev) => ({
+                    ...prev!,
+                    userId: value,
+                  }))
+                }
+                loading={loading}
+              >
+                {users?.map((user) => (
+                  <Select.Option key={user.id} value={user.id}>
+                    {user.userName}
+                  </Select.Option>
+                ))}
+              </Select>
+            </Form.Item>
+
+            <Form.Item label="Role" required>
+              <Select
+                style={{ width: "100%" }}
+                placeholder="Select Role"
+                value={newProjectUser?.roleId}
+                onChange={(value) =>
+                  setNewProjectUser((prev) => ({
+                    ...prev!,
+                    roleId: value,
+                  }))
+                }
+                loading={loading}
+              >
+                {roles?.map((role) => (
+                  <Select.Option key={role.id} value={role.id}>
+                    {role.name}
+                  </Select.Option>
+                ))}
+              </Select>
+            </Form.Item>
+          </Form>
+        )}
+        {modalMode === "remove_user" && selectedProjectUser && (
+          <p>Are you sure you want to remove this user?</p>
         )}
       </CustomModal>
     </div>
