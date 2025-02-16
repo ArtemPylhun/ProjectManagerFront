@@ -44,6 +44,7 @@ const useRoles = (isProjectRoles: boolean) => {
 
   const fetchRoleGroups = useCallback(
     async (signal: AbortSignal): Promise<boolean> => {
+      turnOnLoading();
       try {
         const response = await RoleService.getRoleGroups(signal);
         console.log("Role Groups: ", response);
@@ -57,6 +58,8 @@ const useRoles = (isProjectRoles: boolean) => {
       } catch (error) {
         console.error("Error fetching role groups:", error);
         return false;
+      } finally {
+        turnOffLoading();
       }
     },
     []

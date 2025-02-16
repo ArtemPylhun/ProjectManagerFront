@@ -59,7 +59,7 @@ const useProjects = () => {
       message.success("Project created successfully");
       return true;
     } catch (error) {
-      message.error(`Failed to create role: ${error}`);
+      message.error(`Failed to create project: ${error}`);
       return false;
     }
   };
@@ -130,7 +130,7 @@ const useProjects = () => {
         projectUser,
         new AbortController().signal
       );
-      if (!response) throw new Error("Project deletion failed");
+      if (!response) throw new Error("Adding user to project failed");
 
       setProjects((prevProjects) =>
         prevProjects
@@ -168,7 +168,7 @@ const useProjects = () => {
         projectUserId,
         new AbortController().signal
       );
-      if (!response) throw new Error("Project deletion failed");
+      if (!response) throw new Error("User deletion from project failed");
 
       setProjects((prevProjects) =>
         prevProjects

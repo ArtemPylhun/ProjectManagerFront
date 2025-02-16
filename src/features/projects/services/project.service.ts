@@ -23,6 +23,20 @@ export class ProjectService {
     return await httpClient.get("get-all");
   }
 
+  static async getProjectById(
+    projectId: string,
+    signal: AbortSignal
+  ): Promise<ProjectInterface> {
+    const apiUrl = import.meta.env.VITE_API_BASE_URL;
+    const httpClient = new HttpClient(
+      {
+        baseURL: `${apiUrl}/projects`,
+      },
+      signal
+    );
+    return await httpClient.get(projectId);
+  }
+
   static async createProject(
     project: ProjectCreateInterface,
     signal: AbortSignal

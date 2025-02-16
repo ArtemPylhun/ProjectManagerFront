@@ -7,6 +7,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import UserPage from "../features/users/UserPage";
 import RolePage from "../features/roles/RolePage";
 import ProjectPage from "../features/projects/ProjectPage";
+import ProjectTaskPage from "../features/projectTasks/ProjectTaskPage";
 
 const Router = () => {
   return (
@@ -37,6 +38,14 @@ const Router = () => {
             element={
               <ProtectedRoute allowedRoles={["Admin"]}>
                 <ProjectPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/project-tasks"
+            element={
+              <ProtectedRoute allowedRoles={["Admin"]}>
+                <ProjectTaskPage />
               </ProtectedRoute>
             }
           />
