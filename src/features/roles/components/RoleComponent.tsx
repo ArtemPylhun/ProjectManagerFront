@@ -16,7 +16,7 @@ const RoleComponent = () => {
     handleCreateRole,
     handleUpdateRole,
     handleDeleteRole,
-  } = useRoles();
+  } = useRoles(false);
 
   const {
     modalMode,

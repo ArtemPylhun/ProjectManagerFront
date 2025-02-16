@@ -195,7 +195,7 @@ const ProjectComponent = () => {
                     : selectedProject?.colorHex
                 }
                 allowClear
-                onChange={(c) =>
+                onChangeComplete={(c) =>
                   modalMode === "create"
                     ? setNewProject((prev) => ({
                         ...prev!,
@@ -333,7 +333,7 @@ const ProjectComponent = () => {
           </Form>
         )}
         {modalMode === "remove_user" && selectedProjectUser && (
-          <p>Are you sure you want to remove this user?</p>
+          <p>Are you sure you want to remove this user from this project?</p>
         )}
       </CustomModal>
     </div>

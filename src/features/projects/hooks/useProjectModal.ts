@@ -98,7 +98,6 @@ const useProjectModal = () => {
     setSelectedProject,
     setSelectedClient,
     setSelectedCreator,
-    setSelectedProjectUser,
     setNewProjectUser,
   };
 };

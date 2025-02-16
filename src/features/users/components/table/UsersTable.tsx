@@ -11,7 +11,7 @@ import {
 import { EditOutlined, DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import CustomModal from "../../../../components/common/CustomModal";
 import useUserModal from "../../hooks/useUserModal";
-import UserInterface from "../../interfaces/UserInterface";
+import { UserInterface } from "../../interfaces/UserInterface";
 import useRoles from "../../../roles/hooks/useRoles";
 
 interface UsersTableProps {
@@ -42,7 +42,7 @@ const UsersTable: React.FC<UsersTableProps> = ({
     setSelectedUser,
   } = useUserModal();
 
-  const { roles, loading } = useRoles();
+  const { roles, loading } = useRoles(false);
   const columns: TableColumnsType<UserInterface> = useMemo(
     () => [
       {
