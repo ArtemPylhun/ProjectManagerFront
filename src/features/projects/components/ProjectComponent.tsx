@@ -43,7 +43,7 @@ const ProjectComponent = () => {
   } = useProjectModal();
 
   const { users } = useUsers();
-  const { roles } = useRoles(true);
+  const { roles } = useRoles(true, false);
   const [filterQuery, setFilterQuery] = useState<string>("");
 
   const handleFilterQueryChange = (

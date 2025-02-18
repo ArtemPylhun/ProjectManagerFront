@@ -8,7 +8,7 @@ import {
 import { useLoading } from "../../../hooks/useLoading";
 import { RoleGroupInterface } from "../interfaces/RoleGroupIntreface";
 
-const useRoles = (isProjectRoles: boolean) => {
+const useRoles = (isProjectRoles: boolean, isGeneralRoles: boolean) => {
   const [roles, setRoles] = useState<RoleInterface[] | null>(null);
 
   const [roleGroups, setRoleGroups] = useState<RoleGroupInterface[] | null>(
@@ -23,6 +23,8 @@ const useRoles = (isProjectRoles: boolean) => {
       try {
         const response = isProjectRoles
           ? await RoleService.getProjectRoles(signal)
+          : isGeneralRoles
+          ? await RoleService.getGeneralRoles(signal)
           : await RoleService.getAllRoles(signal);
         console.log("Roles: ", response);
         if (Array.isArray(response)) {

@@ -15,6 +15,16 @@ export class RoleService {
     );
     return await httpClient.get("get-project-roles");
   }
+  static async getGeneralRoles(signal: AbortSignal): Promise<RoleInterface[]> {
+    const apiUrl = import.meta.env.VITE_API_BASE_URL;
+    const httpClient = new HttpClient(
+      {
+        baseURL: `${apiUrl}/roles`,
+      },
+      signal
+    );
+    return await httpClient.get("get-general-roles");
+  }
   static async getAllRoles(signal: AbortSignal): Promise<RoleInterface[]> {
     const apiUrl = import.meta.env.VITE_API_BASE_URL;
     const httpClient = new HttpClient(
