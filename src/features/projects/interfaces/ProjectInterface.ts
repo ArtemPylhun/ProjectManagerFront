@@ -24,5 +24,4 @@ export interface ProjectUpdateInterface {
   name: string;
   description: string;
   colorHex: string;
-  clientId: string;
 }

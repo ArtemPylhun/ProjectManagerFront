@@ -75,7 +75,6 @@ const ProjectComponent = () => {
     } else if (modalMode === "update" && selectedProject && selectedClient) {
       result = await handleUpdateProject({
         ...selectedProject,
-        clientId: selectedClient.id,
       });
     } else if (modalMode === "delete" && selectedProject) {
       result = await handleDeleteProject(selectedProject.id);

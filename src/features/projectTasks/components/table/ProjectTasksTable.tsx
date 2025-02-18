@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { TableColumnsType, Space, Button, Table, Avatar } from "antd";
+import { TableColumnsType, Space, Button, Table, Avatar, Tooltip } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { ProjectTaskInterface } from "../../interfaces/ProjectTaskInterface";
 import { UserTaskInterface } from "../../interfaces/UserTaskInterface";
@@ -34,6 +34,18 @@ const ProjectTasksTable: React.FC<ProjectTasksTableProps> = ({
         title: "Description",
         dataIndex: "description",
         key: "description",
+        render: (description: string) => {
+          const maxLength = 20;
+          const truncated =
+            description.length > maxLength
+              ? `${description.substring(0, maxLength)}...`
+              : description;
+          return (
+            <Tooltip title={description} placement="top">
+              <div className="description">{truncated}</div>
+            </Tooltip>
+          );
+        },
       },
       {
         title: "Estimated Time",

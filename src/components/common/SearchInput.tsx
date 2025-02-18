@@ -13,7 +13,7 @@ const SearchInput: React.FC<SearchInputProps> = ({ query, onQueryChange }) => {
       allowClear
       prefix={<SearchOutlined style={{ color: "#888" }} />}
       style={{
-        width: "100%" /* Ensures it takes up the full width of its container */,
+        width: "100%",
         height: "40px",
         padding: "8px 12px",
         borderRadius: "8px",

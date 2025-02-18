@@ -1,5 +1,5 @@
 import { HttpClient } from "../../../utils/http/HttpClient";
-import UserInterface from "../interfaces/UserInterface";
+import { UserInterface } from "../interfaces/UserInterface";
 import UserLoginInterface from "../interfaces/UserLoginInterface";
 import UserRegisterInterface from "../interfaces/UserRegisterInterface";
 
