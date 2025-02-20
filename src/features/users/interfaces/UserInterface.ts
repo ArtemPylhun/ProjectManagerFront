@@ -5,3 +5,14 @@ export interface UserInterface {
   password: string;
   roles: string[];
 }
+
+export interface UserLoginInterface {
+  emailOrUsername: string;
+  password: string;
+}
+
+export interface UserRegisterInterface {
+  email: string;
+  userName: string;
+  password: string;
+}

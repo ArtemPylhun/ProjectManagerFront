@@ -3,7 +3,8 @@ import { Form, Input, Button } from "antd";
 import { UserService } from "../users/services/user.service";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate, useLocation } from "react-router-dom";
-import UserLoginInterface from "../users/interfaces/UserLoginInterface";
+import { UserLoginInterface } from "../users/interfaces/UserInterface";
+import { validateEmail, validateName } from "../users/hooks/useUserValidators";
 
 const Login: React.FC = () => {
   const [user, setUser] = useState<UserLoginInterface>({
@@ -49,6 +50,7 @@ const Login: React.FC = () => {
         name="emailOrUsername"
         rules={[
           { required: true, message: "Please enter your email or username" },
+          { validator: validateEmail || validateName },
         ]}
       >
         <Input

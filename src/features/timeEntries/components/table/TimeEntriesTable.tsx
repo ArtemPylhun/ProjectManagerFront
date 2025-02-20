@@ -6,15 +6,13 @@ import { ProjectInterface } from "../../../projects/interfaces/ProjectInterface"
 import { ProjectTaskInterface } from "../../../projectTasks/interfaces/ProjectTaskInterface";
 import dayjs from "dayjs";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { ModalMode, ModalModes } from "../../../../types/modalModes";
 interface TimeEntriesTableProps {
   timeEntries: TimeEntryInterface[] | undefined;
   users: UserInterface[] | undefined;
   projects: ProjectInterface[] | undefined;
   projectTasks: ProjectTaskInterface[] | undefined | null;
-  showModal: (
-    timeEntry: TimeEntryInterface | null,
-    mode: "create" | "delete" | "update"
-  ) => void;
+  showModal: (timeEntry: TimeEntryInterface | null, mode: ModalMode) => void;
 }
 
 const TimeEntriesTable: React.FC<TimeEntriesTableProps> = ({
@@ -85,13 +83,13 @@ const TimeEntriesTable: React.FC<TimeEntriesTableProps> = ({
               color="primary"
               type="default"
               icon={<EditOutlined />}
-              onClick={() => showModal(timeEntry, "update")}
+              onClick={() => showModal(timeEntry, ModalModes.UPDATE)}
             />
             <Button
               danger
               type="default"
               icon={<DeleteOutlined />}
-              onClick={() => showModal(timeEntry, "delete")}
+              onClick={() => showModal(timeEntry, ModalModes.DELETE)}
             />
           </Space>
         ),

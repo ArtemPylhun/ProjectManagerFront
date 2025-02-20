@@ -10,6 +10,7 @@ import CustomModal from "../../../components/common/CustomModal";
 import TextArea from "antd/es/input/TextArea";
 import useProjects from "../../projects/hooks/useProjects";
 import useUsers from "../../users/hooks/useUsers";
+import { ModalModes } from "../../../types/modalModes";
 
 const ProjectTaskComponent = () => {
   const {
@@ -60,13 +61,13 @@ const ProjectTaskComponent = () => {
 
     let result = false;
 
-    if (modalMode === "create" && newProjectTask) {
+    if (modalMode === ModalModes.CREATE && newProjectTask) {
       result = await handleCreateProjectTask({
         ...newProjectTask,
         projectId: newProjectTask.projectId,
       });
     } else if (
-      modalMode === "update" &&
+      modalMode === ModalModes.UPDATE &&
       selectedProjectTask &&
       selectedProject
     ) {
@@ -74,14 +75,18 @@ const ProjectTaskComponent = () => {
         ...selectedProjectTask,
         projectId: selectedProject.id,
       });
-    } else if (modalMode === "delete" && selectedProjectTask) {
+    } else if (modalMode === ModalModes.DELETE && selectedProjectTask) {
       result = await handleDeleteProjectTask(selectedProjectTask.id);
-    } else if (modalMode === "add_user" && newUserTask && selectedProjectTask) {
+    } else if (
+      modalMode === ModalModes.ADD_USER &&
+      newUserTask &&
+      selectedProjectTask
+    ) {
       result = await handleAddUserToProjectTask({
         ...newUserTask,
         projectTaskId: selectedProjectTask.id,
       });
-    } else if (modalMode === "remove_user" && selectedUserTask) {
+    } else if (modalMode === ModalModes.REMOVE_USER && selectedUserTask) {
       result = await handleRemoveUserFromProjectTask(selectedUserTask.id);
     }
 
@@ -109,7 +114,7 @@ const ProjectTaskComponent = () => {
         <Button
           type="primary"
           icon={<PlusOutlined />}
-          onClick={() => showModal(null, null, "create")}
+          onClick={() => showModal(null, null, ModalModes.CREATE)}
           style={{ height: "40px", display: "flex", alignItems: "center" }}
         >
           Create Project Task
@@ -127,31 +132,32 @@ const ProjectTaskComponent = () => {
       <CustomModal
         visible={isModalVisible}
         title={
-          modalMode === "create"
+          modalMode === ModalModes.CREATE
             ? "Create Project Task"
-            : modalMode === "update"
+            : modalMode === ModalModes.UPDATE
             ? "Update Project Task"
-            : modalMode === "add_user"
+            : modalMode === ModalModes.ADD_USER
             ? "Add User to Project Task"
-            : modalMode === "remove_user"
+            : modalMode === ModalModes.REMOVE_USER
             ? "Remove User from Project Task"
             : "Delete Project Task"
         }
         onOk={handleSave}
         onCancel={hideModal}
       >
-        {(modalMode === "create" || modalMode === "update") && (
+        {(modalMode === ModalModes.CREATE ||
+          modalMode === ModalModes.UPDATE) && (
           <Form layout="vertical">
             <Form.Item label="Name">
               <Input
                 placeholder="Name"
                 value={
-                  (modalMode === "create"
+                  (modalMode === ModalModes.CREATE
                     ? newProjectTask?.name
                     : selectedProjectTask?.name) || ""
                 }
                 onChange={(e) =>
-                  modalMode === "create"
+                  modalMode === ModalModes.CREATE
                     ? setNewProjectTask((prev) => ({
                         ...prev!,
                         name: e.target.value,
@@ -167,12 +173,12 @@ const ProjectTaskComponent = () => {
               <TextArea
                 placeholder="Description"
                 value={
-                  (modalMode === "create"
+                  (modalMode === ModalModes.CREATE
                     ? newProjectTask?.description
                     : selectedProjectTask?.description) || ""
                 }
                 onChange={(e) =>
-                  modalMode === "create"
+                  modalMode === ModalModes.CREATE
                     ? setNewProjectTask((prev) => ({
                         ...prev!,
                         description: e.target.value,
@@ -190,12 +196,12 @@ const ProjectTaskComponent = () => {
                 type="number"
                 maxLength={3}
                 value={
-                  (modalMode === "create"
+                  (modalMode === ModalModes.CREATE
                     ? newProjectTask?.estimatedTime
                     : selectedProjectTask?.estimatedTime) || ""
                 }
                 onChange={(e) =>
-                  modalMode === "create"
+                  modalMode === ModalModes.CREATE
                     ? setNewProjectTask((prev) => ({
                         ...prev!,
                         estimatedTime: Number(e.target.value),
@@ -212,12 +218,12 @@ const ProjectTaskComponent = () => {
                 style={{ width: "100%" }}
                 placeholder="Select Project"
                 value={
-                  modalMode === "create"
+                  modalMode === ModalModes.CREATE
                     ? newProjectTask?.projectId
                     : selectedProject?.id
                 }
                 onChange={(value) =>
-                  modalMode === "create"
+                  modalMode === ModalModes.CREATE
                     ? setNewProjectTask((prev) => ({
                         ...prev!,
                         projectId: value,
@@ -227,16 +233,16 @@ const ProjectTaskComponent = () => {
                           null
                       )
                 }
-                disabled={modalMode !== "create"}
+                disabled={modalMode !== ModalModes.CREATE}
                 loading={loading}
               >
-                {modalMode === "create" &&
+                {modalMode === ModalModes.CREATE &&
                   projects?.map((project) => (
                     <Select.Option key={project.id} value={project.id}>
                       {project.name}
                     </Select.Option>
                   ))}
-                {modalMode === "update" && selectedProject && (
+                {modalMode === ModalModes.UPDATE && selectedProject && (
                   <Select.Option
                     key={selectedProject?.id}
                     value={selectedProject?.id}
@@ -246,7 +252,7 @@ const ProjectTaskComponent = () => {
                 )}
               </Select>
             </Form.Item>
-            {modalMode === "update" && selectedProjectTask && (
+            {modalMode === ModalModes.UPDATE && selectedProjectTask && (
               <Form.Item label="Status">
                 <Select
                   style={{ width: "100%" }}
@@ -269,11 +275,11 @@ const ProjectTaskComponent = () => {
             )}
           </Form>
         )}
-        {modalMode === "delete" && selectedProjectTask && (
+        {modalMode === ModalModes.DELETE && selectedProjectTask && (
           <p>Are you sure you want to delete this project task?</p>
         )}
 
-        {modalMode === "add_user" && (
+        {modalMode === ModalModes.ADD_USER && (
           <Form layout="vertical">
             <Form.Item label="Project Task" required>
               <Select
@@ -314,7 +320,7 @@ const ProjectTaskComponent = () => {
           </Form>
         )}
 
-        {modalMode === "remove_user" && selectedUserTask && (
+        {modalMode === ModalModes.REMOVE_USER && selectedUserTask && (
           <p>
             Are you sure you want to remove this user from this project task?
           </p>

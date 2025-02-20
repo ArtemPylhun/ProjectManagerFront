@@ -6,12 +6,11 @@ import {
 import { UserInterface } from "../../users/interfaces/UserInterface";
 import { ProjectInterface } from "../../projects/interfaces/ProjectInterface";
 import { ProjectTaskInterface } from "../../projectTasks/interfaces/ProjectTaskInterface";
+import { ModalMode, ModalModes } from "../../../types/modalModes";
 
 const useTimeEntryModal = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [modalMode, setModalMode] = useState<"create" | "delete" | "update">(
-    "create"
-  );
+  const [modalMode, setModalMode] = useState<ModalMode>(ModalModes.CREATE);
   const [selectedTimeEntry, setSelectedTimeEntry] =
     useState<TimeEntryInterface | null>(null);
   const [newTimeEntry, setNewTimeEntry] = useState<TimeEntryCreateInterface>({
@@ -32,12 +31,9 @@ const useTimeEntryModal = () => {
   const [selectedProjectTask, setSelectedProjectTask] =
     useState<ProjectTaskInterface | null>(null);
 
-  const showModal = (
-    timeEntry: TimeEntryInterface | null,
-    mode: typeof modalMode
-  ) => {
+  const showModal = (timeEntry: TimeEntryInterface | null, mode: ModalMode) => {
     setModalMode(mode);
-    if (mode !== "create" && timeEntry) {
+    if (mode !== ModalModes.CREATE && timeEntry) {
       setSelectedProject(timeEntry.project);
       setSelectedUser(timeEntry.user);
       setSelectedProjectTask(timeEntry.projectTask);

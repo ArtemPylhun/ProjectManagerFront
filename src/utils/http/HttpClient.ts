@@ -1,3 +1,4 @@
+import { message } from "antd";
 import axios, {
   AxiosError,
   AxiosHeaders,
@@ -59,7 +60,7 @@ export class HttpClient {
       if (axios.isCancel(error)) {
         console.info("Request was cancelled");
       } else if (error instanceof AxiosError) {
-        console.error("Request failed with error", error.response?.statusText);
+        console.error("Request failed with error", error.response);
       } else if (error instanceof Error) {
         console.error("Unexpected error occurred", error.message);
       } else {
@@ -86,15 +87,28 @@ export class HttpClient {
         return Promise.reject(error);
       }
     );
+
     this.axiosInstance.interceptors.response.use(
       (response) => response,
       (error) => {
-        if (error.response) {
+        if (error.response?.data?.errors) {
+          const errors = error.response.data.errors;
+          for (const key in errors) {
+            if (errors[key] && Array.isArray(errors[key])) {
+              errors[key].forEach((errMsg: string) => {
+                message.error(errMsg);
+              });
+            }
+          }
+        } else if (error.response.data.message) {
           console.error(
             "Request failed with error:",
             error.response.status,
-            error.response.data
+            error.response.data.message
           );
+
+          message.error(error.response.data.message);
+
           if (error.response.status === 401) {
             console.error("Unauthorized request");
             window.location.href =

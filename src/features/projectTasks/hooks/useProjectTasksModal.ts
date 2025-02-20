@@ -8,11 +8,10 @@ import {
   UserTaskInterface,
   UserTaskCreateInterface,
 } from "../interfaces/UserTaskInterface";
+import { ModalMode, ModalModes } from "../../../types/modalModes";
 const useProjectTasksModal = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [modalMode, setModalMode] = useState<
-    "create" | "delete" | "update" | "add_user" | "remove_user"
-  >("create");
+  const [modalMode, setModalMode] = useState<ModalMode>(ModalModes.CREATE);
 
   const [selectedProjectTask, setSelectedProjectTask] =
     useState<ProjectTaskInterface | null>(null);
@@ -39,20 +38,20 @@ const useProjectTasksModal = () => {
   const showModal = (
     projectTask: ProjectTaskInterface | null,
     userTask: UserTaskInterface | null,
-    mode: typeof modalMode
+    mode: ModalMode
   ) => {
     setModalMode(mode);
-    if (mode !== "create" && projectTask) {
+    if (mode !== ModalModes.CREATE && projectTask) {
       setSelectedProject({ ...projectTask.project });
       setSelectedProjectTask({ ...projectTask });
       setSelectedUserTask(userTask);
-      if (mode === "add_user") {
+      if (mode === ModalModes.ADD_USER) {
         setNewUserTask((prev) => ({
           ...prev!,
           projectTaskId: projectTask.id,
         }));
       }
-    } else if (mode === "remove_user" && userTask) {
+    } else if (mode === ModalModes.REMOVE_USER && userTask) {
       setSelectedUserTask(userTask);
     } else {
       setSelectedProject(null);

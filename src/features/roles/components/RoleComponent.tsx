@@ -8,6 +8,7 @@ import { PlusOutlined } from "@ant-design/icons";
 import useRoles from "../hooks/useRoles";
 import useRoleModal from "../hooks/useRoleModal";
 import "./table/RolesTable.css";
+import { ModalModes } from "../../../types/modalModes";
 const RoleComponent = () => {
   const {
     roles,
@@ -52,11 +53,11 @@ const RoleComponent = () => {
 
     let result = false;
 
-    if (modalMode === "create" && newRole) {
+    if (modalMode === ModalModes.CREATE && newRole) {
       result = await handleCreateRole(newRole);
-    } else if (modalMode === "update" && selectedRole) {
+    } else if (modalMode === ModalModes.UPDATE && selectedRole) {
       result = await handleUpdateRole(selectedRole);
-    } else if (modalMode === "delete" && selectedRole) {
+    } else if (modalMode === ModalModes.DELETE && selectedRole) {
       result = await handleDeleteRole(selectedRole.id);
     }
     if (result) hideModal();
@@ -80,7 +81,7 @@ const RoleComponent = () => {
         <Button
           type="primary"
           icon={<PlusOutlined />}
-          onClick={() => showModal(null, "create")}
+          onClick={() => showModal(null, ModalModes.CREATE)}
           style={{ height: "40px", display: "flex", alignItems: "center" }}
         >
           Create Role
@@ -98,27 +99,28 @@ const RoleComponent = () => {
       <CustomModal
         visible={isModalVisible}
         title={
-          modalMode === "create"
+          modalMode === ModalModes.CREATE
             ? "Create New Role"
-            : modalMode === "update"
+            : modalMode === ModalModes.UPDATE
             ? "Update Role Info"
             : "Delete Role"
         }
         onOk={handleSave}
         onCancel={hideModal}
       >
-        {(modalMode === "create" || modalMode === "update") && (
+        {(modalMode === ModalModes.CREATE ||
+          modalMode === ModalModes.UPDATE) && (
           <Form layout="vertical">
             <Form.Item label="Name" required>
               <Input
                 placeholder="Name"
                 value={
-                  (modalMode === "create"
+                  (modalMode === ModalModes.CREATE
                     ? newRole?.name
                     : selectedRole?.name) || ""
                 }
                 onChange={(e) =>
-                  modalMode === "create"
+                  modalMode === ModalModes.CREATE
                     ? setNewRole((prev) => ({
                         ...prev!,
                         name: e.target.value,
@@ -136,7 +138,9 @@ const RoleComponent = () => {
                 style={{ width: "100%" }}
                 placeholder="Select Role group"
                 value={
-                  modalMode === "create" ? undefined : selectedRole?.roleGroup
+                  modalMode === ModalModes.CREATE
+                    ? undefined
+                    : selectedRole?.roleGroup
                 }
                 onChange={(value) => {
                   const selectedGroup = roleGroups?.find(
@@ -144,7 +148,7 @@ const RoleComponent = () => {
                   );
                   if (!selectedGroup) return;
 
-                  if (modalMode === "update") {
+                  if (modalMode === ModalModes.UPDATE) {
                     setSelectedRole((prev) => ({
                       ...prev!,
                       roleGroup: selectedGroup.id,
@@ -167,7 +171,7 @@ const RoleComponent = () => {
           </Form>
         )}
 
-        {modalMode === "delete" && selectedRole && (
+        {modalMode === ModalModes.DELETE && selectedRole && (
           <p>Are you sure you want to delete this role?</p>
         )}
       </CustomModal>

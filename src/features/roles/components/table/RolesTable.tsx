@@ -3,14 +3,12 @@ import { Table, TableColumnsType, Space, Button } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { RoleInterface } from "../../interfaces/RoleInterface";
 import { RoleGroupInterface } from "../../interfaces/RoleGroupIntreface";
+import { ModalMode, ModalModes } from "../../../../types/modalModes";
 
 interface RolesTableProps {
   roles: RoleInterface[] | undefined;
   roleGroups: RoleGroupInterface[] | null;
-  showModal: (
-    project: RoleInterface | null,
-    mode: "create" | "update" | "delete"
-  ) => void;
+  showModal: (project: RoleInterface | null, mode: ModalMode) => void;
 }
 
 const RolesTable: React.FC<RolesTableProps> = ({
@@ -41,13 +39,13 @@ const RolesTable: React.FC<RolesTableProps> = ({
               color="primary"
               type="default"
               icon={<EditOutlined />}
-              onClick={() => showModal(role, "update")}
+              onClick={() => showModal(role, ModalModes.UPDATE)}
             />
             <Button
               danger
               type="default"
               icon={<DeleteOutlined />}
-              onClick={() => showModal(role, "delete")}
+              onClick={() => showModal(role, ModalModes.DELETE)}
             />
           </Space>
         ),

@@ -8,12 +8,11 @@ import {
   ProjectUserInterface,
   ProjectUserCreateInterface,
 } from "../interfaces/ProjectUserInterface";
+import { ModalMode, ModalModes } from "../../../types/modalModes";
 
 const useProjectModal = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [modalMode, setModalMode] = useState<
-    "create" | "delete" | "update" | "add_user" | "remove_user"
-  >("create");
+  const [modalMode, setModalMode] = useState<ModalMode>(ModalModes.CREATE);
 
   const [selectedProject, setSelectedProject] =
     useState<ProjectInterface | null>(null);
@@ -46,21 +45,21 @@ const useProjectModal = () => {
   const showModal = (
     project: ProjectInterface | null,
     projectUser: ProjectUserInterface | null,
-    mode: typeof modalMode
+    mode: ModalMode
   ) => {
     setModalMode(mode);
-    if (mode !== "create" && project) {
+    if (mode !== ModalModes.CREATE && project) {
       setSelectedClient(project.client);
       setSelectedProjectUser(projectUser);
       setSelectedProject({ ...project });
 
-      if (mode === "add_user") {
+      if (mode === ModalModes.ADD_USER) {
         setNewProjectUser((prev) => ({
           ...prev!,
           projectId: project.id,
         }));
       }
-    } else if (mode === "remove_user" && projectUser) {
+    } else if (mode === ModalModes.REMOVE_USER && projectUser) {
       setSelectedProjectUser(projectUser);
     } else {
       setSelectedClient(null);

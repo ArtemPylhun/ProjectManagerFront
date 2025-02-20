@@ -99,7 +99,6 @@ const useProjectTasks = () => {
     updatedProjectTask: ProjectTaskUpdateInterface
   ): Promise<boolean> => {
     try {
-      console.log("Updated project task: ", updatedProjectTask);
       const response = await ProjectTaskService.updateProjectTask(
         updatedProjectTask,
         new AbortController().signal

@@ -10,6 +10,7 @@ import useProjectModal from "../hooks/useProjectModal";
 import useUsers from "../../users/hooks/useUsers";
 import "./table/ProjectsTable.css";
 import useRoles from "../../roles/hooks/useRoles";
+import { ModalModes } from "../../../types/modalModes";
 
 const { TextArea } = Input;
 
@@ -62,7 +63,7 @@ const ProjectComponent = () => {
     let result = false;
 
     if (
-      modalMode === "create" &&
+      modalMode === ModalModes.CREATE &&
       newProject &&
       selectedClient &&
       selectedCreator
@@ -72,18 +73,26 @@ const ProjectComponent = () => {
         clientId: selectedClient.id,
         creatorId: selectedCreator.id,
       });
-    } else if (modalMode === "update" && selectedProject && selectedClient) {
+    } else if (
+      modalMode === ModalModes.UPDATE &&
+      selectedProject &&
+      selectedClient
+    ) {
       result = await handleUpdateProject({
         ...selectedProject,
       });
-    } else if (modalMode === "delete" && selectedProject) {
+    } else if (modalMode === ModalModes.DELETE && selectedProject) {
       result = await handleDeleteProject(selectedProject.id);
-    } else if (modalMode === "add_user" && newProjectUser && selectedProject) {
+    } else if (
+      modalMode === ModalModes.ADD_USER &&
+      newProjectUser &&
+      selectedProject
+    ) {
       result = await handleAddUserToProject({
         ...newProjectUser,
         projectId: selectedProject.id,
       });
-    } else if (modalMode === "remove_user" && selectedProjectUser) {
+    } else if (modalMode === ModalModes.REMOVE_USER && selectedProjectUser) {
       result = await handleRemoveUserFromProject(selectedProjectUser.id);
     }
 
@@ -110,7 +119,7 @@ const ProjectComponent = () => {
         <Button
           type="primary"
           icon={<PlusOutlined />}
-          onClick={() => showModal(null, null, "create")}
+          onClick={() => showModal(null, null, ModalModes.CREATE)}
           style={{ height: "40px", display: "flex", alignItems: "center" }}
         >
           Create Project
@@ -129,31 +138,32 @@ const ProjectComponent = () => {
       <CustomModal
         visible={isModalVisible}
         title={
-          modalMode === "create"
+          modalMode === ModalModes.CREATE
             ? "Create New Project"
-            : modalMode === "update"
+            : modalMode === ModalModes.UPDATE
             ? "Update Project"
-            : modalMode === "add_user"
+            : modalMode === ModalModes.ADD_USER
             ? "Add User to Project"
-            : modalMode === "remove_user"
+            : modalMode === ModalModes.REMOVE_USER
             ? "Remove User from Project"
             : "Delete Project"
         }
         onOk={handleSave}
         onCancel={hideModal}
       >
-        {(modalMode === "create" || modalMode === "update") && (
+        {(modalMode === ModalModes.CREATE ||
+          modalMode === ModalModes.UPDATE) && (
           <Form layout="vertical">
             <Form.Item label="Name" required>
               <Input
                 placeholder="Name"
                 value={
-                  (modalMode === "create"
+                  (modalMode === ModalModes.CREATE
                     ? newProject?.name
                     : selectedProject?.name) || ""
                 }
                 onChange={(e) =>
-                  modalMode === "create"
+                  modalMode === ModalModes.CREATE
                     ? setNewProject((prev) => ({
                         ...prev!,
                         name: e.target.value,
@@ -169,12 +179,12 @@ const ProjectComponent = () => {
               <TextArea
                 placeholder="Description"
                 value={
-                  (modalMode === "create"
+                  (modalMode === ModalModes.CREATE
                     ? newProject?.description
                     : selectedProject?.description) || ""
                 }
                 onChange={(e) =>
-                  modalMode === "create"
+                  modalMode === ModalModes.CREATE
                     ? setNewProject((prev) => ({
                         ...prev!,
                         description: e.target.value,
@@ -189,13 +199,13 @@ const ProjectComponent = () => {
             <Form.Item label="Color" required>
               <ColorPicker
                 value={
-                  modalMode === "create"
+                  modalMode === ModalModes.CREATE
                     ? newProject?.colorHex
                     : selectedProject?.colorHex
                 }
                 allowClear
                 onChangeComplete={(c) =>
-                  modalMode === "create"
+                  modalMode === ModalModes.CREATE
                     ? setNewProject((prev) => ({
                         ...prev!,
                         colorHex: c.toHexString(),
@@ -213,7 +223,7 @@ const ProjectComponent = () => {
                 placeholder="Select Client"
                 value={
                   selectedClient?.id ||
-                  (modalMode === "update"
+                  (modalMode === ModalModes.UPDATE
                     ? selectedProject?.client?.id
                     : undefined)
                 }
@@ -231,7 +241,7 @@ const ProjectComponent = () => {
                 ))}
               </Select>
             </Form.Item>
-            {modalMode === "create" && (
+            {modalMode === ModalModes.CREATE && (
               <Form.Item
                 label="Creator"
                 required
@@ -267,11 +277,11 @@ const ProjectComponent = () => {
           </Form>
         )}
 
-        {modalMode === "delete" && selectedProject && (
+        {modalMode === ModalModes.DELETE && selectedProject && (
           <p>Are you sure you want to delete this project?</p>
         )}
 
-        {modalMode === "add_user" && (
+        {modalMode === ModalModes.ADD_USER && (
           <Form layout="vertical">
             <Form.Item label="Project" required>
               <Select
@@ -331,7 +341,7 @@ const ProjectComponent = () => {
             </Form.Item>
           </Form>
         )}
-        {modalMode === "remove_user" && selectedProjectUser && (
+        {modalMode === ModalModes.REMOVE_USER && selectedProjectUser && (
           <p>Are you sure you want to remove this user from this project?</p>
         )}
       </CustomModal>

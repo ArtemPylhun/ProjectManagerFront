@@ -2,13 +2,11 @@ import React, { useMemo } from "react";
 import { Table, TableColumnsType, Space, Tag, Button } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { UserInterface } from "../../interfaces/UserInterface";
+import { ModalMode, ModalModes } from "../../../../types/modalModes";
 
 interface UsersTableProps {
   users: UserInterface[] | null;
-  showModal: (
-    user: UserInterface | null,
-    mode: "create" | "update_roles" | "delete" | "update_user"
-  ) => void;
+  showModal: (user: UserInterface | null, mode: ModalMode) => void;
 }
 
 const UsersTable: React.FC<UsersTableProps> = ({ users, showModal }) => {
@@ -38,7 +36,7 @@ const UsersTable: React.FC<UsersTableProps> = ({ users, showModal }) => {
             <Button
               type="default"
               icon={<EditOutlined />}
-              onClick={() => showModal(user, "update_roles")}
+              onClick={() => showModal(user, ModalModes.UPDATE_ROLES)}
             />
           </Space>
         ),
@@ -52,13 +50,13 @@ const UsersTable: React.FC<UsersTableProps> = ({ users, showModal }) => {
               color="primary"
               type="default"
               icon={<EditOutlined />}
-              onClick={() => showModal(user, "update_user")}
+              onClick={() => showModal(user, ModalModes.UPDATE_USER)}
             />
             <Button
               danger
               type="default"
               icon={<DeleteOutlined />}
-              onClick={() => showModal(user, "delete")}
+              onClick={() => showModal(user, ModalModes.DELETE)}
             />
           </Space>
         ),

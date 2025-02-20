@@ -1,6 +1,6 @@
-import { Spin } from "antd";
 import { ReactNode } from "react";
-
+import { Spin } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
 interface LoaderComponentProps {
   loading: boolean;
   children: ReactNode;
@@ -16,7 +16,7 @@ const Loader = () => {
         height: "100%",
       }}
     >
-      <Spin size="large" />
+      <Spin size="large" indicator={<LoadingOutlined spin />} />
     </div>
   );
 };

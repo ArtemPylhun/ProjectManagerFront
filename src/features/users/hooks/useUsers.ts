@@ -1,11 +1,12 @@
 import { useState, useEffect, useCallback } from "react";
 import { message } from "antd";
+import { UserInterface } from "../interfaces/UserInterface";
 import { UserService } from "../services/user.service";
-import UserInterface from "../interfaces/UserInterface";
 import { useLoading } from "../../../hooks/useLoading";
 
 const useUsers = () => {
   const [users, setUsers] = useState<UserInterface[] | null>(null);
+
   const { loading, turnOnLoading, turnOffLoading } = useLoading();
 
   const fetchUsers = useCallback(async (signal: AbortSignal) => {
@@ -74,7 +75,6 @@ const useUsers = () => {
       message.success("User updated successfully!");
       return true;
     } catch (error) {
-      message.error(`Failed to update user: ${error}`);
       return false;
     }
   };

@@ -1,11 +1,10 @@
 import { useState } from "react";
 import { UserInterface } from "../interfaces/UserInterface";
+import { ModalModes, ModalMode } from "../../../types/modalModes";
 
 const useUserModal = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [modalMode, setModalMode] = useState<
-    "create" | "update_roles" | "delete" | "update_user"
-  >("create");
+  const [modalMode, setModalMode] = useState<ModalMode>(ModalModes.CREATE);
   const [selectedUser, setSelectedUser] = useState<UserInterface | null>(null);
   const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
   const [newUser, setNewUser] = useState<UserInterface>({
@@ -16,9 +15,9 @@ const useUserModal = () => {
     roles: [],
   });
 
-  const showModal = (user: UserInterface | null, mode: typeof modalMode) => {
+  const showModal = (user: UserInterface | null, mode: ModalMode) => {
     setModalMode(mode);
-    if (mode !== "create" && user) {
+    if (mode !== ModalModes.CREATE && user) {
       setSelectedUser({ ...user });
       setSelectedRoles(user.roles || []);
     } else {

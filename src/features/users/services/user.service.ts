@@ -1,7 +1,9 @@
 import { HttpClient } from "../../../utils/http/HttpClient";
-import { UserInterface } from "../interfaces/UserInterface";
-import UserLoginInterface from "../interfaces/UserLoginInterface";
-import UserRegisterInterface from "../interfaces/UserRegisterInterface";
+import {
+  UserInterface,
+  UserLoginInterface,
+  UserRegisterInterface,
+} from "../interfaces/UserInterface";
 
 export class UserService {
   static async getAllUsers(signal: AbortSignal): Promise<UserInterface[]> {
@@ -46,7 +48,7 @@ export class UserService {
   static async registerUser(
     user: UserRegisterInterface,
     signal: AbortSignal
-  ): Promise<UserInterface> {
+  ): Promise<any> {
     const apiUrl = import.meta.env.VITE_API_BASE_URL;
     const httpClient = new HttpClient(
       {
@@ -61,7 +63,7 @@ export class UserService {
     userId: string,
     roles: string[],
     signal: AbortSignal
-  ): Promise<any> {
+  ): Promise<UserInterface> {
     const apiUrl = import.meta.env.VITE_API_BASE_URL;
     const httpClient = new HttpClient(
       {
@@ -83,8 +85,10 @@ export class UserService {
     return await httpClient.delete(`/delete/${id}`);
   }
 
-  static async updateUser(user: UserInterface, signal: AbortSignal) {
-    console.warn("user", user);
+  static async updateUser(
+    user: UserInterface,
+    signal: AbortSignal
+  ): Promise<UserInterface> {
     const apiUrl = import.meta.env.VITE_API_BASE_URL;
     const httpClient = new HttpClient(
       {

@@ -6,6 +6,7 @@ import { UserTaskInterface } from "../../interfaces/UserTaskInterface";
 import { ProjectInterface } from "../../../projects/interfaces/ProjectInterface";
 import { ProjectTaskStatusInterface } from "../../interfaces/ProjectTaskStatusInterface";
 import { UserInterface } from "../../../users/interfaces/UserInterface";
+import { ModalMode, ModalModes } from "../../../../types/modalModes";
 
 interface ProjectTasksTableProps {
   projectTasks: ProjectTaskInterface[] | undefined;
@@ -14,7 +15,7 @@ interface ProjectTasksTableProps {
   showModal: (
     projectTask: ProjectTaskInterface | null,
     userTask: UserTaskInterface | null,
-    mode: "create" | "delete" | "update" | "add_user" | "remove_user"
+    mode: ModalMode
   ) => void;
 }
 const ProjectTasksTable: React.FC<ProjectTasksTableProps> = ({
@@ -88,7 +89,9 @@ const ProjectTasksTable: React.FC<ProjectTasksTableProps> = ({
                   <Button
                     danger
                     size="small"
-                    onClick={() => showModal(null, userTask, "remove_user")}
+                    onClick={() =>
+                      showModal(null, userTask, ModalModes.REMOVE_USER)
+                    }
                   >
                     Remove
                   </Button>
@@ -98,7 +101,7 @@ const ProjectTasksTable: React.FC<ProjectTasksTableProps> = ({
             <Button
               type="dashed"
               size="small"
-              onClick={() => showModal(record, null, "add_user")}
+              onClick={() => showModal(record, null, ModalModes.ADD_USER)}
             >
               + Add User
             </Button>
@@ -114,13 +117,13 @@ const ProjectTasksTable: React.FC<ProjectTasksTableProps> = ({
               color="primary"
               type="default"
               icon={<EditOutlined />}
-              onClick={() => showModal(projectTask, null, "update")}
+              onClick={() => showModal(projectTask, null, ModalModes.UPDATE)}
             />
             <Button
               danger
               type="default"
               icon={<DeleteOutlined />}
-              onClick={() => showModal(projectTask, null, "delete")}
+              onClick={() => showModal(projectTask, null, ModalModes.DELETE)}
             />
           </Space>
         ),
