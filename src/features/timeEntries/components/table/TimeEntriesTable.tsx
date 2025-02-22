@@ -80,14 +80,12 @@ const TimeEntriesTable: React.FC<TimeEntriesTableProps> = ({
         render: (timeEntry: TimeEntryInterface) => (
           <Space>
             <Button
-              color="primary"
-              type="default"
+              className="action-button"
               icon={<EditOutlined />}
               onClick={() => showModal(timeEntry, ModalModes.UPDATE)}
             />
             <Button
-              danger
-              type="default"
+              className="action-button danger"
               icon={<DeleteOutlined />}
               onClick={() => showModal(timeEntry, ModalModes.DELETE)}
             />

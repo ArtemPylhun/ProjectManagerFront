@@ -5,6 +5,7 @@ import { TimeEntryService } from "../services/time.entry.service";
 import { TimeEntryCreateInterface } from "../interfaces/TimeEntryInterface";
 import { message } from "antd";
 import { TimeEntryUpdateInterface } from "../interfaces/TimeEntryInterface";
+import dayjs from "dayjs";
 const useTimeEntries = () => {
   const [timeEntries, setTimeEntries] = useState<TimeEntryInterface[] | null>(
     null
@@ -45,6 +46,8 @@ const useTimeEntries = () => {
   ): Promise<boolean> => {
     try {
       console.log("New Time Entry: ", newTimeEntry);
+      newTimeEntry.startTime = new Date(dayjs(newTimeEntry.startTime).format());
+      newTimeEntry.endTime = new Date(dayjs(newTimeEntry.startTime).format());
       const response = await TimeEntryService.createTimeEntry(
         newTimeEntry,
         new AbortController().signal
@@ -56,7 +59,7 @@ const useTimeEntries = () => {
       message.success("Time entry created successfully");
       return true;
     } catch (error) {
-      message.error(`Failed to create time entry: ${error}`);
+      console.error(`Failed to create time entry: ${error}`);
       return false;
     }
   };
@@ -74,9 +77,9 @@ const useTimeEntries = () => {
       setTimeEntries((prevTimeEntry) =>
         prevTimeEntry
           ? prevTimeEntry.map((timeEntry) =>
-              timeEntry.id === response.id
+              timeEntry.id === updatedTimeEntry.id
                 ? {
-                    ...response,
+                    ...updatedTimeEntry,
                     user: response.user,
                     project: response.project,
                     projectTask: response.projectTask,
@@ -88,7 +91,7 @@ const useTimeEntries = () => {
       message.success("Time entry updated successfully");
       return true;
     } catch (error) {
-      message.error(`Failed to update time entry: ${error}`);
+      console.error(`Failed to update time entry: ${error}`);
       return false;
     }
   };
@@ -110,7 +113,7 @@ const useTimeEntries = () => {
       message.success("Time entry deleted successfully");
       return true;
     } catch (error) {
-      message.error(`Failed to delete time entry: ${error}`);
+      console.error(`Failed to delete time entry: ${error}`);
       return false;
     }
   };

@@ -40,7 +40,7 @@ const ProjectTaskForm: React.FC<ProjectTaskFormProps> = ({
       name: projectTaskData?.name || "",
       description: projectTaskData?.description || "",
       estimatedTime: projectTaskData?.estimatedTime || "",
-      projectId: projectTaskData?.project?.id || selectedProject?.id || null,
+      projectId: projectTaskData?.project?.id || null,
       status: projectTaskData?.status || null,
     });
   }, [projectTaskData, form]);

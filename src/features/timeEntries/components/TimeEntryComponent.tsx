@@ -1,20 +1,22 @@
 import React, { useCallback, useState } from "react";
-import { Button, Form, Select, DatePicker } from "antd";
+import { Button, Form } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
-import TextArea from "antd/es/input/TextArea";
-import CustomModal from "../../../components/common/CustomModal";
 import SearchInput from "../../../components/common/SearchInput";
 import LoaderComponent from "../../../components/common/Loader";
 import TimeEntriesTable from "./table/TimeEntriesTable";
 import useTimeEntries from "../hooks/useTimeEntries";
 import useTimeEntryModal from "../hooks/useTimeEntryModal";
+import CustomModal from "../../../components/common/CustomModal";
+import TimeEntryForm from "./forms/TimeEntryForm";
 import useUsers from "../../users/hooks/useUsers";
 import useProjects from "../../projects/hooks/useProjects";
 import useProjectTasks from "../../projectTasks/hooks/useProjectTasks";
 import dayjs from "dayjs";
 import { ModalModes } from "../../../types/modalModes";
+
 const TimeEntryComponent = () => {
   const [filterQuery, setFilterQuery] = useState<string>("");
+  const [form] = Form.useForm();
 
   const {
     timeEntries,
@@ -76,28 +78,34 @@ const TimeEntryComponent = () => {
   const handleSave = useCallback(async () => {
     if (!modalMode) return;
 
-    let result = false;
-    if (modalMode === ModalModes.CREATE && newTimeEntry) {
-      newTimeEntry.minutes = dayjs(newTimeEntry.endTime).diff(
-        newTimeEntry.startTime,
-        "minute"
-      );
-      result = await handleCreateTimeEntry(newTimeEntry);
-    } else if (modalMode === ModalModes.UPDATE && selectedTimeEntry) {
-      selectedTimeEntry.minutes = dayjs(selectedTimeEntry.endTime).diff(
-        selectedTimeEntry.startTime,
-        "minute"
-      );
-      result = await handleUpdateTimeEntry({
-        ...selectedTimeEntry,
-        userId: selectedUser!.id,
-        projectId: selectedProject!.id,
-        projectTaskId: selectedProjectTask!.id,
-      });
-    } else if (modalMode === ModalModes.DELETE && selectedTimeEntry) {
-      result = await handleDeleteTimeEntry(selectedTimeEntry.id);
+    try {
+      await form.validateFields();
+
+      let result = false;
+      if (modalMode === ModalModes.CREATE && newTimeEntry) {
+        newTimeEntry.minutes = dayjs(newTimeEntry.endTime).diff(
+          newTimeEntry.startTime,
+          "minute"
+        );
+        result = await handleCreateTimeEntry(newTimeEntry);
+      } else if (modalMode === ModalModes.UPDATE && selectedTimeEntry) {
+        selectedTimeEntry.minutes = dayjs(selectedTimeEntry.endTime).diff(
+          selectedTimeEntry.startTime,
+          "minute"
+        );
+        result = await handleUpdateTimeEntry({
+          ...selectedTimeEntry,
+          userId: selectedUser!.id,
+          projectId: selectedProject!.id,
+          projectTaskId: selectedProjectTask!.id,
+        });
+      } else if (modalMode === ModalModes.DELETE && selectedTimeEntry) {
+        result = await handleDeleteTimeEntry(selectedTimeEntry.id);
+      }
+      if (result) hideModal();
+    } catch (error) {
+      console.error("Validation failed:", error);
     }
-    if (result) hideModal();
   }, [
     modalMode,
     newTimeEntry,
@@ -110,6 +118,7 @@ const TimeEntryComponent = () => {
     handleDeleteTimeEntry,
     hideModal,
   ]);
+
   return (
     <div>
       <div className="projects-header">
@@ -146,179 +155,41 @@ const TimeEntryComponent = () => {
             ? "Update Time Entry"
             : "Delete Time Entry"
         }
+        isDanger={modalMode === ModalModes.DELETE}
+        okText={
+          modalMode === ModalModes.DELETE
+            ? "Delete"
+            : modalMode === ModalModes.CREATE
+            ? "Create"
+            : "Update"
+        }
       >
         {(modalMode === ModalModes.CREATE ||
           modalMode === ModalModes.UPDATE) && (
-          <Form layout="vertical">
-            <Form.Item label="Description">
-              <TextArea
-                placeholder="Description"
-                value={
-                  (modalMode === ModalModes.CREATE
-                    ? newTimeEntry?.description
-                    : selectedTimeEntry?.description) || ""
-                }
-                onChange={(event) =>
-                  modalMode === ModalModes.CREATE
-                    ? setNewTimeEntry((prev) => ({
-                        ...prev!,
-                        description: event.target.value,
-                      }))
-                    : setSelectedTimeEntry((prev) => ({
-                        ...prev!,
-                        description: event.target.value,
-                      }))
-                }
-              />
-            </Form.Item>
-            <Form.Item label="Start Time">
-              <DatePicker
-                showTime
-                value={
-                  modalMode === ModalModes.CREATE
-                    ? newTimeEntry?.startTime
-                      ? dayjs(newTimeEntry.startTime)
-                      : null
-                    : selectedTimeEntry?.startTime
-                    ? dayjs(selectedTimeEntry.startTime)
-                    : null
-                }
-                onChange={(value) => {
-                  if (!value) return;
-
-                  const newDate = value.toDate();
-                  if (modalMode === ModalModes.CREATE) {
-                    setNewTimeEntry((prev) =>
-                      prev ? { ...prev, startTime: newDate } : prev
-                    );
-                  } else {
-                    setSelectedTimeEntry((prev) =>
-                      prev ? { ...prev, startTime: newDate } : prev
-                    );
-                  }
-                }}
-              />
-            </Form.Item>
-
-            <Form.Item label="End Time">
-              <DatePicker
-                showTime
-                value={
-                  modalMode === ModalModes.CREATE
-                    ? newTimeEntry?.endTime
-                      ? dayjs(newTimeEntry.endTime)
-                      : null
-                    : selectedTimeEntry?.endTime
-                    ? dayjs(selectedTimeEntry.endTime)
-                    : null
-                }
-                onChange={(value) => {
-                  if (!value) return;
-
-                  const newDate = value.toDate();
-                  if (modalMode === ModalModes.CREATE) {
-                    setNewTimeEntry((prev) =>
-                      prev ? { ...prev, endTime: newDate } : prev
-                    );
-                  } else {
-                    setSelectedTimeEntry((prev) =>
-                      prev ? { ...prev, endTime: newDate } : prev
-                    );
-                  }
-                }}
-              />
-            </Form.Item>
-            <Form.Item label="User">
-              <Select
-                style={{ width: "100%" }}
-                placeholder="Select User"
-                value={
-                  modalMode === ModalModes.CREATE
-                    ? newTimeEntry?.userId
-                    : selectedUser?.id
-                }
-                onChange={(value) =>
-                  modalMode === ModalModes.CREATE
-                    ? setNewTimeEntry((prev) => ({
-                        ...prev!,
-                        userId: value,
-                      }))
-                    : setSelectedUser(
-                        users?.find((u) => u.id === value) || null
-                      )
-                }
-                loading={loading}
-              >
-                {users?.map((user) => (
-                  <Select.Option key={user.id} value={user.id}>
-                    {user.userName}
-                  </Select.Option>
-                ))}
-              </Select>
-            </Form.Item>
-            <Form.Item label="Project">
-              <Select
-                style={{ width: "100%" }}
-                placeholder="Select Project"
-                value={
-                  modalMode === ModalModes.CREATE
-                    ? newTimeEntry?.projectId
-                    : selectedProject?.id
-                }
-                onChange={(value) =>
-                  modalMode === ModalModes.CREATE
-                    ? setNewTimeEntry((prev) => ({
-                        ...prev!,
-                        projectId: value,
-                      }))
-                    : setSelectedProject(
-                        projects?.find((p) => p.id === value) || null
-                      )
-                }
-                loading={loading}
-              >
-                {projects?.map((project) => (
-                  <Select.Option key={project.id} value={project.id}>
-                    {project.name}
-                  </Select.Option>
-                ))}
-              </Select>
-            </Form.Item>
-            <Form.Item label="Project Task">
-              <Select
-                style={{ width: "100%" }}
-                placeholder="Select Project Task"
-                value={
-                  modalMode === ModalModes.CREATE
-                    ? newTimeEntry?.projectTaskId
-                    : selectedProjectTask?.id
-                }
-                onChange={(value) =>
-                  modalMode === ModalModes.CREATE
-                    ? setNewTimeEntry((prev) => ({
-                        ...prev!,
-                        projectTaskId: value,
-                      }))
-                    : setSelectedProjectTask(
-                        projectTasks?.find((p) => p.id === value) || null
-                      )
-                }
-                loading={loading}
-              >
-                {projectTasks
-                  ?.filter((p) => {
-                    if (!selectedProject) return true;
-                    return p.project.id === selectedProject?.id;
-                  })
-                  .map((projectTask) => (
-                    <Select.Option key={projectTask.id} value={projectTask.id}>
-                      {projectTask.name}
-                    </Select.Option>
-                  ))}
-              </Select>
-            </Form.Item>
-          </Form>
+          <TimeEntryForm
+            form={form}
+            timeEntryData={
+              modalMode === ModalModes.CREATE ? newTimeEntry : selectedTimeEntry
+            }
+            setTimeEntryData={
+              modalMode === ModalModes.CREATE
+                ? setNewTimeEntry
+                : setSelectedTimeEntry
+            }
+            isCreateMode={modalMode === ModalModes.CREATE}
+            users={users || []}
+            projects={projects || []}
+            projectTasks={projectTasks || []}
+            selectedUser={selectedUser}
+            selectedProject={selectedProject}
+            selectedProjectTask={selectedProjectTask}
+            setSelectedUser={setSelectedUser}
+            setSelectedProject={setSelectedProject}
+            setSelectedProjectTask={setSelectedProjectTask}
+            loading={loading}
+          />
         )}
+
         {modalMode === ModalModes.DELETE && selectedTimeEntry && (
           <p>Are you sure you want to delete this time entry?</p>
         )}

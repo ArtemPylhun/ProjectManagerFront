@@ -34,9 +34,11 @@ const useTimeEntryModal = () => {
   const showModal = (timeEntry: TimeEntryInterface | null, mode: ModalMode) => {
     setModalMode(mode);
     if (mode !== ModalModes.CREATE && timeEntry) {
-      setSelectedProject(timeEntry.project);
-      setSelectedUser(timeEntry.user);
-      setSelectedProjectTask(timeEntry.projectTask);
+      setSelectedProject({ ...timeEntry.project });
+      setSelectedUser({ ...timeEntry.user });
+      setSelectedProjectTask(
+        timeEntry.projectTask ? { ...timeEntry.projectTask } : null
+      );
       setSelectedTimeEntry({ ...timeEntry });
     } else {
       setSelectedProject(null);
