@@ -50,6 +50,7 @@ const useProjectModal = () => {
     setModalMode(mode);
     if (mode !== ModalModes.CREATE && project) {
       setSelectedClient(project.client);
+      setSelectedCreator(project.creator);
       setSelectedProjectUser(projectUser);
       setSelectedProject({ ...project });
 

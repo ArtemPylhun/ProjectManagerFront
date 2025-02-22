@@ -6,7 +6,7 @@ interface RoleFormProps {
   form: any;
   roleData: { name?: string; roleGroup?: number };
   setRoleData: (data: any) => void;
-  roleGroups: { id: number; name: string }[] | undefined;
+  roleGroups: { id: number; name: string }[] | null;
 }
 
 const RoleForm: React.FC<RoleFormProps> = ({

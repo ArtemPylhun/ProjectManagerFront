@@ -13,7 +13,9 @@ import { ProjectInterface } from "../../interfaces/ProjectInterface";
 import { UserInterface } from "../../../users/interfaces/UserInterface";
 import { RoleInterface } from "../../../roles/interfaces/RoleInterface";
 import { ProjectUserInterface } from "../../interfaces/ProjectUserInterface";
-import "./ProjectsTable.css";
+import { ModalMode, ModalModes } from "../../../../types/modalModes";
+import "../../../../styles/styles.css";
+import dayjs from "dayjs";
 
 interface ProjectsTableProps {
   projects: ProjectInterface[] | undefined;
@@ -22,7 +24,7 @@ interface ProjectsTableProps {
   showModal: (
     project: ProjectInterface | null,
     projectUser: ProjectUserInterface | null,
-    mode: "create" | "update" | "delete" | "add_user" | "remove_user"
+    mode: ModalMode
   ) => void;
 }
 
@@ -50,7 +52,15 @@ const ProjectsTable: React.FC<ProjectsTableProps> = ({
               ? `${description.substring(0, maxLength)}...`
               : description;
           return (
-            <Tooltip title={description} placement="top">
+            <Tooltip
+              title={description}
+              styles={{
+                body: {
+                  backgroundColor: "rgba(184, 215, 251, 1)",
+                  color: "rgba(255, 255, 255, 0.85)",
+                },
+              }}
+            >
               <div className="description">{truncated}</div>
             </Tooltip>
           );
@@ -60,7 +70,8 @@ const ProjectsTable: React.FC<ProjectsTableProps> = ({
         title: "Creation Date",
         dataIndex: "createdAt",
         key: "createdAt",
-        render: (createdAt: string) => new Date(createdAt).toDateString(),
+        render: (createdAt: string) =>
+          dayjs(createdAt).format("DD/MM/YYYY HH:mm:ss"),
       },
       {
         title: "Color",
@@ -111,7 +122,9 @@ const ProjectsTable: React.FC<ProjectsTableProps> = ({
                   <Button
                     danger
                     size="small"
-                    onClick={() => showModal(null, projectUser, "remove_user")}
+                    onClick={() =>
+                      showModal(null, projectUser, ModalModes.REMOVE_USER)
+                    }
                   >
                     Remove
                   </Button>
@@ -121,7 +134,7 @@ const ProjectsTable: React.FC<ProjectsTableProps> = ({
             <Button
               type="dashed"
               size="small"
-              onClick={() => showModal(record, null, "add_user")}
+              onClick={() => showModal(record, null, ModalModes.ADD_USER)}
             >
               + Add User
             </Button>
@@ -134,15 +147,14 @@ const ProjectsTable: React.FC<ProjectsTableProps> = ({
         render: (project: ProjectInterface) => (
           <Space>
             <Button
-              type="default"
+              className="action-button"
               icon={<EditOutlined />}
-              onClick={() => showModal(project, null, "update")}
+              onClick={() => showModal(project, null, ModalModes.UPDATE)}
             />
             <Button
-              danger
-              type="default"
+              className="action-button danger"
               icon={<DeleteOutlined />}
-              onClick={() => showModal(project, null, "delete")}
+              onClick={() => showModal(project, null, ModalModes.DELETE)}
             />
           </Space>
         ),
@@ -151,7 +163,7 @@ const ProjectsTable: React.FC<ProjectsTableProps> = ({
     [showModal]
   );
 
-  if (!projects || projects.length === 0) return <p>No data</p>;
+  if (!projects) return null;
 
   return (
     <>

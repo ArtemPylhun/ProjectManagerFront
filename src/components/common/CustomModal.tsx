@@ -32,7 +32,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
       okText={okText}
       cancelText={cancelText}
       className="custom-modal"
-      closeIcon={null} // Ensures no close (X) button
+      closeIcon={null}
       okButtonProps={{
         danger: isDanger,
         className: isDanger ? "modal-button danger" : "modal-button",

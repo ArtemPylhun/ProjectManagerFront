@@ -4,29 +4,24 @@
   background: rgba(255, 255, 255, 0.15); /* Semi-transparent white */
   border-radius: 12px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(10px); /* Adds the blur effect */
-  -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2); /* Subtle border */
 }
-  
-  /* Table Background */
+
+/* Table Background */
 .modern-table .ant-table {
-  background: rgba(255, 255, 255, 0.2); /* Semi-transparent */
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
   border-radius: 10px;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.3);
 }
-  
+
 /* Table Header */
 .modern-table .ant-table-thead > tr > th {
   background: rgba(184, 215, 251, 0.3);
   font-weight: bold;
   color: #526ab7;
 }
-  
- /* Table Rows */
+
+/* Table Rows */
 .modern-table .ant-table-tbody > tr {
   transition: background-color 0.2s ease-in-out;
 }
@@ -43,34 +38,184 @@
 .modern-table .ant-table-tbody > tr:nth-child(even) {
   background: rgba(184, 215, 251, 0.2) !important;
 }
-  
-  .modern-table .ant-table-tbody > tr:hover td {
-    background-color: #b8d7fb !important;
-  }
-  
-  
 
-  
-  /* Role tags */
-  .user-role-item {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-  }
-  
-  .user-name {
-    font-weight: 600;
-    color: #526ab7;
-  }
-  
-  .user-role {
-    font-size: 12px;
-    color: #73aaee;
-  }
-  
-  /* Buttons */
- /* Glassy Buttons */
-.create-button, .action-button {
+.modern-table .ant-table-tbody > tr:hover td {
+  background-color: #b8d7fb !important;
+}
+
+/* Table Pagination */
+.modern-table .ant-pagination {
+  padding: 8px;
+}
+.user-form .ant-input-password {
+  background: rgba(
+    255,
+    255,
+    255,
+    0.15
+  ) !important; /* Transparent white using your original #fefefe equivalent, with !important */
+  border-radius: 12px !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1) !important;
+  backdrop-filter: blur(
+    10px
+  ) !important; /* Adds the blur effect, with !important */
+  -webkit-backdrop-filter: blur(
+    10px
+  ) !important; /* For Safari, with !important */
+  border: 1px solid rgba(255, 255, 255, 0.2) !important; /* Subtle border using your original #fefefe, with !important */
+  padding: 12px 14px !important;
+  font-size: 16px !important;
+  color: #526ab7 !important;
+  outline: none !important;
+  transition: border 0.3s ease-in-out, box-shadow 0.3s ease-in-out,
+    background 0.3s ease-in-out !important;
+}
+.modern-table .ant-pagination-item {
+  background: rgba(255, 255, 255, 0.15) !important;
+  border: 1px solid rgba(115, 170, 238, 0.4) !important; /* Using #73aaee */
+  color: #526ab7 !important;
+}
+
+.modern-table .ant-pagination-item-active {
+  background: rgba(115, 170, 238, 0.3) !important; /* Using #73aaee */
+  border-color: #73aaee !important;
+  color: #fff !important;
+}
+
+.modern-table .ant-pagination-item:hover {
+  background: rgba(244, 244, 246, 0.674) !important; /* Using #526ab7 */
+  border-color: #526ab7 !important;
+  color: #fff !important;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* Role tags */
+.user-role-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.user-name {
+  font-weight: 600;
+  color: #526ab7;
+}
+
+.user-role {
+  font-size: 12px;
+  color: #73aaee;
+}
+
+/* Color Box for Project Color */
+.color-box {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.2); /* Subtle border */
+}
+
+/* Avatar Styling */
+.ant-avatar {
+  background: rgba(115, 170, 238, 0.3); /* Using #73aaee, semi-transparent */
+  border: 1px solid rgba(115, 170, 238, 0.4); /* Using #73aaee */
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: #fff; /* Default text color for avatars */
+}
+
+/* Tag Styling */
+.ant-tag {
+  background: rgba(184, 215, 251, 0.3); /* Using #b8d7fb, semi-transparent */
+  border: 1px solid rgba(115, 170, 238, 0.4); /* Using #73aaee */
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: #526ab7; /* Match text color */
+  border-radius: 4px;
+}
+
+/* Tooltip Styling */
+.ant-tooltip {
+  background: rgba(82, 106, 183, 0.3); /* Using #526ab7, semi-transparent */
+  border: 1px solid rgba(82, 106, 183, 0.4); /* Using #526ab7 */
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: #fff; /* White text for contrast */
+  border-radius: 6px;
+  padding: 8px;
+}
+
+.ant-tooltip-arrow {
+  display: none; /* Optional: Remove arrow for cleaner look */
+}
+
+/* ColorPicker Styling */
+.ant-color-picker {
+  background: rgba(
+    255,
+    255,
+    255,
+    0.15
+  ) !important; /* Glass effect using #fefefe */
+  border: 1px solid rgba(115, 170, 238, 0.4) !important; /* Using #73aaee */
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  border-radius: 12px !important;
+  padding: 8px !important;
+}
+
+.ant-color-picker-handler {
+  border-radius: 50% !important;
+  border: 2px solid rgba(115, 170, 238, 0.4) !important; /* Using #73aaee */
+}
+
+.ant-color-picker-trigger {
+  background: rgba(255, 255, 255, 0.15) !important;
+  border: 1px solid rgba(115, 170, 238, 0.4) !important;
+  border-radius: 12px !important;
+  padding: 6px;
+}
+
+.ant-color-picker-panel-inner {
+  background: rgba(255, 255, 255, 0.15) !important;
+}
+
+.ant-color-picker-input-container .ant-select .ant-select-selector {
+  background: rgba(255, 255, 255, 0.15) !important;
+  border: 1px solid rgba(115, 170, 238, 0.4) !important;
+  border-radius: 12px !important;
+}
+
+.ant-color-picker-presets-item {
+  background: rgba(184, 215, 251, 0.3) !important; /* Using #b8d7fb */
+  border: 1px solid rgba(115, 170, 238, 0.4) !important; /* Using #73aaee */
+  border-radius: 4px !important;
+}
+
+.ant-popover .ant-popover-inner {
+  background: none !important;
+  border-radius: 12px !important;
+  box-shadow: none !important;
+}
+
+.ant-color-picker-presets-item:hover {
+  background: rgba(82, 106, 183, 0.5) !important; /* Using #526ab7 */
+  border-color: #526ab7 !important;
+}
+
+.ant-color-picker-format-select .ant-select-selector {
+  height: auto !important;
+}
+
+.ant-color-picker .ant-color-picker-inner .ant-color-picker-slider-container {
+  display: flex;
+  gap: 12px;
+  margin: 12px;
+}
+
+/* Buttons */
+/* Glassy Buttons */
+.create-button,
+.action-button {
   background: rgba(115, 170, 238, 0.3);
   border: 1px solid rgba(115, 170, 238, 0.4);
   backdrop-filter: blur(10px);
@@ -79,7 +224,7 @@
 }
 
 .modal-button {
-  background: rgba(115, 170, 238, 0.3); /* Using #73aaee, semi-transparent */
+  background: rgba(115, 170, 238, 0.57); /* Using #73aaee, semi-transparent */
   border: 1px solid rgba(115, 170, 238, 0.4); /* Using #73aaee */
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
@@ -94,7 +239,9 @@
   justify-content: center;
 }
 
-.create-button:hover, .action-button:hover, .modal-button:hover {
+.create-button:hover,
+.action-button:hover,
+.modal-button:hover {
   background: rgba(82, 106, 183, 0.5);
 }
 
@@ -118,15 +265,15 @@
   color: #526ab7;
 }
 
-  /* Header section */
-  .projects-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 16px;
-  }
-  
-  /* Glass Input */
+/* Header section */
+.projects-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+/* Glass Input */
 .projects-header input {
   background: rgba(255, 255, 255, 0.2);
   border: 1px solid rgba(115, 170, 238, 0.4);
@@ -134,68 +281,56 @@
   -webkit-backdrop-filter: blur(10px);
   color: white;
 }
-  
-  .projects-header button {
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #73aaee;
-    border-radius: 6px;
-    color: white;
-    border: none;
-    transition: background 0.3s ease;
-  }
-  
-  .projects-header button:hover {
-    background: #526ab7;
-  }
-  
-  /* Action buttons
-  .action-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #73aaee;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    padding: 6px 10px;
-    cursor: pointer;
-    transition: background 0.3s ease;
-  } */
-  
-  /* .action-button:hover {
-    background: #526ab7;
-  } */
-  
-  .action-button.danger {
-    background: #ff4d4f;
-  }
-  
-  .action-button.danger:hover {
-    background: #d9363e;
-  }
-  
 
+.projects-header button {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #73aaee;
+  border-radius: 12px;
+  border: 1px solid rgb(199 221 248) !important;
+  color: white;
+  border: none;
+  transition: background 0.3s ease;
+}
 
+.projects-header button:hover {
+  background: #526ab7;
+}
 
+.action-button.danger {
+  background: #ff4d4f;
+}
 
-
-
-
-
-
+.action-button.danger:hover {
+  background: #d9363e;
+}
 
 /* Modal Styles (Transparent White Glass Effect with Background Blur) */
+
+.ant-modal-root .ant-modal-mask {
+  backdrop-filter: blur(4px);
+}
+
 .custom-modal .ant-modal-wrap {
+  background: rgba(
+    254,
+    254,
+    254,
+    0.5
+  ); /* Light transparent white overlay for contrast, using #fefefe */
   backdrop-filter: blur(10px); /* Blur the background behind the modal */
   -webkit-backdrop-filter: blur(10px); /* For Safari */
-  background: rgba(254, 254, 254, 0.168); /* Light transparent white overlay for contrast, using #fefefe */
 }
 
 .custom-modal .ant-modal-content {
-  background: rgba(254, 254, 254, 0.15); /* Transparent white using #fefefe for the modal content */
+  background: rgba(
+    254,
+    254,
+    254,
+    0.5
+  ); /* Light transparent white overlay for contrast, using #fefefe */
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(10px); /* Adds blur effect to the modal content */
@@ -253,30 +388,142 @@
 }
 
 .user-form input,
-.user-form .ant-input-password {
-  background: rgba(255, 255, 255, 0.15) !important; /* Transparent white using your original #fefefe equivalent, with !important */
+.user-form textarea .user-form .ant-input-password {
+  background: rgba(
+    255,
+    255,
+    255,
+    0.15
+  ) !important; /* Transparent white using your original #fefefe equivalent, with !important */
   border-radius: 12px !important;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1) !important;
-  backdrop-filter: blur(10px) !important; /* Adds the blur effect, with !important */
-  -webkit-backdrop-filter: blur(10px) !important; /* For Safari, with !important */
+  backdrop-filter: blur(
+    10px
+  ) !important; /* Adds the blur effect, with !important */
+  -webkit-backdrop-filter: blur(
+    10px
+  ) !important; /* For Safari, with !important */
   border: 1px solid rgba(255, 255, 255, 0.2) !important; /* Subtle border using your original #fefefe, with !important */
   padding: 12px 14px !important;
   font-size: 16px !important;
   color: #526ab7 !important;
   outline: none !important;
-  transition: border 0.3s ease-in-out, box-shadow 0.3s ease-in-out, background 0.3s ease-in-out !important;
+  transition: border 0.3s ease-in-out, box-shadow 0.3s ease-in-out,
+    background 0.3s ease-in-out !important;
 }
 
 .user-form .ant-input-password:focus,
 .user-form input:focus {
   border-color: #73aaee !important;
   box-shadow: 0 0 8px rgba(115, 170, 238, 0.5) !important;
-  background: rgba(255, 255, 255, 0.3) !important; /* Using your original #fefefe, with !important */
+  background: rgba(
+    255,
+    255,
+    255,
+    0.3
+  ) !important; /* Using your original #fefefe, with !important */
 }
 
+.ant-input-password {
+  background: none !important;
+  border: none !important;
+}
+.ant-input-password .ant-input-suffix {
+  position: absolute;
+  top: 40%;
+  right: 6%;
+}
+
+.custom-password-input .ant-input-password .ant-input-outlined {
+  border: none !important;
+  background-color: none !important;
+}
+
+.ant-input-affix-wrapper {
+  background: rgba(255, 255, 255, 0.15) !important;
+  border: 1px solid rgba(115, 170, 238, 0.4) !important;
+  border-radius: 12px !important;
+  color: #5970b7 !important;
+}
+
+.ant-input-number {
+  background: rgba(255, 255, 255, 0.15) !important;
+  border: 1px solid rgba(115, 170, 238, 0.4) !important;
+  border-radius: 12px !important;
+  color: #5970b7 !important;
+}
+
+.ant-color-picker
+  .ant-color-picker-inner
+  .ant-color-picker-input-container
+  .ant-color-picker-steppers.ant-input-number
+  .ant-input-number-input {
+  color: #5970b7 !important;
+}
+.ant-color-picker
+  .ant-color-picker-inner
+  .ant-color-picker-color-block
+  .ant-color-picker-color-block-inner {
+  border: 1px solid rgba(115, 170, 238, 0.4) !important;
+}
 .user-form .ant-input-password::placeholder,
 .user-form input::placeholder {
-  color: rgba(82, 106, 183, 0.6) !important; /* Using #526ab7, with !important */
+  color: rgba(
+    82,
+    106,
+    183,
+    0.6
+  ) !important; /* Using #526ab7, with !important */
+}
+
+.user-form .ant-input-outlined {
+  /* Style for TextArea (Description) */
+  background: rgba(
+    255,
+    255,
+    255,
+    0.5
+  ) !important; /* Transparent white using #fefefe, with !important */
+  border-radius: 12px !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1) !important;
+  backdrop-filter: blur(
+    10px
+  ) !important; /* Adds the blur effect, with !important */
+  -webkit-backdrop-filter: blur(
+    10px
+  ) !important; /* For Safari, with !important */
+  border: 1px solid rgba(255, 255, 255, 0.2) !important; /* Subtle border using #fefefe, with !important */
+  padding: 12px 14px !important; /* Match Input padding */
+  font-size: 16px !important;
+  color: #526ab7 !important;
+  outline: none !important;
+  transition: border 0.3s ease-in-out, box-shadow 0.3s ease-in-out,
+    background 0.3s ease-in-out !important;
+  resize: vertical; /* Allow vertical resizing for TextArea */
+}
+
+.ant-input-outlined:focus,
+.ant-input-outlined:hover {
+  /* Focus and hover states for TextArea */
+  border-color: #73aaee !important;
+  box-shadow: 0 0 8px rgba(115, 170, 238, 0.5) !important;
+  background: rgba(
+    255,
+    255,
+    255,
+    0.5
+  ) !important; /* Using #fefefe, with !important */
+}
+
+.ant-input-outlined::placeholder {
+  /* Placeholder for TextArea */
+  color: rgba(
+    82,
+    106,
+    183,
+    0.6
+  ) !important; /* Using #526ab7, with !important */
+  font-size: 16px !important;
 }
 
 .user-form .error-message {
@@ -288,7 +535,7 @@
 /* Select Component Styles (Glassy) */
 .ant-select {
   @extend .glass-effect;
-  background: rgba(254, 254, 254, 0.2); /* Using #fefefe */
+  background: rgba(255, 255, 255, 0.15); /* Using #fefefe */
   border: 1px solid rgba(115, 170, 238, 0.4); /* Using #73aaee */
   border-radius: 12px; /* Match other input/button radius */
   height: 50px;
@@ -296,8 +543,21 @@
   color: #526ab7;
 }
 
+.search-input {
+  width: 100%;
+  height: 40px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+  font-size: 16px;
+  background: #f4f7fc !important;
+  display: flex;
+  align-items: center;
+}
+
 .ant-select-selector {
-  background: rgba(254, 254, 254, 0.2) !important; /* Ensure glassy effect */
+  background: rgba(255, 255, 255, 0.5) !important; /* Ensure glassy effect */
   border: none !important; /* Remove default border */
   border-radius: 12px !important;
   box-shadow: none !important; /* Remove default shadow */
@@ -323,12 +583,23 @@
   color: #526ab7 !important;
 }
 
+.ant-select-single.ant-select-show-arrow .ant-select-selection-item {
+  font-size: 16px;
+}
+
 .ant-select-dropdown {
   @extend .glass-effect;
-  background: rgba(254, 254, 254, 0.15) !important; /* Transparent white using #fefefe */
-  border: 1px solid rgba(254, 254, 254, 0.2) !important; /* Using #fefefe */
+  background: rgba(
+    255,
+    255,
+    255,
+    0.1
+  ) !important; /* Transparent white using #fefefe */
+  border: 1px solid rgba(255, 255, 255, 0.2) !important; /* Using #fefefe */
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1) !important;
   border-radius: 12px !important;
+  backdrop-filter: blur(10px); /* Adds the blur effect */
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .ant-select-item {
@@ -338,10 +609,26 @@
 }
 
 .ant-select-item-option-selected {
-  background: rgba(184, 215, 251, 0.3) !important; /* Using #b8d7fb, semi-transparent */
+  background: rgba(
+    184,
+    215,
+    251,
+    0.3
+  ) !important; /* Using #b8d7fb, semi-transparent */
   color: #526ab7 !important;
 }
 
 .ant-select-item-option-active {
-  background: rgba(184, 215, 251, 0.3) !important; /* Using #b8d7fb, semi-transparent */
+  background: rgba(
+    184,
+    215,
+    251,
+    0.3
+  ) !important; /* Using #b8d7fb, semi-transparent */
+}
+
+.ant-select-outlined.ant-select-disabled:not(.ant-select-customize-input)
+  .ant-select-selector {
+  background: rgba(0, 0, 0, 0) !important;
+  color: rgba(0, 0, 0, 0.25);
 }

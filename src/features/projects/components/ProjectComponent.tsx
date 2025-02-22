@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
-import { Button, Form, Input, ColorPicker, Select } from "antd";
+import { Button, Form } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
+import { ModalModes } from "../../../types/modalModes";
 import SearchInput from "../../../components/common/SearchInput";
 import LoaderComponent from "../../../components/common/Loader";
 import ProjectsTable from "./table/ProjectsTable";
@@ -8,13 +9,16 @@ import CustomModal from "../../../components/common/CustomModal";
 import useProjects from "../hooks/useProjects";
 import useProjectModal from "../hooks/useProjectModal";
 import useUsers from "../../users/hooks/useUsers";
-import "./table/ProjectsTable.css";
 import useRoles from "../../roles/hooks/useRoles";
-import { ModalModes } from "../../../types/modalModes";
+import ProjectForm from "./forms/ProjectForm";
+import ProjectUserForm from "./forms/ProjectUserForm";
 
-const { TextArea } = Input;
+import "../../../styles/styles.css";
 
 const ProjectComponent = () => {
+  const [form] = Form.useForm();
+  const [filterQuery, setFilterQuery] = useState<string>("");
+
   const {
     projects,
     loading,
@@ -45,7 +49,6 @@ const ProjectComponent = () => {
 
   const { users } = useUsers();
   const { roles } = useRoles(true, false);
-  const [filterQuery, setFilterQuery] = useState<string>("");
 
   const handleFilterQueryChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -60,43 +63,49 @@ const ProjectComponent = () => {
   const handleSave = useCallback(async () => {
     if (!modalMode) return;
 
-    let result = false;
+    try {
+      await form.validateFields();
 
-    if (
-      modalMode === ModalModes.CREATE &&
-      newProject &&
-      selectedClient &&
-      selectedCreator
-    ) {
-      result = await handleCreateProject({
-        ...newProject,
-        clientId: selectedClient.id,
-        creatorId: selectedCreator.id,
-      });
-    } else if (
-      modalMode === ModalModes.UPDATE &&
-      selectedProject &&
-      selectedClient
-    ) {
-      result = await handleUpdateProject({
-        ...selectedProject,
-      });
-    } else if (modalMode === ModalModes.DELETE && selectedProject) {
-      result = await handleDeleteProject(selectedProject.id);
-    } else if (
-      modalMode === ModalModes.ADD_USER &&
-      newProjectUser &&
-      selectedProject
-    ) {
-      result = await handleAddUserToProject({
-        ...newProjectUser,
-        projectId: selectedProject.id,
-      });
-    } else if (modalMode === ModalModes.REMOVE_USER && selectedProjectUser) {
-      result = await handleRemoveUserFromProject(selectedProjectUser.id);
+      let result = false;
+
+      if (
+        modalMode === ModalModes.CREATE &&
+        newProject &&
+        selectedClient &&
+        selectedCreator
+      ) {
+        result = await handleCreateProject({
+          ...newProject,
+          clientId: selectedClient.id,
+          creatorId: selectedCreator.id,
+        });
+      } else if (
+        modalMode === ModalModes.UPDATE &&
+        selectedProject &&
+        selectedClient
+      ) {
+        result = await handleUpdateProject({
+          ...selectedProject,
+        });
+      } else if (modalMode === ModalModes.DELETE && selectedProject) {
+        result = await handleDeleteProject(selectedProject.id);
+      } else if (
+        modalMode === ModalModes.ADD_USER &&
+        newProjectUser &&
+        selectedProject
+      ) {
+        result = await handleAddUserToProject({
+          ...newProjectUser,
+          projectId: selectedProject.id,
+        });
+      } else if (modalMode === ModalModes.REMOVE_USER && selectedProjectUser) {
+        result = await handleRemoveUserFromProject(selectedProjectUser.id);
+      }
+
+      if (result) hideModal();
+    } catch (error) {
+      console.error("Validation failed:", error);
     }
-
-    if (result) hideModal();
   }, [
     modalMode,
     newProject,
@@ -106,6 +115,8 @@ const ProjectComponent = () => {
     handleCreateProject,
     handleUpdateProject,
     handleDeleteProject,
+    handleAddUserToProject,
+    handleRemoveUserFromProject,
     hideModal,
   ]);
 
@@ -117,10 +128,9 @@ const ProjectComponent = () => {
           onQueryChange={handleFilterQueryChange}
         />
         <Button
-          type="primary"
           icon={<PlusOutlined />}
           onClick={() => showModal(null, null, ModalModes.CREATE)}
-          style={{ height: "40px", display: "flex", alignItems: "center" }}
+          className="create-button"
         >
           Create Project
         </Button>
@@ -148,199 +158,60 @@ const ProjectComponent = () => {
             ? "Remove User from Project"
             : "Delete Project"
         }
+        isDanger={
+          modalMode === ModalModes.DELETE ||
+          modalMode === ModalModes.REMOVE_USER
+        }
+        okText={
+          modalMode === ModalModes.DELETE ||
+          modalMode === ModalModes.REMOVE_USER
+            ? "Delete"
+            : modalMode === ModalModes.CREATE ||
+              modalMode === ModalModes.ADD_USER
+            ? "Create"
+            : "Update"
+        }
         onOk={handleSave}
         onCancel={hideModal}
       >
         {(modalMode === ModalModes.CREATE ||
           modalMode === ModalModes.UPDATE) && (
-          <Form layout="vertical">
-            <Form.Item label="Name" required>
-              <Input
-                placeholder="Name"
-                value={
-                  (modalMode === ModalModes.CREATE
-                    ? newProject?.name
-                    : selectedProject?.name) || ""
-                }
-                onChange={(e) =>
-                  modalMode === ModalModes.CREATE
-                    ? setNewProject((prev) => ({
-                        ...prev!,
-                        name: e.target.value,
-                      }))
-                    : setSelectedProject((prev) => ({
-                        ...prev!,
-                        name: e.target.value,
-                      }))
-                }
-              />
-            </Form.Item>
-            <Form.Item label="Description" required>
-              <TextArea
-                placeholder="Description"
-                value={
-                  (modalMode === ModalModes.CREATE
-                    ? newProject?.description
-                    : selectedProject?.description) || ""
-                }
-                onChange={(e) =>
-                  modalMode === ModalModes.CREATE
-                    ? setNewProject((prev) => ({
-                        ...prev!,
-                        description: e.target.value,
-                      }))
-                    : setSelectedProject((prev) => ({
-                        ...prev!,
-                        description: e.target.value,
-                      }))
-                }
-              />
-            </Form.Item>
-            <Form.Item label="Color" required>
-              <ColorPicker
-                value={
-                  modalMode === ModalModes.CREATE
-                    ? newProject?.colorHex
-                    : selectedProject?.colorHex
-                }
-                allowClear
-                onChangeComplete={(c) =>
-                  modalMode === ModalModes.CREATE
-                    ? setNewProject((prev) => ({
-                        ...prev!,
-                        colorHex: c.toHexString(),
-                      }))
-                    : setSelectedProject((prev) => ({
-                        ...prev!,
-                        colorHex: c.toHexString(),
-                      }))
-                }
-              />
-            </Form.Item>
-            <Form.Item label="Client" required>
-              <Select
-                style={{ width: "100%" }}
-                placeholder="Select Client"
-                value={
-                  selectedClient?.id ||
-                  (modalMode === ModalModes.UPDATE
-                    ? selectedProject?.client?.id
-                    : undefined)
-                }
-                onChange={(value) =>
-                  setSelectedClient(
-                    users?.find((user) => user.id === value) || null
-                  )
-                }
-                loading={loading}
-              >
-                {users?.map((user) => (
-                  <Select.Option key={user.id} value={user.id}>
-                    {user.userName}
-                  </Select.Option>
-                ))}
-              </Select>
-            </Form.Item>
-            {modalMode === ModalModes.CREATE && (
-              <Form.Item
-                label="Creator"
-                required
-                rules={[
-                  { required: true, message: "Creator is required" },
-                  {
-                    validator: (_, value) =>
-                      value
-                        ? Promise.resolve()
-                        : Promise.reject("Creator is required"),
-                  },
-                ]}
-              >
-                <Select
-                  style={{ width: "100%" }}
-                  placeholder="Select Creator"
-                  value={selectedCreator?.id}
-                  onChange={(value) =>
-                    setSelectedCreator(
-                      users?.find((user) => user.id === value) || null
-                    )
-                  }
-                  loading={loading}
-                >
-                  {users?.map((user) => (
-                    <Select.Option key={user.id} value={user.id}>
-                      {user.userName}
-                    </Select.Option>
-                  ))}
-                </Select>
-              </Form.Item>
-            )}
-          </Form>
+          <ProjectForm
+            form={form}
+            projectData={
+              modalMode === ModalModes.CREATE ? newProject : selectedProject
+            }
+            setProjectData={
+              modalMode === ModalModes.CREATE
+                ? setNewProject
+                : setSelectedProject
+            }
+            isCreateMode={modalMode === ModalModes.CREATE}
+            users={users || []}
+            selectedClient={selectedClient}
+            selectedCreator={selectedCreator}
+            setSelectedClient={setSelectedClient}
+            setSelectedCreator={setSelectedCreator}
+            loading={loading}
+          />
+        )}
+
+        {modalMode === ModalModes.ADD_USER && (
+          <ProjectUserForm
+            form={form}
+            projectUserData={newProjectUser}
+            setProjectUserData={setNewProjectUser}
+            selectedProject={selectedProject}
+            users={users || []}
+            roles={roles || []}
+            loading={loading}
+          />
         )}
 
         {modalMode === ModalModes.DELETE && selectedProject && (
           <p>Are you sure you want to delete this project?</p>
         )}
 
-        {modalMode === ModalModes.ADD_USER && (
-          <Form layout="vertical">
-            <Form.Item label="Project" required>
-              <Select
-                style={{ width: "100%" }}
-                placeholder="Select Project"
-                value={selectedProject?.id}
-                disabled
-              >
-                <Select.Option
-                  key={selectedProject?.id}
-                  value={selectedProject?.id}
-                >
-                  {selectedProject?.name}
-                </Select.Option>
-              </Select>
-            </Form.Item>
-            <Form.Item label="User" required>
-              <Select
-                style={{ width: "100%" }}
-                placeholder="Select User"
-                value={newProjectUser?.userId}
-                onChange={(value) =>
-                  setNewProjectUser((prev) => ({
-                    ...prev!,
-                    userId: value,
-                  }))
-                }
-                loading={loading}
-              >
-                {users?.map((user) => (
-                  <Select.Option key={user.id} value={user.id}>
-                    {user.userName}
-                  </Select.Option>
-                ))}
-              </Select>
-            </Form.Item>
-
-            <Form.Item label="Role" required>
-              <Select
-                style={{ width: "100%" }}
-                placeholder="Select Role"
-                value={newProjectUser?.roleId}
-                onChange={(value) =>
-                  setNewProjectUser((prev) => ({
-                    ...prev!,
-                    roleId: value,
-                  }))
-                }
-                loading={loading}
-              >
-                {roles?.map((role) => (
-                  <Select.Option key={role.id} value={role.id}>
-                    {role.name}
-                  </Select.Option>
-                ))}
-              </Select>
-            </Form.Item>
-          </Form>
-        )}
         {modalMode === ModalModes.REMOVE_USER && selectedProjectUser && (
           <p>Are you sure you want to remove this user from this project?</p>
         )}

@@ -90,7 +90,7 @@ const useProjectTasks = () => {
       message.success("Project task created successfully");
       return true;
     } catch (error) {
-      message.error(`Failed to create project task: ${error}`);
+      console.error(`Failed to create project task: ${error}`);
       return false;
     }
   };
@@ -121,7 +121,7 @@ const useProjectTasks = () => {
       message.success("Project task updated successfully");
       return true;
     } catch (error) {
-      message.error(`Failed to update project task: ${error}`);
+      console.error(`Failed to update project task: ${error}`);
       return false;
     }
   };
@@ -145,7 +145,7 @@ const useProjectTasks = () => {
       message.success("Project task deleted successfully");
       return true;
     } catch (error) {
-      message.error(`Failed to delete project task: ${error}`);
+      console.error(`Failed to delete project task: ${error}`);
       return false;
     }
   };
@@ -183,7 +183,7 @@ const useProjectTasks = () => {
       message.success("User added to project task successfully");
       return true;
     } catch (error) {
-      message.error(`Failed to add user to project task: ${error}`);
+      console.error(`Failed to add user to project task: ${error}`);
       return false;
     }
   };
@@ -215,7 +215,7 @@ const useProjectTasks = () => {
       message.success("User removed from project task successfully");
       return true;
     } catch (error) {
-      message.error(`Failed to remove user from project task: ${error}`);
+      console.error(`Failed to remove user from project task: ${error}`);
       return false;
     }
   };

@@ -59,7 +59,7 @@ const useProjects = () => {
       message.success("Project created successfully");
       return true;
     } catch (error) {
-      message.error(`Failed to create project: ${error}`);
+      console.error(`Failed to create project: ${error}`);
       return false;
     }
   };
@@ -96,7 +96,7 @@ const useProjects = () => {
       message.success("Project updated successfully");
       return true;
     } catch (error) {
-      message.error(`Failed to update project: ${error}`);
+      console.error(`Failed to update project: ${error}`);
       return false;
     }
   };
@@ -116,7 +116,7 @@ const useProjects = () => {
       message.success("Project deleted successfully");
       return true;
     } catch (error) {
-      message.error(`Failed to delete project: ${error}`);
+      console.error(`Failed to delete project: ${error}`);
       return false;
     }
   };
@@ -155,7 +155,7 @@ const useProjects = () => {
       message.success("User added to project successfully");
       return true;
     } catch (error) {
-      message.error(`Failed to add user to project: ${error}`);
+      console.error(`Failed to add user to project: ${error}`);
       return false;
     }
   };
@@ -187,7 +187,7 @@ const useProjects = () => {
       message.success("User removed from project successfully");
       return true;
     } catch (error) {
-      message.error(`Failed to remove user from project: ${error}`);
+      console.error(`Failed to remove user from project: ${error}`);
       return false;
     }
   };
