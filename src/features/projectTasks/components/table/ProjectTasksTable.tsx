@@ -114,14 +114,12 @@ const ProjectTasksTable: React.FC<ProjectTasksTableProps> = ({
         render: (projectTask: ProjectTaskInterface) => (
           <Space>
             <Button
-              color="primary"
-              type="default"
+              className="action-button"
               icon={<EditOutlined />}
               onClick={() => showModal(projectTask, null, ModalModes.UPDATE)}
             />
             <Button
-              danger
-              type="default"
+              className="action-button danger"
               icon={<DeleteOutlined />}
               onClick={() => showModal(projectTask, null, ModalModes.DELETE)}
             />
