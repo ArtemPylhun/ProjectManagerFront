@@ -1,15 +1,19 @@
 import { useCallback, useState } from "react";
-import { Input, Form, Select, Button } from "antd";
+import { Form, Button } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
+import { ModalModes } from "../../../types/modalModes";
 import CustomModal from "../../../components/common/CustomModal";
 import SearchInput from "../../../components/common/SearchInput";
 import LoaderComponent from "../../../components/common/Loader";
 import RolesTable from "./table/RolesTable";
-import { PlusOutlined } from "@ant-design/icons";
 import useRoles from "../hooks/useRoles";
 import useRoleModal from "../hooks/useRoleModal";
-import "./table/RolesTable.css";
-import { ModalModes } from "../../../types/modalModes";
+import "../../../styles/styles.css";
+import RoleForm from "./forms/RoleForm";
 const RoleComponent = () => {
+  const [filterQuery, setFilterQuery] = useState<string>("");
+  const [form] = Form.useForm();
+
   const {
     roles,
     roleGroups,
@@ -29,7 +33,6 @@ const RoleComponent = () => {
     setNewRole,
     setSelectedRole,
   } = useRoleModal();
-  const [filterQuery, setFilterQuery] = useState<string>("");
 
   const handleFilterQueryChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -51,16 +54,22 @@ const RoleComponent = () => {
   const handleSave = useCallback(async () => {
     if (!modalMode) return;
 
-    let result = false;
+    try {
+      await form.validateFields();
 
-    if (modalMode === ModalModes.CREATE && newRole) {
-      result = await handleCreateRole(newRole);
-    } else if (modalMode === ModalModes.UPDATE && selectedRole) {
-      result = await handleUpdateRole(selectedRole);
-    } else if (modalMode === ModalModes.DELETE && selectedRole) {
-      result = await handleDeleteRole(selectedRole.id);
+      let result = false;
+
+      if (modalMode === ModalModes.CREATE && newRole) {
+        result = await handleCreateRole(newRole);
+      } else if (modalMode === ModalModes.UPDATE && selectedRole) {
+        result = await handleUpdateRole(selectedRole);
+      } else if (modalMode === ModalModes.DELETE && selectedRole) {
+        result = await handleDeleteRole(selectedRole.id);
+      }
+      if (result) hideModal();
+    } catch (error) {
+      console.error("Validation failed:", error);
     }
-    if (result) hideModal();
   }, [
     modalMode,
     newRole,
@@ -79,10 +88,9 @@ const RoleComponent = () => {
           onQueryChange={handleFilterQueryChange}
         />
         <Button
-          type="primary"
           icon={<PlusOutlined />}
           onClick={() => showModal(null, ModalModes.CREATE)}
-          style={{ height: "40px", display: "flex", alignItems: "center" }}
+          className="create-button"
         >
           Create Role
         </Button>
@@ -105,70 +113,27 @@ const RoleComponent = () => {
             ? "Update Role Info"
             : "Delete Role"
         }
+        isDanger={modalMode === ModalModes.DELETE}
+        okText={
+          modalMode === ModalModes.DELETE
+            ? "Delete"
+            : modalMode === ModalModes.CREATE
+            ? "Create"
+            : "Update"
+        }
         onOk={handleSave}
         onCancel={hideModal}
       >
         {(modalMode === ModalModes.CREATE ||
           modalMode === ModalModes.UPDATE) && (
-          <Form layout="vertical">
-            <Form.Item label="Name" required>
-              <Input
-                placeholder="Name"
-                value={
-                  (modalMode === ModalModes.CREATE
-                    ? newRole?.name
-                    : selectedRole?.name) || ""
-                }
-                onChange={(e) =>
-                  modalMode === ModalModes.CREATE
-                    ? setNewRole((prev) => ({
-                        ...prev!,
-                        name: e.target.value,
-                      }))
-                    : setSelectedRole((prev) => ({
-                        ...prev!,
-                        name: e.target.value,
-                      }))
-                }
-              />
-            </Form.Item>
-
-            <Form.Item label="Role group" required>
-              <Select
-                style={{ width: "100%" }}
-                placeholder="Select Role group"
-                value={
-                  modalMode === ModalModes.CREATE
-                    ? undefined
-                    : selectedRole?.roleGroup
-                }
-                onChange={(value) => {
-                  const selectedGroup = roleGroups?.find(
-                    (group) => group.id === value
-                  );
-                  if (!selectedGroup) return;
-
-                  if (modalMode === ModalModes.UPDATE) {
-                    setSelectedRole((prev) => ({
-                      ...prev!,
-                      roleGroup: selectedGroup.id,
-                    }));
-                  } else {
-                    setNewRole((prev) => ({
-                      ...prev!,
-                      roleGroup: selectedGroup.id,
-                    }));
-                  }
-                }}
-              >
-                {roleGroups?.map((group) => (
-                  <Select.Option key={Math.random()} value={group.id}>
-                    {group.name}
-                  </Select.Option>
-                ))}
-              </Select>
-            </Form.Item>
-          </Form>
+          <RoleForm
+            form={form}
+            roleData={modalMode === ModalModes.CREATE ? newRole : selectedRole!}
+            setRoleData={
+              modalMode === ModalModes.CREATE ? setNewRole : setSelectedRole
+            }
+            roleGroups={roleGroups}
+          />
         )}
 
         {modalMode === ModalModes.DELETE && selectedRole && (

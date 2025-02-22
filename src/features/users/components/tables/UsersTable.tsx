@@ -3,7 +3,7 @@ import { Table, TableColumnsType, Space, Tag, Button } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { UserInterface } from "../../interfaces/UserInterface";
 import { ModalMode, ModalModes } from "../../../../types/modalModes";
-
+import "../../../../styles/styles.css";
 interface UsersTableProps {
   users: UserInterface[] | null;
   showModal: (user: UserInterface | null, mode: ModalMode) => void;
@@ -27,14 +27,18 @@ const UsersTable: React.FC<UsersTableProps> = ({ users, showModal }) => {
         dataIndex: "roles",
         key: "roles",
         render: (roles: string[] = [], user: UserInterface) => (
-          <Space>
+          <Space className="user-role-item">
             {roles.map((role) => (
-              <Tag color={role === "Admin" ? "red" : "blue"} key={role}>
+              <Tag
+                color={role === "Admin" ? "red" : "blue"}
+                key={role}
+                className="user-role"
+              >
                 {role}
               </Tag>
             ))}
             <Button
-              type="default"
+              className="action-button"
               icon={<EditOutlined />}
               onClick={() => showModal(user, ModalModes.UPDATE_ROLES)}
             />
@@ -47,14 +51,12 @@ const UsersTable: React.FC<UsersTableProps> = ({ users, showModal }) => {
         render: (user: UserInterface) => (
           <Space>
             <Button
-              color="primary"
-              type="default"
+              className="action-button"
               icon={<EditOutlined />}
               onClick={() => showModal(user, ModalModes.UPDATE_USER)}
             />
             <Button
-              danger
-              type="default"
+              className="action-button danger"
               icon={<DeleteOutlined />}
               onClick={() => showModal(user, ModalModes.DELETE)}
             />
@@ -68,15 +70,13 @@ const UsersTable: React.FC<UsersTableProps> = ({ users, showModal }) => {
   if (!users || users.length === 0) return <p>No data</p>;
 
   return (
-    <>
-      <Table
-        columns={columns}
-        dataSource={users}
-        rowKey="id"
-        className="modern-table"
-        pagination={{ pageSize: 8 }}
-      />
-    </>
+    <Table
+      columns={columns}
+      dataSource={users}
+      rowKey="id"
+      className="modern-table"
+      pagination={{ pageSize: 8 }}
+    />
   );
 };
 

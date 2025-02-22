@@ -8,7 +8,7 @@ import {
   validateName,
   validatePassword,
 } from "../users/hooks/useUserValidators";
-
+import "../../styles/styles.css";
 const Register = () => {
   const [user, setUser] = useState<UserRegisterInterface>({
     email: "",
@@ -36,7 +36,7 @@ const Register = () => {
   };
 
   return (
-    <Form onFinish={handleSubmit} layout="vertical">
+    <Form onFinish={handleSubmit} layout="vertical" className="user-form">
       <Form.Item
         label="Email"
         name="email"

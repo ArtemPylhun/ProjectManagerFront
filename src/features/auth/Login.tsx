@@ -5,7 +5,7 @@ import { jwtDecode } from "jwt-decode";
 import { useNavigate, useLocation } from "react-router-dom";
 import { UserLoginInterface } from "../users/interfaces/UserInterface";
 import { validateEmail, validateName } from "../users/hooks/useUserValidators";
-
+import "../../styles/styles.css";
 const Login: React.FC = () => {
   const [user, setUser] = useState<UserLoginInterface>({
     emailOrUsername: "",
@@ -44,7 +44,7 @@ const Login: React.FC = () => {
   };
 
   return (
-    <Form onFinish={handleSubmit} layout="vertical">
+    <Form onFinish={handleSubmit} layout="vertical" className="user-form">
       <Form.Item
         label="Email or Username"
         name="emailOrUsername"

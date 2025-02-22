@@ -132,7 +132,7 @@ const ProjectTasksTable: React.FC<ProjectTasksTableProps> = ({
     [showModal]
   );
 
-  if (!projectTasks || projectTasks.length === 0) return <p>No data</p>;
+  if (!projectTasks) return null;
 
   return (
     <Table

@@ -1,5 +1,6 @@
 import React from "react";
 import { Modal } from "antd";
+import "../../styles/styles.css"; // Ensure this file contains the new modal styles
 
 interface CustomModalProps {
   visible: boolean;
@@ -24,16 +25,22 @@ const CustomModal: React.FC<CustomModalProps> = ({
 }) => {
   return (
     <Modal
-      title={title}
+      title={<div className="modal-header">{title}</div>}
       open={visible}
       onOk={onOk}
       onCancel={onCancel}
       okText={okText}
       cancelText={cancelText}
-      okButtonProps={{ danger: isDanger }}
+      className="custom-modal"
+      closeIcon={null} // Ensures no close (X) button
+      okButtonProps={{
+        danger: isDanger,
+        className: isDanger ? "modal-button danger" : "modal-button",
+      }}
+      cancelButtonProps={{ className: "modal-button cancel" }}
       styles={{ body: { padding: "1rem 1.5rem" } }}
     >
-      {children}
+      <div className="modal-content">{children}</div>
     </Modal>
   );
 };

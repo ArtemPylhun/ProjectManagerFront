@@ -4,6 +4,7 @@ import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { RoleInterface } from "../../interfaces/RoleInterface";
 import { RoleGroupInterface } from "../../interfaces/RoleGroupIntreface";
 import { ModalMode, ModalModes } from "../../../../types/modalModes";
+import "../../../../styles/styles.css";
 
 interface RolesTableProps {
   roles: RoleInterface[] | undefined;
@@ -36,14 +37,12 @@ const RolesTable: React.FC<RolesTableProps> = ({
         render: (role: RoleInterface) => (
           <Space>
             <Button
-              color="primary"
-              type="default"
+              className="action-button"
               icon={<EditOutlined />}
               onClick={() => showModal(role, ModalModes.UPDATE)}
             />
             <Button
-              danger
-              type="default"
+              className="action-button danger"
               icon={<DeleteOutlined />}
               onClick={() => showModal(role, ModalModes.DELETE)}
             />

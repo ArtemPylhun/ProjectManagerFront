@@ -70,7 +70,9 @@ const useRoles = (isProjectRoles: boolean, isGeneralRoles: boolean) => {
   useEffect(() => {
     const abortController = new AbortController();
     fetchRoles(abortController.signal);
-    fetchRoleGroups(abortController.signal);
+    if (!isProjectRoles && !isGeneralRoles) {
+      fetchRoleGroups(abortController.signal);
+    }
     return () => abortController.abort();
   }, [fetchRoles, fetchRoleGroups]);
 
@@ -90,7 +92,7 @@ const useRoles = (isProjectRoles: boolean, isGeneralRoles: boolean) => {
       message.success("Role created successfully");
       return true;
     } catch (error) {
-      message.error(`Failed to create role: ${error}`);
+      console.error(`Failed to create role: ${error}`);
       return false;
     }
   };
@@ -114,7 +116,7 @@ const useRoles = (isProjectRoles: boolean, isGeneralRoles: boolean) => {
       message.success("Role updated successfully");
       return true;
     } catch (error) {
-      message.error(`Failed to update role: ${error}`);
+      console.error(`Failed to update role: ${error}`);
       return false;
     }
   };
@@ -132,7 +134,7 @@ const useRoles = (isProjectRoles: boolean, isGeneralRoles: boolean) => {
       message.success("Role deleted successfully");
       return true;
     } catch (error) {
-      message.error(`Failed to delete role: ${error}`);
+      console.error(`Failed to delete role: ${error}`);
       return false;
     }
   };

@@ -1,18 +1,20 @@
 import { useCallback, useState } from "react";
-import { Button, Form, Input, Select } from "antd";
+import { Button, Select, Form } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import SearchInput from "../../../components/common/SearchInput";
 import LoaderComponent from "../../../components/common/Loader";
-import UsersTable from "./table/UsersTable";
+import UsersTable from "./tables/UsersTable";
 import CustomModal from "../../../components/common/CustomModal";
+import UserForm from "./forms/UserForm";
 import useUserModal from "../hooks/useUserModal";
 import useUsers from "../hooks/useUsers";
 import useRoles from "../../roles/hooks/useRoles";
 import { ModalModes } from "../../../types/modalModes";
-import { validateName } from "../hooks/useUserValidators";
+import "../../../styles/styles.css";
 
 const UserComponent = () => {
   const [filterQuery, setFilterQuery] = useState<string>("");
+  const [form] = Form.useForm();
 
   const {
     modalMode,
@@ -54,23 +56,27 @@ const UserComponent = () => {
 
   const handleSave = useCallback(async () => {
     if (!modalMode) return;
+    try {
+      await form.validateFields();
+      let result = false;
 
-    let result = false;
-
-    if (modalMode === ModalModes.CREATE && newUser) {
-      result = await handleCreateUser(newUser);
-    } else if (
-      modalMode === ModalModes.UPDATE_ROLES &&
-      selectedUser &&
-      selectedRoles
-    ) {
-      result = await handleUpdateRoles(selectedUser.id, selectedRoles);
-    } else if (modalMode === ModalModes.UPDATE_USER && selectedUser) {
-      result = await handleUpdateUser(selectedUser);
-    } else if (modalMode === ModalModes.DELETE && selectedUser) {
-      result = await handleDeleteUser(selectedUser.id);
+      if (modalMode === ModalModes.CREATE && newUser) {
+        result = await handleCreateUser(newUser);
+      } else if (
+        modalMode === ModalModes.UPDATE_ROLES &&
+        selectedUser &&
+        selectedRoles
+      ) {
+        result = await handleUpdateRoles(selectedUser.id, selectedRoles);
+      } else if (modalMode === ModalModes.UPDATE_USER && selectedUser) {
+        result = await handleUpdateUser(selectedUser);
+      } else if (modalMode === ModalModes.DELETE && selectedUser) {
+        result = await handleDeleteUser(selectedUser.id);
+      }
+      if (result) hideModal();
+    } catch (error) {
+      console.error("Validation failed:", error);
     }
-    if (result) hideModal();
   }, [
     modalMode,
     newUser,
@@ -80,6 +86,7 @@ const UserComponent = () => {
     handleUpdateUser,
     handleUpdateRoles,
     handleDeleteUser,
+    form,
   ]);
 
   return (
@@ -90,10 +97,9 @@ const UserComponent = () => {
           onQueryChange={handleFilterQueryChange}
         />
         <Button
-          type="primary"
+          className="create-button"
           icon={<PlusOutlined />}
           onClick={() => showModal(null, ModalModes.CREATE)}
-          style={{ height: "40px", display: "flex", alignItems: "center" }}
         >
           Create User
         </Button>
@@ -127,68 +133,14 @@ const UserComponent = () => {
       >
         {(modalMode === ModalModes.CREATE ||
           modalMode === ModalModes.UPDATE_USER) && (
-          <Form layout="vertical" onFinish={handleSave}>
-            <Form.Item
-              label="Username"
-              rules={[{ required: true, validator: validateName }]}
-            >
-              <Input
-                placeholder="Username"
-                name="username"
-                value={
-                  modalMode === ModalModes.CREATE
-                    ? newUser?.userName
-                    : selectedUser?.userName || ""
-                }
-                onChange={(e) =>
-                  modalMode === ModalModes.CREATE
-                    ? setNewUser((prev) => ({
-                        ...prev!,
-                        userName: e.target.value,
-                      }))
-                    : setSelectedUser((prev) => ({
-                        ...prev!,
-                        userName: e.target.value,
-                      }))
-                }
-              />
-            </Form.Item>
-            <Form.Item label="Email">
-              <Input
-                placeholder="Email"
-                value={
-                  modalMode === ModalModes.CREATE
-                    ? newUser?.email
-                    : selectedUser?.email || ""
-                }
-                onChange={(e) =>
-                  modalMode === ModalModes.CREATE
-                    ? setNewUser((prev) => ({
-                        ...prev!,
-                        email: e.target.value,
-                      }))
-                    : setSelectedUser((prev) => ({
-                        ...prev!,
-                        email: e.target.value,
-                      }))
-                }
-              />
-            </Form.Item>
-            {modalMode === ModalModes.CREATE && (
-              <Form.Item label="Password">
-                <Input.Password
-                  placeholder="Password"
-                  value={newUser?.password}
-                  onChange={(e) =>
-                    setNewUser((prev) => ({
-                      ...prev!,
-                      password: e.target.value,
-                    }))
-                  }
-                />
-              </Form.Item>
-            )}
-          </Form>
+          <UserForm
+            form={form}
+            userData={modalMode === ModalModes.CREATE ? newUser : selectedUser!}
+            setUserData={
+              modalMode === ModalModes.CREATE ? setNewUser : setSelectedUser
+            }
+            isCreateMode={modalMode === ModalModes.CREATE}
+          />
         )}
 
         {modalMode === ModalModes.UPDATE_ROLES && selectedUser && (

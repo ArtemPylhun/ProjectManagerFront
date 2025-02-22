@@ -1,0 +1,347 @@
+/* Container with Glass Effect */
+.table-container {
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.15); /* Semi-transparent white */
+  border-radius: 12px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px); /* Adds the blur effect */
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2); /* Subtle border */
+}
+  
+  /* Table Background */
+.modern-table .ant-table {
+  background: rgba(255, 255, 255, 0.2); /* Semi-transparent */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+  
+/* Table Header */
+.modern-table .ant-table-thead > tr > th {
+  background: rgba(184, 215, 251, 0.3);
+  font-weight: bold;
+  color: #526ab7;
+}
+  
+ /* Table Rows */
+.modern-table .ant-table-tbody > tr {
+  transition: background-color 0.2s ease-in-out;
+}
+
+.modern-table .ant-table-tbody > tr:hover {
+  background-color: rgba(184, 215, 251, 0.3) !important; /* Glass effect */
+}
+
+/* Alternating Row Colors */
+.modern-table .ant-table-tbody > tr:nth-child(odd) {
+  background: rgba(255, 255, 255, 0.15) !important;
+}
+
+.modern-table .ant-table-tbody > tr:nth-child(even) {
+  background: rgba(184, 215, 251, 0.2) !important;
+}
+  
+  .modern-table .ant-table-tbody > tr:hover td {
+    background-color: #b8d7fb !important;
+  }
+  
+  
+
+  
+  /* Role tags */
+  .user-role-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .user-name {
+    font-weight: 600;
+    color: #526ab7;
+  }
+  
+  .user-role {
+    font-size: 12px;
+    color: #73aaee;
+  }
+  
+  /* Buttons */
+ /* Glassy Buttons */
+.create-button, .action-button {
+  background: rgba(115, 170, 238, 0.3);
+  border: 1px solid rgba(115, 170, 238, 0.4);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: background 0.3s ease;
+}
+
+.modal-button {
+  background: rgba(115, 170, 238, 0.3); /* Using #73aaee, semi-transparent */
+  border: 1px solid rgba(115, 170, 238, 0.4); /* Using #73aaee */
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 16px;
+  color: #fff;
+  transition: background 0.3s ease, color 0.3s ease;
+  height: 40px; /* Match height with other elements */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.create-button:hover, .action-button:hover, .modal-button:hover {
+  background: rgba(82, 106, 183, 0.5);
+}
+
+.modal-button.danger {
+  background: rgba(255, 77, 79, 0.3); /* Red for danger, semi-transparent */
+  border: 1px solid rgba(255, 77, 79, 0.4);
+  color: #fff;
+}
+
+.modal-button.danger:hover {
+  background: rgba(217, 54, 62, 0.5); /* Darker red, semi-transparent */
+}
+
+.modal-button.cancel {
+  background: rgba(184, 215, 251, 0.3); /* Using #b8d7fb, semi-transparent */
+  color: #526ab7;
+}
+
+.modal-button.cancel:hover {
+  background: rgba(184, 215, 251, 0.5); /* Using #b8d7fb */
+  color: #526ab7;
+}
+
+  /* Header section */
+  .projects-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  
+  /* Glass Input */
+.projects-header input {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(115, 170, 238, 0.4);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: white;
+}
+  
+  .projects-header button {
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #73aaee;
+    border-radius: 6px;
+    color: white;
+    border: none;
+    transition: background 0.3s ease;
+  }
+  
+  .projects-header button:hover {
+    background: #526ab7;
+  }
+  
+  /* Action buttons
+  .action-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #73aaee;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 10px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  } */
+  
+  /* .action-button:hover {
+    background: #526ab7;
+  } */
+  
+  .action-button.danger {
+    background: #ff4d4f;
+  }
+  
+  .action-button.danger:hover {
+    background: #d9363e;
+  }
+  
+
+
+
+
+
+
+
+
+
+
+/* Modal Styles (Transparent White Glass Effect with Background Blur) */
+.custom-modal .ant-modal-wrap {
+  backdrop-filter: blur(10px); /* Blur the background behind the modal */
+  -webkit-backdrop-filter: blur(10px); /* For Safari */
+  background: rgba(254, 254, 254, 0.168); /* Light transparent white overlay for contrast, using #fefefe */
+}
+
+.custom-modal .ant-modal-content {
+  background: rgba(254, 254, 254, 0.15); /* Transparent white using #fefefe for the modal content */
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px); /* Adds blur effect to the modal content */
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(254, 254, 254, 0.2); /* Subtle border using #fefefe */
+  padding: 20px;
+}
+
+.custom-modal .ant-modal-header {
+  background: rgba(82, 106, 183, 0.3); /* Using #526ab7, semi-transparent */
+  color: #526ab7;
+  font-size: 20px;
+  font-weight: 700;
+  padding: 20px;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  border-bottom: 1px solid rgba(254, 254, 254, 0.2); /* Using #fefefe */
+  margin-bottom: 10px;
+  text-align: center;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* Modal Body and Content */
+.custom-modal .ant-modal-body {
+  padding: 0 20px 20px;
+}
+
+.custom-modal .modal-content {
+  padding: 0;
+}
+
+/* Modal Footer */
+.custom-modal .ant-modal-footer {
+  border-top: none;
+  display: flex;
+  justify-content: flex-end;
+  padding: 15px 20px;
+  gap: 10px;
+}
+
+/* Form Styles (Enhanced Glass Effect) */
+.user-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.user-form label {
+  font-weight: 600;
+  color: #526ab7;
+  font-size: 16px;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.user-form input,
+.user-form .ant-input-password {
+  background: rgba(255, 255, 255, 0.15) !important; /* Transparent white using your original #fefefe equivalent, with !important */
+  border-radius: 12px !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1) !important;
+  backdrop-filter: blur(10px) !important; /* Adds the blur effect, with !important */
+  -webkit-backdrop-filter: blur(10px) !important; /* For Safari, with !important */
+  border: 1px solid rgba(255, 255, 255, 0.2) !important; /* Subtle border using your original #fefefe, with !important */
+  padding: 12px 14px !important;
+  font-size: 16px !important;
+  color: #526ab7 !important;
+  outline: none !important;
+  transition: border 0.3s ease-in-out, box-shadow 0.3s ease-in-out, background 0.3s ease-in-out !important;
+}
+
+.user-form .ant-input-password:focus,
+.user-form input:focus {
+  border-color: #73aaee !important;
+  box-shadow: 0 0 8px rgba(115, 170, 238, 0.5) !important;
+  background: rgba(255, 255, 255, 0.3) !important; /* Using your original #fefefe, with !important */
+}
+
+.user-form .ant-input-password::placeholder,
+.user-form input::placeholder {
+  color: rgba(82, 106, 183, 0.6) !important; /* Using #526ab7, with !important */
+}
+
+.user-form .error-message {
+  color: #ff4d4f; /* Red for errors, not in palette but consistent with danger */
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+/* Select Component Styles (Glassy) */
+.ant-select {
+  @extend .glass-effect;
+  background: rgba(254, 254, 254, 0.2); /* Using #fefefe */
+  border: 1px solid rgba(115, 170, 238, 0.4); /* Using #73aaee */
+  border-radius: 12px; /* Match other input/button radius */
+  height: 50px;
+  font-size: 16px;
+  color: #526ab7;
+}
+
+.ant-select-selector {
+  background: rgba(254, 254, 254, 0.2) !important; /* Ensure glassy effect */
+  border: none !important; /* Remove default border */
+  border-radius: 12px !important;
+  box-shadow: none !important; /* Remove default shadow */
+  padding: 8px 12px !important; /* Match padding with inputs/buttons */
+  height: 50px !important; /* Match height with SearchInput and buttons */
+  display: flex;
+  align-items: center;
+}
+.ant-select-selection-overflow-item {
+  height: 25px;
+}
+.ant-select-focused .ant-select-selector {
+  border-color: #73aaee !important;
+  box-shadow: 0 0 8px rgba(115, 170, 238, 0.5) !important;
+  background: rgba(254, 254, 254, 0.3) !important; /* Using #fefefe */
+}
+
+.ant-select-selection-placeholder {
+  color: rgba(82, 106, 183, 0.6) !important; /* Using #526ab7 for placeholder */
+}
+
+.ant-select-selection-item {
+  color: #526ab7 !important;
+}
+
+.ant-select-dropdown {
+  @extend .glass-effect;
+  background: rgba(254, 254, 254, 0.15) !important; /* Transparent white using #fefefe */
+  border: 1px solid rgba(254, 254, 254, 0.2) !important; /* Using #fefefe */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1) !important;
+  border-radius: 12px !important;
+}
+
+.ant-select-item {
+  background: rgba(254, 254, 254, 0.15) !important; /* Transparent white */
+  color: #526ab7 !important;
+  padding: 8px 12px !important;
+}
+
+.ant-select-item-option-selected {
+  background: rgba(184, 215, 251, 0.3) !important; /* Using #b8d7fb, semi-transparent */
+  color: #526ab7 !important;
+}
+
+.ant-select-item-option-active {
+  background: rgba(184, 215, 251, 0.3) !important; /* Using #b8d7fb, semi-transparent */
+}

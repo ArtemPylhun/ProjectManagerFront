@@ -51,7 +51,7 @@ const useUsers = () => {
       message.success("User created successfully!");
       return true;
     } catch (error) {
-      message.error(`Failed to create user: ${error}`);
+      console.error(`Failed to create user: ${error}`);
       return false;
     }
   };
@@ -75,6 +75,7 @@ const useUsers = () => {
       message.success("User updated successfully!");
       return true;
     } catch (error) {
+      console.error(`Failed to update user: ${error}`);
       return false;
     }
   };
@@ -100,7 +101,7 @@ const useUsers = () => {
       message.success("Roles updated successfully!");
       return true;
     } catch (error) {
-      message.error(`Failed to update roles: ${error}`);
+      console.error(`Failed to update roles: ${error}`);
       return false;
     }
   };
@@ -118,7 +119,7 @@ const useUsers = () => {
       message.success("User deleted successfully!");
       return true;
     } catch (error) {
-      message.error(`Failed to delete user: ${error}`);
+      console.error(`Failed to delete user: ${error}`);
       return false;
     }
   };

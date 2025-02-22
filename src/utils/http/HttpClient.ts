@@ -91,20 +91,12 @@ export class HttpClient {
     this.axiosInstance.interceptors.response.use(
       (response) => response,
       (error) => {
-        if (error.response?.data?.errors) {
-          const errors = error.response.data.errors;
-          for (const key in errors) {
-            if (errors[key] && Array.isArray(errors[key])) {
-              errors[key].forEach((errMsg: string) => {
-                message.error(errMsg);
-              });
-            }
-          }
-        } else if (error.response.data.message) {
+        console.warn("ERROR RESPONSE:>>>>>>>>>>>>> ", error);
+        if (error.response.data.message) {
           console.error(
             "Request failed with error:",
             error.response.status,
-            error.response.data.message
+            error.response.data
           );
 
           message.error(error.response.data.message);
@@ -113,6 +105,17 @@ export class HttpClient {
             console.error("Unauthorized request");
             window.location.href =
               "/login?returnUrl=" + window.location.pathname;
+          }
+        } else if (error.response.data) {
+          message.error(error.response.data);
+        } else if (error.response?.data) {
+          const errors = error.response.data.errors;
+          for (const key in errors) {
+            if (errors[key] && Array.isArray(errors[key])) {
+              errors[key].forEach((errMsg: string) => {
+                message.error(errMsg);
+              });
+            }
           }
         } else if (error.request) {
           console.error("No response received:", error.request);
