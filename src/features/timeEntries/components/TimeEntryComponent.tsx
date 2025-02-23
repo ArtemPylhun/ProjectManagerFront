@@ -13,6 +13,9 @@ import useProjects from "../../projects/hooks/useProjects";
 import useProjectTasks from "../../projectTasks/hooks/useProjectTasks";
 import dayjs from "dayjs";
 import { ModalModes } from "../../../types/modalModes";
+import { UserInterface } from "../../users/interfaces/UserInterface";
+import { ProjectInterface } from "../../projects/interfaces/ProjectInterface";
+import { ProjectTaskInterface } from "../../projectTasks/interfaces/ProjectTaskInterface";
 
 const TimeEntryComponent = () => {
   const [filterQuery, setFilterQuery] = useState<string>("");
@@ -127,10 +130,9 @@ const TimeEntryComponent = () => {
           onQueryChange={handleFilterQueryChange}
         />
         <Button
-          type="primary"
+          className="create-button"
           icon={<PlusOutlined />}
           onClick={() => showModal(null, ModalModes.CREATE)}
-          style={{ height: "40px", display: "flex", alignItems: "center" }}
         >
           Create Time Entry
         </Button>
@@ -169,7 +171,16 @@ const TimeEntryComponent = () => {
           <TimeEntryForm
             form={form}
             timeEntryData={
-              modalMode === ModalModes.CREATE ? newTimeEntry : selectedTimeEntry
+              modalMode === ModalModes.CREATE
+                ? {
+                    ...newTimeEntry,
+                    id: "",
+                    user: (selectedUser as UserInterface) || null,
+                    project: (selectedProject as ProjectInterface) || null,
+                    projectTask:
+                      (selectedProjectTask as ProjectTaskInterface) || null,
+                  }
+                : selectedTimeEntry
             }
             setTimeEntryData={
               modalMode === ModalModes.CREATE

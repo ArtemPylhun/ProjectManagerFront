@@ -429,11 +429,6 @@
   background: none !important;
   border: none !important;
 }
-.ant-input-password .ant-input-suffix {
-  position: absolute;
-  top: 40%;
-  right: 6%;
-}
 
 .custom-password-input .ant-input-password .ant-input-outlined {
   border: none !important;
@@ -567,6 +562,12 @@
   display: flex;
   align-items: center;
 }
+
+.ant-select-outlined:not(.ant-select-customize-input)
+  .ant-select-selector:focus {
+  background-color: #526ab7;
+  border-color: black !important;
+}
 .ant-select-selection-overflow-item {
   height: 25px;
 }
@@ -639,8 +640,20 @@
   box-shadow: none !important;
 }
 
+.ant-picker {
+  border-radius: 12px;
+}
+
 .ant-picker-outlined {
   width: 100%;
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+.ant-picker-outlined:hover,
+.ant-picker-outlined:focus,
+.ant-picker-outlined:focus-within {
+  border-color: #73aaee !important;
+  background-color: rgba(255, 255, 255, 0.5);
 }
 
 .user-form .ant-input-password:focus,
@@ -651,13 +664,13 @@
 #startTime,
 #endTime {
   width: 100%;
-  height: 40px;
+  height: 20px;
   padding: 8px 12px;
   border-radius: 8px;
   border: 1px solid #ddd;
   box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
   font-size: 16px;
-  background: rgba(244, 247, 252, 0) !important;
+  background: rgba(225, 225, 225, 1) !important;
   display: flex;
   align-items: center;
 }
@@ -665,4 +678,213 @@
 #startTime:focus,
 #endTime:focus {
   border-color: rgba(0, 0, 0, 0) !important;
+}
+
+#password {
+  box-shadow: none !important;
+  height: 30px;
+  background-color: rgba(239, 239, 239, 1) !important;
+  padding-bottom: 5px;
+  padding-left: 0px !important;
+  border-radius: 0px !important;
+}
+
+#password-auth {
+  box-shadow: none !important;
+  height: 30px;
+  padding-bottom: 5px;
+  padding-left: 0px !important;
+  border-radius: 0px !important;
+}
+
+#password:focus,
+#password-auth:focus {
+  border-color: rgba(0, 0, 0, 0) !important;
+}
+
+/* Authentication Form Container (Clean, Minimal) */
+.auth-form-container {
+  padding: 30px;
+  background: #fefefe; /* Solid white background using #fefefe */
+  border-radius: 16px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  max-width: 400px; /* Fixed width for a clean, centered form */
+  margin: 0 auto; /* Center the form on the page */
+  margin-top: 50px; /* Vertical spacing from top */
+}
+
+/* Authentication Form (Clean Layout) */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Form Labels */
+.auth-form label {
+  font-weight: 600;
+  color: #526ab7; /* Using #526ab7 for text */
+  font-size: 16px;
+  margin-bottom: 8px;
+  display: block;
+}
+
+/* Required Field Asterisk */
+.auth-form .ant-form-item-required::before {
+  display: inline-block;
+  margin-right: 4px;
+  color: #ff4d4f; /* Red for required fields, consistent with danger */
+  font-size: 14px;
+  content: "*";
+}
+
+/* Input Fields (Clean, White) */
+.auth-form .ant-input,
+.auth-form .ant-input-password,
+.auth-form .ant-select,
+.auth-form .ant-picker {
+  background: #ffffff; /* Solid white background */
+  border-radius: 12px; /* Rounded corners like your image */
+  border: 1px solid #ddd; /* Light gray border */
+  border-color: #ddd !important;
+  padding: 12px 14px;
+  font-size: 16px;
+  color: #526ab7; /* Using #526ab7 for text */
+  outline: none;
+  height: 50px; /* Match height with other inputs/buttons for consistency */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Subtle shadow for depth */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Input Focus and Hover States */
+.auth-form .ant-input:focus,
+.auth-form .ant-input-password:focus,
+.auth-form .ant-select-focused .ant-select-selector,
+.auth-form .ant-picker-focused {
+  border-color: #73aaee; /* Using #73aaee for focus */
+  box-shadow: 0 0 8px rgba(115, 170, 238, 0.3); /* Light shadow for focus */
+  background: #ffffff; /* Keep white background */
+}
+
+.auth-form .ant-input:hover,
+.auth-form .ant-input-password:hover,
+.auth-form .ant-select:hover .ant-select-selector,
+.auth-form .ant-picker:hover {
+  border-color: #b8d7fb; /* Using #b8d7fb for hover */
+}
+
+/* Placeholder Text */
+.auth-form .ant-input::placeholder,
+.auth-form .ant-input-password::placeholder,
+.auth-form .ant-select-selection-placeholder,
+.auth-form .ant-picker-input > input::placeholder {
+  color: rgba(
+    82,
+    106,
+    183,
+    0.6
+  ); /* Using #526ab7, semi-transparent for placeholder */
+  font-size: 16px;
+}
+
+/* Submit Button (Clean, Light Blue) */
+.auth-form .submit-button {
+  background: #b8d7fb; /* Using #b8d7fb for a light blue button, matching your image */
+  border: 1px solid #73aaee; /* Using #73aaee for border */
+  border-radius: 12px;
+  padding: 12px 24px;
+  font-size: 18px;
+  color: #526ab7; /* Using #526ab7 for text */
+  font-weight: 600;
+  transition: background 0.3s ease, color 0.3s ease;
+  width: 100%; /* Full width for a bold look */
+  height: 50px; /* Match height with inputs */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-form .submit-button:hover {
+  background: #73aaee; /* Using #73aaee for hover, darker blue */
+  border-color: #526ab7; /* Using #526ab7 for border on hover */
+  color: #ffffff; /* White text on hover for contrast */
+}
+
+/* Error Messages */
+.auth-form .error-message {
+  color: #ff4d4f; /* Red for errors, consistent with danger */
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+/* Select Dropdown (Clean, White) */
+.auth-form .ant-select-dropdown {
+  background: #ffffff; /* Solid white background */
+  border: 1px solid #ddd; /* Light gray border */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+}
+
+.auth-form .ant-select-item {
+  background: #ffffff; /* Solid white */
+  color: #526ab7; /* Using #526ab7 for text */
+  padding: 8px 12px;
+}
+
+.auth-form .ant-select-item-option-selected {
+  background: #b8d7fb; /* Using #b8d7fb, semi-transparent */
+  color: #526ab7; /* Using #526ab7 for text */
+}
+
+.auth-form .ant-select-item-option-active {
+  background: #b8d7fb; /* Using #b8d7fb, semi-transparent */
+}
+
+/* DatePicker/RangePicker Styling (Clean, White) */
+.auth-form .ant-picker,
+.auth-form .ant-picker-range {
+  background: #ffffff; /* Solid white background */
+  border: 1px solid #ddd; /* Light gray border */
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  color: #526ab7; /* Using #526ab7 for text */
+  height: 50px; /* Match other inputs */
+}
+
+.auth-form .ant-picker-focused,
+.auth-form .ant-picker-range-focused {
+  border-color: #73aaee; /* Using #73aaee for focus */
+  box-shadow: 0 0 8px rgba(115, 170, 238, 0.3); /* Light shadow for focus */
+  background: #ffffff; /* Keep white background */
+}
+
+.auth-form .ant-picker-input > input::placeholder {
+  color: rgba(82, 106, 183, 0.6); /* Using #526ab7 for placeholder */
+}
+
+/* Responsive Design for Auth Forms */
+@media (max-width: 480px) {
+  .auth-form-container {
+    padding: 20px;
+    max-width: 300px;
+    margin-top: 30px;
+  }
+
+  .auth-form .ant-input,
+  .auth-form .ant-input-password,
+  .auth-form .ant-select,
+  .auth-form .ant-picker,
+  .auth-form .submit-button {
+    height: 40px;
+    font-size: 14px;
+  }
+
+  .auth-form label {
+    font-size: 14px;
+  }
+
+  .auth-form .submit-button {
+    padding: 10px 20px;
+    font-size: 16px;
+  }
 }

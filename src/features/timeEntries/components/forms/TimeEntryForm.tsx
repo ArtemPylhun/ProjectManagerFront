@@ -107,13 +107,14 @@ const TimeEntryForm: React.FC<TimeEntryFormProps> = ({
       >
         <DatePicker
           showTime
+          allowClear={false}
           value={
-            timeEntryData?.startTime ? dayjs(timeEntryData.startTime) : null
+            timeEntryData?.startTime ? dayjs(timeEntryData.startTime) : dayjs()
           }
           onChange={(value) =>
             setTimeEntryData((prev: TimeEntryInterface) => ({
               ...prev,
-              startTime: new Date(dayjs(value).toISOString()),
+              startTime: dayjs(value),
             }))
           }
         />
@@ -125,11 +126,14 @@ const TimeEntryForm: React.FC<TimeEntryFormProps> = ({
       >
         <DatePicker
           showTime
-          value={timeEntryData?.endTime ? dayjs(timeEntryData.endTime) : null}
+          allowClear={false}
+          value={
+            timeEntryData?.endTime ? dayjs(timeEntryData.endTime) : dayjs()
+          }
           onChange={(value) =>
             setTimeEntryData((prev: TimeEntryInterface) => ({
               ...prev,
-              endTime: new Date(dayjs(value).toISOString()),
+              endTime: dayjs(value),
             }))
           }
         />

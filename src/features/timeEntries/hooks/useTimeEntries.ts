@@ -45,9 +45,6 @@ const useTimeEntries = () => {
     newTimeEntry: TimeEntryCreateInterface
   ): Promise<boolean> => {
     try {
-      console.log("New Time Entry: ", newTimeEntry);
-      newTimeEntry.startTime = new Date(dayjs(newTimeEntry.startTime).format());
-      newTimeEntry.endTime = new Date(dayjs(newTimeEntry.startTime).format());
       const response = await TimeEntryService.createTimeEntry(
         newTimeEntry,
         new AbortController().signal

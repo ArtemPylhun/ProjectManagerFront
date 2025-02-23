@@ -43,13 +43,13 @@ const TimeEntriesTable: React.FC<TimeEntriesTableProps> = ({
         dataIndex: "startTime",
         key: "startTime",
         render: (startTime: Date) =>
-          dayjs(startTime).format("YYYY-MM-DD HH:mm:ss"),
+          dayjs(startTime).format("DD/MM/YYY HH:mm:ss"),
       },
       {
         title: "End Time",
         dataIndex: "endTime",
         key: "endTime",
-        render: (endTime: Date) => dayjs(endTime).format("YYYY-MM-DD HH:mm:ss"),
+        render: (endTime: Date) => dayjs(endTime).format("DD/MM/YYY HH:mm:ss"),
       },
       {
         title: "Minutes",

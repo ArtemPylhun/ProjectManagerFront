@@ -44,14 +44,11 @@ const Login: React.FC = () => {
   };
 
   return (
-    <Form onFinish={handleSubmit} layout="vertical" className="user-form">
+    <Form onFinish={handleSubmit} layout="vertical" className="auth-form">
       <Form.Item
-        label="Email or Username"
+        label="Username"
         name="emailOrUsername"
-        rules={[
-          { required: true, message: "Please enter your email or username" },
-          { validator: validateEmail || validateName },
-        ]}
+        rules={[{ validator: validateName }]}
       >
         <Input
           type="text"
@@ -66,13 +63,14 @@ const Login: React.FC = () => {
         rules={[{ required: true, message: "Please enter your password" }]}
       >
         <Input.Password
+          id="password-auth"
           value={user.password}
           onChange={handleUserChange}
           name="password"
         />
       </Form.Item>
       <Form.Item>
-        <Button type="primary" htmlType="submit">
+        <Button type="primary" htmlType="submit" className="submit-button">
           Login
         </Button>
       </Form.Item>

@@ -36,7 +36,7 @@ const Register = () => {
   };
 
   return (
-    <Form onFinish={handleSubmit} layout="vertical" className="user-form">
+    <Form onFinish={handleSubmit} layout="vertical" className="auth-form">
       <Form.Item
         label="Email"
         name="email"
@@ -75,6 +75,7 @@ const Register = () => {
         rules={[{ required: true, validator: validatePassword }]}
       >
         <Input.Password
+          id="password-auth"
           name="password"
           value={user.password}
           onChange={handleUserChange}
@@ -82,7 +83,7 @@ const Register = () => {
       </Form.Item>
 
       <Form.Item>
-        <Button type="primary" htmlType="submit">
+        <Button type="primary" htmlType="submit" className="submit-button">
           Register
         </Button>
       </Form.Item>
