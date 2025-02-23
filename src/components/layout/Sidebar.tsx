@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import Sider from "antd/es/layout/Sider";
 import { Menu } from "antd";
 import type { MenuProps } from "antd";
-import { theme } from "antd";
-import { LockOutlined } from "@ant-design/icons";
+import { LockOutlined, LogoutOutlined } from "@ant-design/icons"; // Import LogoutOutlined for the logout icon
+import "../../styles/client-styles/sidebarStyles.css"; // Import the new stylesheet
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -14,7 +14,8 @@ const Sidebar = () => {
     key: React.Key,
     icon?: React.ReactNode,
     path?: string,
-    children?: MenuItem[]
+    children?: MenuItem[],
+    className?: string // Add className for custom styling (e.g., Logout)
   ): MenuItem {
     return {
       key,
@@ -22,6 +23,7 @@ const Sidebar = () => {
       children,
       label,
       onClick: path ? () => navigate(path) : undefined,
+      className,
     } as MenuItem;
   }
 
@@ -36,6 +38,12 @@ const Sidebar = () => {
     { name: "Roles", path: "/roles" },
     { name: "Users", path: "/users" },
   ];
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    navigate("/login");
+  };
 
   const items: MenuItem[] = [
     getItem(
@@ -54,26 +62,31 @@ const Sidebar = () => {
       collapsible
       collapsed={collapsed}
       onCollapse={(value) => setCollapsed(value)}
-      width={240}
-      style={{
-        height: "100vh",
-        position: "fixed",
-        left: 0,
-        top: 0,
-        backgroundColor: "#526ab7",
-        overflow: "hidden",
-      }}
+      trigger={null}
     >
+      <div
+        className="ant-layout-sider-trigger"
+        onClick={() => setCollapsed(!collapsed)}
+        style={{ cursor: "pointer" }}
+      >
+        {collapsed ? "►" : "◄"}
+      </div>
       <Menu
-        theme="light"
         defaultSelectedKeys={["1"]}
         mode="inline"
         items={items}
-        style={{
-          backgroundColor: "#b8d7fb",
-          color: "#526ab7",
-        }}
+        onClick={({ key }) => key === "logout" && handleLogout()} // Handle logout click
       />
+      <div
+        className="ant-layout-sider-logout-trigger"
+        onClick={handleLogout}
+        style={{ cursor: "pointer" }}
+      >
+        <LogoutOutlined />
+        {!collapsed && (
+          <span style={{ color: "#ff4d4f", marginLeft: "12px" }}>Logout</span>
+        )}
+      </div>
     </Sider>
   );
 };

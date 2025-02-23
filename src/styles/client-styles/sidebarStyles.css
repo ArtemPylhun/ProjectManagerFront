@@ -1,0 +1,198 @@
+.ant-layout-sider {
+  background: rgba(
+    254,
+    254,
+    254,
+    0.15
+  ) !important; /* Using #fefefe, semi-transparent for glassy effect */
+  backdrop-filter: blur(10px) !important; /* Adds the blur effect */
+  -webkit-backdrop-filter: blur(10px) !important;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1) !important; /* Subtle shadow for depth */
+  transition: all 0.3s ease-in-out !important; /* Smooth transition for collapse/expand */
+  height: 100vh !important;
+  position: fixed !important; /* Ensure fixed positioning to prevent shifting */
+  left: 0 !important;
+  top: 0 !important;
+  overflow: hidden !important;
+  z-index: 1000 !important; /* Ensure sidebar stays on top */
+  border-radius: 0 12px 12px 0 !important; /* Slight rounding on right edges for modern look */
+}
+
+/* Sidebar when collapsed */
+.ant-layout-sider-collapsed {
+  transition: all 0.3s ease-in-out !important; /* Smooth transition for collapse */
+}
+
+/* Sidebar when expanded */
+.ant-layout-sider:not(.ant-layout-sider-collapsed) {
+  transition: all 0.3s ease-in-out !important; /* Smooth transition for expand */
+}
+
+/* Ant Design Menu (Glassy Effect with Palette Colors) */
+.ant-menu {
+  background: rgba(
+    184,
+    215,
+    251,
+    0.2
+  ) !important; /* Using #b8d7fb, semi-transparent for menu background */
+  border: none !important; /* Remove default border */
+  backdrop-filter: blur(10px) !important; /* Adds the blur effect */
+  -webkit-backdrop-filter: blur(10px) !important;
+  color: #526ab7 !important; /* Using #526ab7 for text, dark blue for contrast */
+}
+
+/* Menu Items (Glassy, Interactive, Centered in Both States, Matching Screenshot) */
+.ant-menu-item {
+  background: rgba(
+    184,
+    215,
+    251,
+    0.3
+  ) !important; /* Using #b8d7fb, semi-transparent to match screenshot */
+  border-radius: 6px !important; /* Rounded corners like menu items in screenshot */
+  margin: 4px auto !important; /* Center horizontally with auto margins */
+  transition: all 0.3s ease-in-out !important; /* Smooth transitions for all properties */
+  padding: 12px 16px !important; /* Consistent padding when expanded */
+  display: flex !important; /* Ensure flex for centering */
+  align-items: center !important; /* Vertically center items */
+  justify-content: flex-start !important; /* Align items to start when expanded */
+  position: relative !important; /* For positioning background/border */
+}
+
+.ant-menu-item:hover,
+.ant-menu-item-active,
+.ant-menu-item-selected {
+  background: rgba(
+    115,
+    170,
+    238,
+    0.5
+  ) !important; /* Using #73aaee, semi-transparent on hover/active */
+  color: #ffffff !important; /* White text for contrast on hover/active */
+  border: 1px solid rgba(115, 170, 238, 0.7) !important; /* Using #73aaee for border */
+}
+
+.ant-layout-sider-collapsed .ant-menu-item .anticon {
+  margin-right: 0 !important; /* Remove margin when collapsed to center icon */
+}
+
+.ant-layout-sider-collapsed .ant-menu-item-label {
+  opacity: 0 !important; /* Hide text when collapsed */
+  width: 0 !important; /* Ensure no space for text */
+  overflow: hidden !important; /* Prevent text overflow */
+}
+
+/* Collapsible Trigger (Top-Left Corner, Minimal Square Button, Matching Screenshot) */
+.ant-layout-sider-trigger {
+  position: relative !important;
+  background: none !important; /* Remove background for minimal look */
+  border: none !important; /* Remove border for minimal look */
+  color: #73aaee !important; /* Using #73aaee for icon color, subtle and modern, matching screenshot */
+  transition: all 0.3s ease-in-out !important; /* Smooth transition for hover */
+  border-radius: 6px !important; /* Square with rounded corners, matching menu items and screenshot */
+  height: 32px !important; /* Fixed size for square button */
+  margin: 12px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important; /* Center the arrow/icon */
+  cursor: pointer !important;
+  font-size: 16px !important; /* Larger icon for clarity, matching screenshot */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important; /* Subtle shadow for comfort, matching screenshot */
+}
+
+.ant-layout-sider-trigger:hover {
+  color: #526ab7 !important; /* Using #526ab7 for hover, darker blue for contrast, matching screenshot */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2) !important; /* Enhanced shadow on hover for comfort */
+}
+
+/* Logout Menu Item (Red, Harmonic, Matching Screenshot) */
+.ant-menu-item-logout {
+  background: rgba(
+    255,
+    77,
+    79,
+    0.15
+  ) !important; /* Light red, semi-transparent for harmony */
+  color: #ff4d4f !important; /* Red text for Logout, using a danger color */
+  border-radius: 6px !important;
+  transition: all 0.3s ease-in-out !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important; /* Center the arrow/icon */
+  position: relative !important;
+  bottom: 12px !important;
+  cursor: pointer !important;
+  font-size: 16px !important; /* Larger icon for clarity, matching screenshot */
+}
+
+.ant-menu-item-logout:hover,
+.ant-menu-item-logout-active,
+.ant-menu-item-logout-selected {
+  background: rgba(
+    217,
+    54,
+    62,
+    0.3
+  ) !important; /* Darker red, semi-transparent on hover */
+  color: #ffffff !important; /* White text for contrast on hover */
+  border: 1px solid rgba(217, 54, 62, 0.5) !important; /* Red border for harmony */
+}
+
+/* Logout Trigger (Bottom, Minimal Square Button, Matching Collapser) */
+.ant-layout-sider-logout-trigger {
+  position: absolute !important;
+  bottom: 20px !important; /* Position at the bottom of the sidebar, with spacing */
+  left: 10px !important; /* Align with the left edge, matching the collapser */
+  background: none !important; /* Remove background for minimal look */
+  border: none !important; /* Remove border for minimal look */
+  color: #ff4d4f !important; /* Using red for Logout, matching your danger color, subtle and modern */
+  transition: all 0.3s ease-in-out !important; /* Smooth transition for hover, resize, and layout */
+  border-radius: 6px !important; /* Square with rounded corners, matching menu items and collapser */
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important; /* Center the content */
+  cursor: pointer !important;
+  font-size: 16px !important; /* Larger icon for clarity, matching collapser */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important; /* Subtle shadow for comfort, matching collapser */
+}
+
+/* Expanded State (Show Icon + Text, Match Collapser Width Logic) */
+.ant-layout-sider:not(.ant-layout-sider-collapsed)
+  .ant-layout-sider-logout-trigger {
+  width: 90% !important; /* Match menu item width for full-sized state, same as collapser’s expanded logic */
+  padding: 12px !important; /* Match menu item padding for consistency, same as collapser’s expanded padding */
+}
+
+/* Collapsed State (Show Only Icon, Match Collapser Width Logic) */
+.ant-layout-sider-collapsed .ant-layout-sider-logout-trigger {
+  width: 70% !important; /* Match collapser width for collapsed state */
+  height: 32px !important; /* Fixed height for square button, matching collapser */
+  padding: 0 !important; /* Remove padding to center icon, matching collapser */
+  justify-content: center !important; /* Center icon only, matching collapser */
+}
+
+/* Logout Icon Styling */
+.ant-layout-sider-logout-trigger .anticon {
+  color: #ff4d4f !important; /* Red icon color for Logout */
+  transition: margin-right 0.3s ease-in-out !important; /* Smooth transition for icon spacing */
+}
+
+/* Text Styling in Expanded State */
+.ant-layout-sider:not(.ant-layout-sider-collapsed)
+  .ant-layout-sider-logout-trigger
+  .anticon {
+  margin-right: 12px !important; /* Space between icon and text when expanded, matching collapser’s text spacing logic */
+}
+
+/* Hover Effects for Logout Button */
+.ant-layout-sider-logout-trigger:hover {
+  color: #d9363e !important; /* Darker red for hover, matching Logout hover state, for contrast */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2) !important; /* Enhanced shadow on hover for comfort */
+}
+
+/* Ensure consistent sizing and transition for both states, matching collapser */
+.ant-layout-sider-logout-trigger {
+  transition: width 0.3s ease-in-out, padding 0.3s ease-in-out,
+    justify-content 0.3s ease-in-out !important;
+}
