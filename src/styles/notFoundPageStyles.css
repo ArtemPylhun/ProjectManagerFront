@@ -1,0 +1,136 @@
+/* Not Found Page Container */
+.not-found-page {
+  padding: 20px;
+  min-height: calc(100vh - 64px); /* Adjust for header/footer if present */
+  background: linear-gradient(
+    135deg,
+    #f0f8ff,
+    #e6f3ff
+  ); /* Subtle blue gradient background, matching #b8d7fb */
+  background-size: cover;
+  background-attachment: fixed; /* Optional: Keeps background fixed while scrolling */
+  position: relative; /* For overlay effects if needed */
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.05) !important; /* Subtle inner shadow for depth, matching sidebar */
+  border-radius: 0 12px 12px 0 !important; /* Match sidebar’s half-rounded right edges */
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+/* Not Found Content */
+.not-found-content {
+  text-align: center;
+  background: linear-gradient(
+    135deg,
+    #f0f8ff,
+    #e6f3ff
+  ) !important; /* Subtle blue gradient background, matching #b8d7fb */
+  border-radius: 12px !important; /* Rounded corners to match sidebar and other elements */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important; /* Subtle shadow for depth, matching sidebar */
+  padding: 40px;
+  max-width: 600px;
+  width: 90%;
+  margin: 0 auto;
+  transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+}
+
+.not-found-content:hover {
+  transform: translateY(-5px) !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15) !important; /* Enhanced shadow on hover */
+}
+
+/* Headings and Text */
+.not-found-content h1 {
+  font-size: 3rem;
+  margin-bottom: 20px;
+  color: #526ab7 !important; /* Using #526ab7 for text, dark blue for contrast */
+}
+
+.not-found-content p {
+  font-size: 1.2rem;
+  margin-bottom: 30px;
+  color: #526ab7 !important; /* Using #526ab7 for text */
+}
+
+/* Back to Home Link/Button */
+.back-home-link {
+  display: inline-block;
+  background: rgba(
+    115,
+    170,
+    238,
+    0.5
+  ) !important; /* Using #73aaee, semi-transparent for glassy effect */
+  border: 1px solid rgba(115, 170, 238, 0.7) !important; /* Using #73aaee */
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  color: #ffffff !important; /* White text for contrast */
+  padding: 12px 24px;
+  border-radius: 6px !important; /* Smaller radius for buttons, matching menu items */
+  font-size: 1rem;
+  text-decoration: none;
+  transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1) !important; /* Subtle shadow for depth */
+}
+
+.back-home-link:hover {
+  background: rgba(
+    82,
+    106,
+    183,
+    0.7
+  ) !important; /* Using #526ab7, semi-transparent on hover */
+  border-color: #526ab7 !important;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15) !important; /* Enhanced shadow on hover */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .not-found-page {
+    padding: 10px;
+  }
+
+  .not-found-content {
+    padding: 30px;
+    border-radius: 8px !important; /* Slightly smaller radius on tablets */
+  }
+
+  .not-found-content h1 {
+    font-size: 2.5rem;
+  }
+
+  .not-found-content p {
+    font-size: 1rem;
+  }
+
+  .back-home-link {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+    border-radius: 6px !important; /* Maintain button radius */
+  }
+}
+
+@media (max-width: 480px) {
+  .not-found-page {
+    padding: 5px;
+  }
+
+  .not-found-content {
+    padding: 20px;
+    border-radius: 6px !important; /* Even smaller radius on mobile */
+  }
+
+  .not-found-content h1 {
+    font-size: 2rem;
+  }
+
+  .not-found-content p {
+    font-size: 0.9rem;
+  }
+
+  .back-home-link {
+    padding: 8px 16px;
+    font-size: 0.8rem;
+    border-radius: 6px !important; /* Maintain button radius */
+  }
+}

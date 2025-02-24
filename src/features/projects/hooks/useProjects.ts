@@ -7,18 +7,24 @@ import {
 } from "../interfaces/ProjectInterface";
 import { ProjectService } from "../services/project.service";
 import { UserService } from "../../users/services/user.service";
-import { useLoading } from "../../../hooks/useLoading";
 import { ProjectUserCreateInterface } from "../interfaces/ProjectUserInterface";
-const useProjects = () => {
+import { useLoading } from "../../../hooks/useLoading";
+import useUserId from "../../../hooks/useUserId";
+const useProjects = (isUserPage: boolean) => {
   const [projects, setProjects] = useState<ProjectInterface[] | null>(null);
 
   const { loading, turnOnLoading, turnOffLoading } = useLoading();
+
+  const { userId } = useUserId();
 
   const fetchProjects = useCallback(
     async (signal: AbortSignal): Promise<boolean> => {
       turnOnLoading();
       try {
-        const response = await ProjectService.getAllProjects(signal);
+        const response =
+          isUserPage && userId !== null
+            ? await ProjectService.getAllProjectsByUserId(userId, signal)
+            : await ProjectService.getAllProjects(signal);
         console.log("Projects: ", response);
         if (Array.isArray(response)) {
           setProjects(response as ProjectInterface[]);
@@ -85,6 +91,7 @@ const useProjects = () => {
               project.id === updatedProject.id
                 ? {
                     ...updatedProject,
+                    createdAt: response.createdAt,
                     creator: project.creator,
                     client: updatedClient,
                     projectUsers: project.projectUsers,

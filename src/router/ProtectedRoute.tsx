@@ -30,6 +30,8 @@ const ProtectedRoute = ({ children, allowedRoles }: ProtectedRouteProps) => {
 
   const userRoles = Array.isArray(user?.roles)
     ? user.roles.map((role: string) => role.trim())
+    : user?.roles != null
+    ? user.roles
     : [];
   return (
     <>

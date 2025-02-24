@@ -47,7 +47,7 @@ const TimeEntryComponent = () => {
   } = useTimeEntryModal();
 
   const { users } = useUsers();
-  const { projects } = useProjects();
+  const { projects } = useProjects(false);
   const { projectTasks } = useProjectTasks();
 
   const handleFilterQueryChange = (

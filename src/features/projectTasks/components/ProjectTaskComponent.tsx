@@ -44,7 +44,7 @@ const ProjectTaskComponent = () => {
     setNewUserTask,
   } = useProjectTasksModal();
 
-  const { projects } = useProjects();
+  const { projects } = useProjects(false);
   const { users } = useUsers();
 
   const handleFilterQueryChange = (

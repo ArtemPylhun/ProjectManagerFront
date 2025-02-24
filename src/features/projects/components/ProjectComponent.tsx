@@ -27,7 +27,7 @@ const ProjectComponent = () => {
     handleUpdateProject,
     handleAddUserToProject,
     handleRemoveUserFromProject,
-  } = useProjects();
+  } = useProjects(false);
 
   const {
     modalMode,

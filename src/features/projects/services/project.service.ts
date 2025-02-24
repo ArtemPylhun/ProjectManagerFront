@@ -23,6 +23,20 @@ export class ProjectService {
     return await httpClient.get("get-all");
   }
 
+  static async getAllProjectsByUserId(
+    userId: string,
+    signal: AbortSignal
+  ): Promise<ProjectInterface[]> {
+    const apiUrl = import.meta.env.VITE_API_BASE_URL;
+    const httpClient = new HttpClient(
+      {
+        baseURL: `${apiUrl}/projects`,
+      },
+      signal
+    );
+    return await httpClient.get(`get-all-by-user-id/${userId}`);
+  }
+
   static async getProjectById(
     projectId: string,
     signal: AbortSignal
