@@ -62,7 +62,6 @@
   backdrop-filter: blur(10px) !important; /* Stronger glassy effect */
   -webkit-backdrop-filter: blur(10px) !important;
   transition: transform 0.3s ease, box-shadow 0.3s ease !important; /* Smooth transitions */
-  max-width: 1000px; /* Limit width for better readability */
   width: 100%; /* Ensure full width up to max-width */
 }
 

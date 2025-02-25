@@ -166,7 +166,7 @@ const ProjectsPage: React.FC = () => {
       <CustomModal
         visible={isModalVisible}
         title={
-          modalMode === ModalModes.CREATE ? "Create Project" : "Delete Proeject"
+          modalMode === ModalModes.CREATE ? "Create Project" : "Delete Project"
         }
         isDanger={modalMode === ModalModes.DELETE}
         okText={modalMode === ModalModes.CREATE ? "Create" : "Delete"}

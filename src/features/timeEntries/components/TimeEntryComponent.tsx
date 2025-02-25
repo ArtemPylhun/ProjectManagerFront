@@ -48,7 +48,7 @@ const TimeEntryComponent = () => {
 
   const { users } = useUsers();
   const { projects } = useProjects(false);
-  const { projectTasks } = useProjectTasks();
+  const { projectTasks } = useProjectTasks(false);
 
   const handleFilterQueryChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -198,6 +198,7 @@ const TimeEntryComponent = () => {
             setSelectedProject={setSelectedProject}
             setSelectedProjectTask={setSelectedProjectTask}
             loading={loading}
+            isUserCreator={false}
           />
         )}
 
