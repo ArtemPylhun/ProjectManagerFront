@@ -1,0 +1,271 @@
+/* Home Page Container */
+.home-page {
+  padding: 20px;
+  min-height: calc(100vh - 64px); /* Adjust for header/footer if present */
+  background: linear-gradient(
+    135deg,
+    #f0f8ff,
+    #e6f3ff
+  ); /* Subtle blue gradient background, matching #b8d7fb */
+  background-size: cover;
+  background-attachment: fixed; /* Optional: Keeps background fixed while scrolling */
+  position: relative; /* For overlay effects if needed */
+}
+
+/* Hero Section */
+.hero-section {
+  padding: 80px 20px;
+  text-align: center;
+  background-size: cover;
+  color: #526ab7; /* Using #526ab7 for text */
+}
+
+.hero-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.hero-content h1 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  color: #526ab7;
+}
+
+.hero-content p {
+  font-size: 1.2rem;
+  margin-bottom: 30px;
+  color: #526ab7;
+}
+
+.hero-button {
+  background: rgba(
+    115,
+    170,
+    238,
+    0.5
+  ) !important; /* Using #73aaee, semi-transparent for glassy effect */
+  border: 1px solid rgba(115, 170, 238, 0.7) !important; /* Using #73aaee */
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  color: #ffffff !important;
+  transition: background 0.3s ease, color 0.3s ease !important;
+  border-radius: 6px !important;
+}
+
+.hero-button:hover {
+  background: rgba(
+    82,
+    106,
+    183,
+    0.7
+  ) !important; /* Using #526ab7, semi-transparent on hover */
+  border-color: #526ab7 !important;
+}
+
+/* Features Section */
+.features-section {
+  padding: 60px 20px;
+  text-align: center;
+  background: #ffffff; /* Solid white for contrast */
+}
+
+.features-section h2 {
+  font-size: 2rem;
+  margin-bottom: 40px;
+  color: #526ab7;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.feature-card {
+  background: rgba(
+    254,
+    254,
+    254,
+    0.2
+  ) !important; /* Light transparent white using #fefefe, subtle glassy effect */
+  border-radius: 12px !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important; /* Subtle border using #fefefe */
+  padding: 20px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px) !important;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15) !important;
+}
+
+.feature-card h3 {
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+  color: #526ab7;
+}
+
+.feature-card p {
+  font-size: 1rem;
+  color: #526ab7;
+}
+
+/* Testimonials Section */
+.testimonials-section {
+  padding: 60px 20px;
+  text-align: center;
+  background: linear-gradient(
+    135deg,
+    #f0f8ff,
+    #e6f3ff
+  ); /* Subtle gradient matching #b8d7fb */
+}
+
+.testimonials-section h2 {
+  font-size: 2rem;
+  margin-bottom: 40px;
+  color: #526ab7;
+}
+
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.testimonial-card {
+  background: rgba(
+    254,
+    254,
+    254,
+    0.2
+  ) !important; /* Light transparent white, subtle glassy effect */
+  border-radius: 12px !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important; /* Subtle border using #fefefe */
+  padding: 20px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+}
+
+.testimonial-card:hover {
+  transform: translateY(-5px) !important;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15) !important;
+}
+
+.testimonial-card p {
+  font-size: 1rem;
+  margin-bottom: 15px;
+  color: #526ab7;
+}
+
+.testimonial-author {
+  font-style: italic;
+  font-size: 0.9rem;
+  color: #73aaee; /* Using #73aaee for author text, light blue for contrast */
+}
+
+/* Call to Action Section */
+.cta-section {
+  padding: 60px 20px;
+  text-align: center;
+  background: #ffffff; /* Solid white for contrast */
+}
+
+.cta-section h2 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  color: #526ab7;
+}
+
+.cta-section p {
+  font-size: 1.2rem;
+  margin-bottom: 30px;
+  color: #526ab7;
+}
+
+.cta-button {
+  background: rgba(
+    115,
+    170,
+    238,
+    0.5
+  ) !important; /* Using #73aaee, semi-transparent for glassy effect */
+  border: 1px solid rgba(115, 170, 238, 0.7) !important; /* Using #73aaee */
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  color: #ffffff !important;
+  transition: background 0.3s ease, color 0.3s ease !important;
+  border-radius: 6px !important;
+}
+
+.cta-button:hover {
+  background: rgba(
+    82,
+    106,
+    183,
+    0.7
+  ) !important; /* Using #526ab7, semi-transparent on hover */
+  border-color: #526ab7 !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .hero-section,
+  .features-section,
+  .testimonials-section,
+  .cta-section {
+    padding: 40px 10px;
+  }
+
+  .hero-content h1 {
+    font-size: 2rem;
+  }
+
+  .hero-content p,
+  .cta-section p {
+    font-size: 1rem;
+  }
+
+  .features-grid,
+  .testimonials-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .feature-card,
+  .testimonial-card {
+    padding: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-section,
+  .features-section,
+  .testimonials-section,
+  .cta-section {
+    padding: 30px 5px;
+  }
+
+  .hero-content h1 {
+    font-size: 1.5rem;
+  }
+
+  .hero-content p,
+  .cta-section p {
+    font-size: 0.9rem;
+  }
+
+  .features-grid,
+  .testimonials-grid {
+    gap: 20px;
+  }
+
+  .feature-card h3,
+  .testimonial-card p {
+    font-size: 1rem;
+  }
+}

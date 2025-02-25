@@ -27,7 +27,7 @@ const ProjectComponent = () => {
     handleUpdateProject,
     handleAddUserToProject,
     handleRemoveUserFromProject,
-  } = useProjects();
+  } = useProjects(false);
 
   const {
     modalMode,
@@ -193,6 +193,7 @@ const ProjectComponent = () => {
             setSelectedClient={setSelectedClient}
             setSelectedCreator={setSelectedCreator}
             loading={loading}
+            isUserCreator={false}
           />
         )}
 

@@ -44,12 +44,6 @@
 
 /* Menu Items (Glassy, Interactive, Centered in Both States, Matching Screenshot) */
 .ant-menu-item {
-  background: rgba(
-    184,
-    215,
-    251,
-    0.3
-  ) !important; /* Using #b8d7fb, semi-transparent to match screenshot */
   border-radius: 6px !important; /* Rounded corners like menu items in screenshot */
   margin: 4px auto !important; /* Center horizontally with auto margins */
   transition: all 0.3s ease-in-out !important; /* Smooth transitions for all properties */

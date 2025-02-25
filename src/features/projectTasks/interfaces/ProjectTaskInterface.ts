@@ -15,6 +15,7 @@ export interface ProjectTaskCreateInterface {
   name: string;
   estimatedTime: number;
   description: string;
+  status: number;
 }
 
 export interface ProjectTaskUpdateInterface {

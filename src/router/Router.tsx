@@ -9,7 +9,11 @@ import RolePage from "../features/roles/RolePage";
 import ProjectPage from "../features/projects/ProjectPage";
 import ProjectTaskPage from "../features/projectTasks/ProjectTaskPage";
 import TimeEntryPage from "../features/timeEntries/TimeEntryPage";
-
+import HomePage from "../features/client/homePage/HomePage";
+import ProjectsPage from "../features/client/homePage/projects/ProjectsPage";
+import ProjectDetailPage from "../features/client/homePage/projects/ProjectDetailPage";
+import ProjectTasksPage from "../features/client/homePage/projectTasks/ProjectTasksPage";
+import TimeEntryUserPage from "../features/client/homePage/timeEntries/TimeEntryUserPage";
 const Router = () => {
   return (
     <BrowserRouter>
@@ -18,8 +22,9 @@ const Router = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/" element={<Layout />}>
+          <Route path="/" element={<HomePage />} />
           <Route
-            path="/users"
+            path="/users-admin"
             element={
               <ProtectedRoute allowedRoles={["Admin"]}>
                 <UserPage />
@@ -27,7 +32,7 @@ const Router = () => {
             }
           />
           <Route
-            path="/roles"
+            path="/roles-admin"
             element={
               <ProtectedRoute allowedRoles={["Admin"]}>
                 <RolePage />
@@ -35,7 +40,7 @@ const Router = () => {
             }
           />
           <Route
-            path="/projects"
+            path="/projects-admin"
             element={
               <ProtectedRoute allowedRoles={["Admin"]}>
                 <ProjectPage />
@@ -43,7 +48,7 @@ const Router = () => {
             }
           />
           <Route
-            path="/project-tasks"
+            path="/project-tasks-admin"
             element={
               <ProtectedRoute allowedRoles={["Admin"]}>
                 <ProjectTaskPage />
@@ -51,10 +56,42 @@ const Router = () => {
             }
           />
           <Route
-            path="/time-entries"
+            path="/time-entries-admin"
             element={
               <ProtectedRoute allowedRoles={["Admin"]}>
                 <TimeEntryPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/projects"
+            element={
+              <ProtectedRoute allowedRoles={["User", "Admin"]}>
+                <ProjectsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/projects/:id"
+            element={
+              <ProtectedRoute allowedRoles={["User", "Admin"]}>
+                <ProjectDetailPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/project-tasks/"
+            element={
+              <ProtectedRoute allowedRoles={["User", "Admin"]}>
+                <ProjectTasksPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/time-entries/"
+            element={
+              <ProtectedRoute allowedRoles={["User", "Admin"]}>
+                <TimeEntryUserPage />
               </ProtectedRoute>
             }
           />

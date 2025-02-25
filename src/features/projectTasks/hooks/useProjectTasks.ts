@@ -9,8 +9,9 @@ import { useLoading } from "../../../hooks/useLoading";
 import { message } from "antd";
 import { UserTaskCreateInterface } from "../interfaces/UserTaskInterface";
 import { ProjectTaskStatusInterface } from "../interfaces/ProjectTaskStatusInterface";
+import useUserId from "../../../hooks/useUserId";
 
-const useProjectTasks = () => {
+const useProjectTasks = (isUserPage: boolean) => {
   const [projectTasks, setProjectTasks] = useState<
     ProjectTaskInterface[] | null
   >(null);
@@ -21,27 +22,66 @@ const useProjectTasks = () => {
 
   const { loading, turnOnLoading, turnOffLoading } = useLoading();
 
-  const fetchProjectTasks = useCallback(
+  const { userId } = useUserId();
+
+  const fetchAllProjectTasks = useCallback(
     async (signal: AbortSignal): Promise<boolean> => {
       turnOnLoading();
       try {
         const response = await ProjectTaskService.getAllProjectTasks(signal);
-        console.log("Project Tasks: ", response);
+        console.warn("Fetching all project tasks for Admin: ", response);
         if (Array.isArray(response)) {
           setProjectTasks(response as ProjectTaskInterface[]);
           return true;
         } else {
-          console.error("Invalid response format", response);
+          console.error(
+            "Invalid response format for all project tasks",
+            response
+          );
           return false;
         }
       } catch (error) {
-        console.error("Error fetching project tasks:", error);
+        console.error("Error fetching all project tasks:", error);
         return false;
       } finally {
         turnOffLoading();
       }
     },
-    []
+    [] // No dependencies, as this is static for Admins
+  );
+
+  const fetchUserProjectTasks = useCallback(
+    async (signal: AbortSignal): Promise<boolean> => {
+      if (!userId) {
+        console.warn("User ID not available yet, skipping fetch");
+        return false;
+      }
+
+      turnOnLoading();
+      try {
+        const response = await ProjectTaskService.getAllProjectTasksByUserId(
+          userId,
+          signal
+        );
+        console.warn("Fetching user project tasks: ", response);
+        if (Array.isArray(response)) {
+          setProjectTasks(response as ProjectTaskInterface[]);
+          return true;
+        } else {
+          console.error(
+            "Invalid response format for user project tasks",
+            response
+          );
+          return false;
+        }
+      } catch (error) {
+        console.error("Error fetching user project tasks:", error);
+        return false;
+      } finally {
+        turnOffLoading();
+      }
+    },
+    [userId] // Depends on userId for non-Admin users
   );
 
   const fetchProjectTaskStatuses = useCallback(
@@ -69,10 +109,26 @@ const useProjectTasks = () => {
 
   useEffect(() => {
     const abortController = new AbortController();
-    fetchProjectTasks(abortController.signal);
-    fetchProjectTaskStatuses(abortController.signal);
+
+    const fetchWhenReady = async () => {
+      if (isUserPage && userId) {
+        await fetchUserProjectTasks(abortController.signal);
+      } else {
+        await fetchAllProjectTasks(abortController.signal);
+      }
+    };
+
+    fetchWhenReady();
+    fetchProjectTaskStatuses(abortController.signal); // Fetch statuses separately, always
+
     return () => abortController.abort();
-  }, [fetchProjectTasks, fetchProjectTaskStatuses]);
+  }, [
+    isUserPage,
+    userId,
+    fetchAllProjectTasks,
+    fetchUserProjectTasks,
+    fetchProjectTaskStatuses,
+  ]);
 
   const handleCreateProjectTask = async (
     newProjectTask: ProjectTaskCreateInterface
@@ -99,6 +155,7 @@ const useProjectTasks = () => {
     updatedProjectTask: ProjectTaskUpdateInterface
   ): Promise<boolean> => {
     try {
+      console.warn("UpdatedProjectTask: ", updatedProjectTask);
       const response = await ProjectTaskService.updateProjectTask(
         updatedProjectTask,
         new AbortController().signal
@@ -224,7 +281,6 @@ const useProjectTasks = () => {
     projectTasks,
     projectTaskStatuses,
     loading,
-    fetchProjectTasks,
     handleCreateProjectTask,
     handleUpdateProjectTask,
     handleDeleteProjectTask,

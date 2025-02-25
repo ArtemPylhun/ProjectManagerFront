@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { Form, Input, Select } from "antd";
 import { ProjectTaskInterface } from "../../interfaces/ProjectTaskInterface";
 import { ProjectInterface } from "../../../projects/interfaces/ProjectInterface";
-import { ProjectTaskStatusInterface } from "../../interfaces/ProjectTaskStatusInterface";
 import {
   validateProjectTaskName,
   validateDescription,
@@ -16,7 +15,7 @@ interface ProjectTaskFormProps {
   setProjectTaskData: (data: any) => void;
   isCreateMode: boolean;
   projects: ProjectInterface[] | undefined;
-  projectTaskStatuses: ProjectTaskStatusInterface[] | null;
+  projectTaskStatuses: { id: number; name: string }[] | null;
   selectedProject: ProjectInterface | null;
   setSelectedProject: (project: ProjectInterface | null) => void;
   loading: boolean;
@@ -36,13 +35,7 @@ const ProjectTaskForm: React.FC<ProjectTaskFormProps> = ({
   loading,
 }) => {
   useEffect(() => {
-    form.setFieldsValue({
-      name: projectTaskData?.name || "",
-      description: projectTaskData?.description || "",
-      estimatedTime: projectTaskData?.estimatedTime || "",
-      projectId: projectTaskData?.project?.id || null,
-      status: projectTaskData?.status || null,
-    });
+    form.setFieldsValue(projectTaskData);
   }, [projectTaskData, form]);
 
   const handleFinish = async () => {
@@ -126,22 +119,23 @@ const ProjectTaskForm: React.FC<ProjectTaskFormProps> = ({
           onChange={(value) => {
             const project = projects?.find((p) => p.id === value) || null;
             setSelectedProject(project);
-            setProjectTaskData((prev: any) => ({
+            setProjectTaskData((prev: ProjectTaskInterface) => ({
               ...prev,
-              projectId: value,
+              project: project,
+              projectId: project?.id,
             }));
           }}
           disabled={!isCreateMode}
           loading={loading}
         >
-          {projects?.map((project) => (
+          {projects?.map((project: ProjectInterface) => (
             <Select.Option key={project.id} value={project.id}>
               {project.name}
             </Select.Option>
           ))}
         </Select>
       </Form.Item>
-      {!isCreateMode && projectTaskData && (
+      {!isCreateMode && (
         <Form.Item
           label="Status"
           name="status"
@@ -152,7 +146,7 @@ const ProjectTaskForm: React.FC<ProjectTaskFormProps> = ({
             placeholder="Select Status"
             value={projectTaskData.status}
             onChange={(value) =>
-              setProjectTaskData((prev: any) => ({
+              setProjectTaskData((prev: ProjectTaskInterface) => ({
                 ...prev,
                 status: value,
               }))

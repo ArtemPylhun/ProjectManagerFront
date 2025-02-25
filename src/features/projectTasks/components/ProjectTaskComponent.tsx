@@ -26,7 +26,7 @@ const ProjectTaskComponent = () => {
     handleUpdateProjectTask,
     handleAddUserToProjectTask,
     handleRemoveUserFromProjectTask,
-  } = useProjectTasks();
+  } = useProjectTasks(false);
 
   const {
     modalMode,
@@ -44,7 +44,7 @@ const ProjectTaskComponent = () => {
     setNewUserTask,
   } = useProjectTasksModal();
 
-  const { projects } = useProjects();
+  const { projects } = useProjects(false);
   const { users } = useUsers();
 
   const handleFilterQueryChange = (

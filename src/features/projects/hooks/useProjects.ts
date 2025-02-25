@@ -7,41 +7,85 @@ import {
 } from "../interfaces/ProjectInterface";
 import { ProjectService } from "../services/project.service";
 import { UserService } from "../../users/services/user.service";
-import { useLoading } from "../../../hooks/useLoading";
 import { ProjectUserCreateInterface } from "../interfaces/ProjectUserInterface";
-const useProjects = () => {
+import { useLoading } from "../../../hooks/useLoading";
+import useUserId from "../../../hooks/useUserId";
+const useProjects = (isUserPage: boolean) => {
   const [projects, setProjects] = useState<ProjectInterface[] | null>(null);
 
   const { loading, turnOnLoading, turnOffLoading } = useLoading();
 
-  const fetchProjects = useCallback(
+  const { userId } = useUserId();
+
+  const fetchAllProjects = useCallback(
     async (signal: AbortSignal): Promise<boolean> => {
       turnOnLoading();
       try {
         const response = await ProjectService.getAllProjects(signal);
-        console.log("Projects: ", response);
+        console.warn("Fetching all projects for Admin: ", response);
         if (Array.isArray(response)) {
           setProjects(response as ProjectInterface[]);
           return true;
         } else {
-          console.error("Invalid response format", response);
+          console.error("Invalid response format for all projects", response);
           return false;
         }
       } catch (error) {
-        console.error("Error fetching projects:", error);
+        console.error("Error fetching all projects:", error);
         return false;
       } finally {
         turnOffLoading();
       }
     },
-    []
+    [] // No dependencies, as this is static for Admins
+  );
+
+  const fetchUserProjects = useCallback(
+    async (signal: AbortSignal): Promise<boolean> => {
+      if (!userId) {
+        console.warn("User ID not available yet, skipping fetch");
+        return false;
+      }
+
+      turnOnLoading();
+      try {
+        const response = await ProjectService.getAllProjectsByUserId(
+          userId,
+          signal
+        );
+        console.warn("Fetching user projects: ", response);
+        if (Array.isArray(response)) {
+          setProjects(response as ProjectInterface[]);
+          return true;
+        } else {
+          console.error("Invalid response format for user projects", response);
+          return false;
+        }
+      } catch (error) {
+        console.error("Error fetching user projects:", error);
+        return false;
+      } finally {
+        turnOffLoading();
+      }
+    },
+    [userId] // Depends on userId for non-Admin users
   );
 
   useEffect(() => {
     const abortController = new AbortController();
-    fetchProjects(abortController.signal);
+
+    const fetchWhenReady = async () => {
+      if (isUserPage && userId) {
+        await fetchUserProjects(abortController.signal);
+      } else {
+        await fetchAllProjects(abortController.signal);
+      }
+    };
+
+    fetchWhenReady();
+
     return () => abortController.abort();
-  }, [fetchProjects]);
+  }, [isUserPage, userId, fetchAllProjects, fetchUserProjects]);
 
   const handleCreateProject = async (
     newProject: ProjectCreateInterface
@@ -85,6 +129,7 @@ const useProjects = () => {
               project.id === updatedProject.id
                 ? {
                     ...updatedProject,
+                    createdAt: response.createdAt,
                     creator: project.creator,
                     client: updatedClient,
                     projectUsers: project.projectUsers,
@@ -195,7 +240,6 @@ const useProjects = () => {
   return {
     projects,
     loading,
-    fetchProjects,
     handleDeleteProject,
     handleCreateProject,
     handleUpdateProject,

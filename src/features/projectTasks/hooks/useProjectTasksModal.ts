@@ -28,6 +28,7 @@ const useProjectTasksModal = () => {
       name: "",
       estimatedTime: 0,
       description: "",
+      status: 0,
     });
 
   const [newUserTask, setNewUserTask] = useState<UserTaskCreateInterface>({
@@ -61,6 +62,7 @@ const useProjectTasksModal = () => {
         name: "",
         estimatedTime: 0,
         description: "",
+        status: 0,
       });
     }
     setIsModalVisible(true);

@@ -8,6 +8,7 @@ export interface ProjectInterface {
   colorHex: string;
   creator: UserInterface;
   client: UserInterface;
+  createdAt: Date;
   projectUsers: ProjectUserInterface[];
 }
 

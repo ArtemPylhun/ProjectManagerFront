@@ -18,6 +18,7 @@ interface ProjectFormProps {
   setSelectedClient: (user: UserInterface | null) => void;
   setSelectedCreator: (user: UserInterface | null) => void;
   loading: boolean;
+  isUserCreator: boolean;
 }
 
 const { TextArea } = Input;
@@ -33,9 +34,15 @@ const ProjectForm: React.FC<ProjectFormProps> = ({
   setSelectedClient,
   setSelectedCreator,
   loading,
+  isUserCreator,
 }) => {
   useEffect(() => {
+    if (isUserCreator)
+      setSelectedCreator(
+        users?.find((x) => x.id === projectData?.creatorId) || null
+      );
     form.setFieldsValue(projectData);
+    console.warn("SELECTED CREATOR:>>>> ", selectedCreator);
   }, [projectData]);
 
   const handleFinish = async () => {
@@ -120,9 +127,15 @@ const ProjectForm: React.FC<ProjectFormProps> = ({
           style={{ width: "100%" }}
           placeholder="Select Client"
           value={selectedClient?.id}
-          onChange={(value) =>
-            setSelectedClient(users?.find((user) => user.id === value) || null)
-          }
+          onChange={(value) => {
+            const client = users?.find((user) => user.id === value) || null;
+            setSelectedClient(client);
+            setProjectData((prev: ProjectInterface) => ({
+              ...prev,
+              client: client,
+              clientId: client?.id || "",
+            }));
+          }}
           loading={loading}
         >
           {users?.map((user) => (
@@ -138,23 +151,38 @@ const ProjectForm: React.FC<ProjectFormProps> = ({
           name="creatorId"
           rules={[{ required: true, message: "Please select a creator" }]}
         >
-          <Select
-            style={{ width: "100%" }}
-            placeholder="Select Creator"
-            value={selectedCreator?.id}
-            onChange={(value) =>
-              setSelectedCreator(
-                users?.find((user) => user.id === value) || null
-              )
-            }
-            loading={loading}
-          >
-            {users?.map((user) => (
-              <Select.Option key={user.id} value={user.id}>
-                {user.userName}
+          {!isUserCreator ? (
+            <Select
+              style={{ width: "100%" }}
+              placeholder="Select Creator"
+              value={selectedCreator?.id || null}
+              onChange={(value) =>
+                setSelectedCreator(
+                  users?.find((user) => user.id === value) || null
+                )
+              }
+              loading={loading}
+            >
+              {users?.map((user) => (
+                <Select.Option key={user.id} value={user.id}>
+                  {user.userName}
+                </Select.Option>
+              ))}
+            </Select>
+          ) : (
+            <Select
+              style={{ width: "100%" }}
+              disabled
+              value={selectedCreator?.id}
+            >
+              <Select.Option
+                key={selectedCreator?.id}
+                value={selectedCreator?.id}
+              >
+                {selectedCreator?.userName}
               </Select.Option>
-            ))}
-          </Select>
+            </Select>
+          )}
         </Form.Item>
       )}
     </Form>

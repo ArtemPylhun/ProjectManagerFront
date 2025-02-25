@@ -23,6 +23,20 @@ export class ProjectTaskService {
     return await httpClient.get("get-all");
   }
 
+  static async getAllProjectTasksByUserId(
+    userId: string,
+    signal: AbortSignal
+  ): Promise<ProjectTaskInterface[]> {
+    const apiUrl = import.meta.env.VITE_API_BASE_URL;
+    const httpClient = new HttpClient(
+      {
+        baseURL: `${apiUrl}/project-tasks`,
+      },
+      signal
+    );
+    return await httpClient.get(`get-all-by-user-id/${userId}`);
+  }
+
   static async getAllTaskStatuses(
     signal: AbortSignal
   ): Promise<ProjectTaskStatusInterface[]> {

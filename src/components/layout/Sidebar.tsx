@@ -3,8 +3,15 @@ import { useNavigate } from "react-router-dom";
 import Sider from "antd/es/layout/Sider";
 import { Menu } from "antd";
 import type { MenuProps } from "antd";
-import { LockOutlined, LogoutOutlined } from "@ant-design/icons"; // Import LogoutOutlined for the logout icon
-import "../../styles/client-styles/sidebarStyles.css"; // Import the new stylesheet
+import {
+  LockOutlined,
+  HomeOutlined,
+  FundProjectionScreenOutlined,
+  ProjectOutlined,
+  CalendarOutlined,
+  LogoutOutlined,
+} from "@ant-design/icons";
+import "../../styles/client-styles/sidebarStyles.css";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -15,7 +22,7 @@ const Sidebar = () => {
     icon?: React.ReactNode,
     path?: string,
     children?: MenuItem[],
-    className?: string // Add className for custom styling (e.g., Logout)
+    className?: string
   ): MenuItem {
     return {
       key,
@@ -30,14 +37,11 @@ const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(false);
   const navigate = useNavigate();
 
-  const adminPages = [
-    { name: "Home", path: "/" },
-    { name: "Projects", path: "/projects" },
-    { name: "Project Tasks", path: "/project-tasks" },
-    { name: "Time Entries", path: "/time-entries" },
-    { name: "Roles", path: "/roles" },
-    { name: "Users", path: "/users" },
-  ];
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const roles = Array.isArray(user?.roles)
+    ? user.roles.map((role: string) => role.trim())
+    : user.roles;
+  const isAdmin = roles.includes("Admin");
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -46,15 +50,48 @@ const Sidebar = () => {
   };
 
   const items: MenuItem[] = [
+    getItem("Home", "/", <HomeOutlined />, "/"), // Home item for all users
     getItem(
-      "Admin",
-      "admin",
-      <LockOutlined />,
+      "Projects",
+      "projects",
+      <FundProjectionScreenOutlined />,
+      "/projects",
       undefined,
-      adminPages.map((page) =>
-        getItem(page.name, page.path, undefined, page.path)
-      )
+      "user-menu-item"
     ),
+    getItem(
+      "Project Tasks",
+      "project-tasks",
+      <ProjectOutlined />,
+      "/project-tasks",
+      undefined,
+      "user-menu-item"
+    ),
+    getItem(
+      "Time Table",
+      "time-entries",
+      <CalendarOutlined />,
+      "/time-entries",
+      undefined,
+      "user-menu-item"
+    ),
+    ...(isAdmin
+      ? [
+          getItem(
+            "Admin",
+            "admin",
+            <LockOutlined />,
+            undefined,
+            [
+              { name: "Projects", path: "/projects-admin" },
+              { name: "Project Tasks", path: "/project-tasks-admin" },
+              { name: "Time Entries", path: "/time-entries-admin" },
+              { name: "Roles", path: "/roles-admin" },
+              { name: "Users", path: "/users-admin" },
+            ].map((page) => getItem(page.name, page.path, undefined, page.path))
+          ),
+        ]
+      : []),
   ];
 
   return (
@@ -62,7 +99,10 @@ const Sidebar = () => {
       collapsible
       collapsed={collapsed}
       onCollapse={(value) => setCollapsed(value)}
+      width={240}
+      collapsedWidth={60}
       trigger={null}
+      className="custom-sider"
     >
       <div
         className="ant-layout-sider-trigger"
@@ -72,10 +112,11 @@ const Sidebar = () => {
         {collapsed ? "►" : "◄"}
       </div>
       <Menu
-        defaultSelectedKeys={["1"]}
+        theme="light"
+        defaultSelectedKeys={["/"]}
         mode="inline"
         items={items}
-        onClick={({ key }) => key === "logout" && handleLogout()} // Handle logout click
+        onClick={({ key }) => key === "logout" && handleLogout()}
       />
       <div
         className="ant-layout-sider-logout-trigger"

@@ -28,6 +28,7 @@ interface TimeEntryFormProps {
   setSelectedProject: (project: ProjectInterface | null) => void;
   setSelectedProjectTask: (projectTask: ProjectTaskInterface | null) => void;
   loading: boolean;
+  isUserCreator: boolean;
 }
 
 const { TextArea } = Input;
@@ -47,18 +48,24 @@ const TimeEntryForm: React.FC<TimeEntryFormProps> = ({
   setSelectedUser,
   setSelectedProject,
   setSelectedProjectTask,
+  isUserCreator,
 }) => {
   useEffect(() => {
+    if (isUserCreator) {
+      setSelectedUser(
+        users?.find(
+          (user: UserInterface) => user.id === timeEntryData?.userId
+        ) || null
+      );
+    }
     form.setFieldsValue({
-      description: timeEntryData?.description || "",
+      ...timeEntryData,
       startTime: timeEntryData?.startTime
         ? dayjs(timeEntryData.startTime)
         : null,
       endTime: timeEntryData?.endTime ? dayjs(timeEntryData.endTime) : null,
-      userId: timeEntryData?.user?.id || null,
-      projectId: timeEntryData?.project?.id || null,
-      projectTaskId: timeEntryData?.projectTask?.id || null,
     });
+    console.warn("SELECTED TIME ENTRY:>>>> ", selectedUser);
   }, [timeEntryData]);
 
   const handleFinish = async () => {
