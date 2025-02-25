@@ -38,11 +38,9 @@ const Sidebar = () => {
   const navigate = useNavigate();
 
   const user = JSON.parse(localStorage.getItem("user") || "{}");
-  console.warn("USER_ROLES:", user);
   const roles = Array.isArray(user?.roles)
     ? user.roles.map((role: string) => role.trim())
     : user.roles;
-  console.log(roles);
   const isAdmin = roles.includes("Admin");
 
   const handleLogout = () => {
@@ -54,7 +52,7 @@ const Sidebar = () => {
   const items: MenuItem[] = [
     getItem("Home", "/", <HomeOutlined />, "/"), // Home item for all users
     getItem(
-      "Project",
+      "Projects",
       "projects",
       <FundProjectionScreenOutlined />,
       "/projects",
@@ -62,7 +60,7 @@ const Sidebar = () => {
       "user-menu-item"
     ),
     getItem(
-      "Project Task",
+      "Project Tasks",
       "project-tasks",
       <ProjectOutlined />,
       "/project-tasks",
@@ -70,7 +68,7 @@ const Sidebar = () => {
       "user-menu-item"
     ),
     getItem(
-      "Time Entries",
+      "Time Table",
       "time-entries",
       <CalendarOutlined />,
       "/time-entries",

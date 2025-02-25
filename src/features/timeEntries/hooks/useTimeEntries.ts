@@ -5,7 +5,6 @@ import { TimeEntryService } from "../services/time.entry.service";
 import { TimeEntryCreateInterface } from "../interfaces/TimeEntryInterface";
 import { message } from "antd";
 import { TimeEntryUpdateInterface } from "../interfaces/TimeEntryInterface";
-import dayjs from "dayjs";
 const useTimeEntries = () => {
   const [timeEntries, setTimeEntries] = useState<TimeEntryInterface[] | null>(
     null

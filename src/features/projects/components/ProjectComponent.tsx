@@ -193,6 +193,7 @@ const ProjectComponent = () => {
             setSelectedClient={setSelectedClient}
             setSelectedCreator={setSelectedCreator}
             loading={loading}
+            isUserCreator={false}
           />
         )}
 

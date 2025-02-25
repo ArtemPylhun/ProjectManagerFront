@@ -1,7 +1,8 @@
 /* Projects Page Container */
 .projects-page {
   padding: 10px;
-  min-height: calc(100vh - 90px); /* Adjust for header/footer if present */
+  min-height: calc(100vh - 10vh);
+  min-width: calc(100vw - 50vw);
   background: linear-gradient(
     135deg,
     #f0f8ff,
@@ -19,13 +20,13 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 20px;
 }
 
 .projects-header h1 {
   font-size: 2rem;
   color: #526ab7 !important; /* Using #526ab7 for text */
   margin: 0;
+  padding: 15px;
 }
 
 .search-input {
@@ -172,7 +173,8 @@
 /* Project Detail Page Container */
 .project-detail-page {
   padding: 20px;
-  min-height: calc(100vh - 64px); /* Adjust for header/footer if present */
+  min-height: calc(100vh - 10vh);
+  min-width: calc(100vw - 50vw);
   background: linear-gradient(
     135deg,
     #f0f8ff,
@@ -182,7 +184,7 @@
   background-attachment: fixed; /* Optional: Keeps background fixed while scrolling */
   position: relative; /* For overlay effects if needed */
   box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.05) !important; /* Subtle inner shadow for depth, matching sidebar */
-  border-radius: 0 12px 12px 0 !important; /* Match sidebar’s half-rounded right edges */
+  border-radius: 12px !important; /* Match sidebar’s half-rounded right edges */
 }
 
 /* Project Detail Header */
@@ -204,6 +206,8 @@
 .action-buttons {
   display: flex;
   gap: 12px; /* Slightly increased spacing for modern look */
+  align-items: center;
+  justify-content: center;
   flex-wrap: wrap; /* Allow wrapping on smaller screens */
 }
 
@@ -357,6 +361,39 @@
 .color-box:hover {
   transform: scale(1.1); /* Slight scale on hover for interactivity */
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Enhanced shadow on hover */
+}
+
+/* Create Project Button (Cooler, Modern Style) */
+.create-project-button {
+  background: rgba(
+    115,
+    170,
+    238,
+    0.5
+  ) !important; /* Using #73aaee, semi-transparent for glassy effect */
+  border: 1px solid rgba(115, 170, 238, 0.7) !important; /* Using #73aaee */
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  color: #ffffff !important;
+  transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease,
+    box-shadow 0.3s ease !important;
+  border-radius: 8px !important; /* Larger radius for modern look */
+  padding: 6px 12px !important; /* Smaller padding for table button */
+  font-size: 0.9rem !important; /* Slightly smaller for table fit */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important; /* Subtle shadow for depth */
+  margin: 10px 10px 10px 0px !important;
+}
+
+.create-project-button:hover {
+  background: rgba(
+    82,
+    106,
+    183,
+    0.7
+  ) !important; /* Using #526ab7, semi-transparent on hover */
+  border-color: #526ab7 !important;
+  transform: scale(1.05) !important; /* Scale up for modern effect */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important; /* Enhanced shadow on hover */
 }
 
 /* Responsive Design */

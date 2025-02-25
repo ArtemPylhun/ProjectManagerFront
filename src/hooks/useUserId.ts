@@ -20,10 +20,8 @@ const useUserId = () => {
       try {
         turnOnLoading();
         const user = JSON.parse(localStorage.getItem("user") || "{}");
-        console.warn("FOUND USER", user);
         if (user?.sub) {
           setUserId(user.sub);
-          console.warn("SETTED USER ID", user.sub);
         } else {
           console.warn(
             "No user.sub found in localStorage or user data is invalid"

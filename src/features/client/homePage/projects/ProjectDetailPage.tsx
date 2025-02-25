@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Button, Space, Form, Select, Descriptions, Avatar, Tag } from "antd";
+import { Button, Space, Form, Descriptions, Avatar, Tag } from "antd";
 import { ProjectInterface } from "../../../projects/interfaces/ProjectInterface";
 import { ProjectUserInterface } from "../../../projects/interfaces/ProjectUserInterface";
 import { UserInterface } from "../../../users/interfaces/UserInterface";
@@ -13,6 +13,7 @@ import useRoles from "../../../roles/hooks/useRoles";
 import useUsers from "../../../users/hooks/useUsers";
 import useProjects from "../../../projects/hooks/useProjects";
 import useProjectModal from "../../../projects/hooks/useProjectModal";
+import useUserId from "../../../../hooks/useUserId";
 import "../../../../styles/client-styles/projects/projectsStyles.css";
 
 const ProjectDetailPage: React.FC = () => {
@@ -21,6 +22,7 @@ const ProjectDetailPage: React.FC = () => {
   const [project, setProject] = useState<ProjectInterface | null>(null);
   const [form] = Form.useForm();
 
+  const { userId } = useUserId();
   const { roles } = useRoles(true, false);
   const { users } = useUsers();
   const {
@@ -70,10 +72,10 @@ const ProjectDetailPage: React.FC = () => {
   });
 
   const creator = userMap.get(project.creator?.id || "") || {
-    userName: "Unknown Creator",
+    userName: project.creator?.userName,
   };
   const client = userMap.get(project.client?.id || "") || {
-    userName: "Unknown Client",
+    userName: project.client?.userName,
   };
 
   const handleSave = async () => {
@@ -116,22 +118,6 @@ const ProjectDetailPage: React.FC = () => {
       <div className="project-detail-header">
         <div className="header-content">
           <h1>{project.name}</h1>
-          <Space className="action-buttons">
-            <Button
-              type="primary"
-              className="edit-button"
-              onClick={() => showModal(project, null, ModalModes.UPDATE)}
-            >
-              Edit Project
-            </Button>
-            <Button
-              type="primary"
-              className="manage-users-button"
-              onClick={() => showModal(project, null, ModalModes.ADD_USER)}
-            >
-              Manage Users
-            </Button>
-          </Space>
         </div>
         <Button
           type="primary"
@@ -191,15 +177,17 @@ const ProjectDetailPage: React.FC = () => {
                   />
                   <span className="user-name">{user.userName}</span>
                   <Tag color="blue">{roleName}</Tag>
-                  <Button
-                    danger
-                    size="small"
-                    onClick={() =>
-                      showModal(null, projectUser, ModalModes.REMOVE_USER)
-                    }
-                  >
-                    Remove
-                  </Button>
+                  {userId === project.creator?.id && (
+                    <Button
+                      danger
+                      size="small"
+                      onClick={() =>
+                        showModal(null, projectUser, ModalModes.REMOVE_USER)
+                      }
+                    >
+                      Remove
+                    </Button>
+                  )}
                 </div>
               );
             })}
@@ -211,6 +199,26 @@ const ProjectDetailPage: React.FC = () => {
             : "N/A"}
         </Descriptions.Item>
       </Descriptions>
+      {project.creator.id === userId && (
+        <div style={{ marginTop: "10px" }}>
+          <Space className="action-buttons">
+            <Button
+              type="primary"
+              className="edit-button"
+              onClick={() => showModal(project, null, ModalModes.UPDATE)}
+            >
+              Edit Project Info
+            </Button>
+            <Button
+              type="primary"
+              className="manage-users-button"
+              onClick={() => showModal(project, null, ModalModes.ADD_USER)}
+            >
+              Add User
+            </Button>
+          </Space>
+        </div>
+      )}
 
       <CustomModal
         visible={isModalVisible}
@@ -246,6 +254,7 @@ const ProjectDetailPage: React.FC = () => {
             setSelectedClient={setSelectedClient}
             setSelectedCreator={setSelectedCreator}
             loading={loading}
+            isUserCreator={true}
           />
         )}
 
