@@ -396,6 +396,27 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important; /* Enhanced shadow on hover */
 }
 
+/* View Tasks Button (Cooler, Modern Style) */
+.view-tasks-button {
+  color: #73aaee !important; /* Using #73aaee for link color */
+  font-size: 0.9rem; /* Match create-project-button size */
+  transition: color 0.3s ease, transform 0.3s ease !important;
+  padding: 4px 8px; /* Added padding for better appearance */
+  border-radius: 4px !important; /* Subtle rounding for modern look */
+}
+
+.view-tasks-button:hover {
+  color: #526ab7 !important; /* Using #526ab7 on hover */
+  transform: scale(1.05) !important; /* Scale up for modern effect */
+  background: rgba(
+    115,
+    170,
+    238,
+    0.15
+  ) !important; /* Subtle glassy background on hover */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1) !important; /* Subtle shadow on hover */
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .projects-page,

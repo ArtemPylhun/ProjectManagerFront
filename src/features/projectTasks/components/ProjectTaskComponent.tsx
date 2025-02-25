@@ -26,7 +26,7 @@ const ProjectTaskComponent = () => {
     handleUpdateProjectTask,
     handleAddUserToProjectTask,
     handleRemoveUserFromProjectTask,
-  } = useProjectTasks();
+  } = useProjectTasks(false);
 
   const {
     modalMode,
