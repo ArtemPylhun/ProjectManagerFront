@@ -65,7 +65,6 @@ const TimeEntryForm: React.FC<TimeEntryFormProps> = ({
         : null,
       endTime: timeEntryData?.endTime ? dayjs(timeEntryData.endTime) : null,
     });
-    console.warn("SELECTED TIME ENTRY:>>>> ", selectedUser);
   }, [timeEntryData]);
 
   const handleFinish = async () => {
@@ -150,27 +149,35 @@ const TimeEntryForm: React.FC<TimeEntryFormProps> = ({
         name="userId"
         rules={[{ validator: validateUserId }]}
       >
-        <Select
-          style={{ width: "100%" }}
-          placeholder="Select User"
-          value={isCreateMode ? timeEntryData?.user?.id : selectedUser?.id}
-          onChange={(value) => {
-            const user = users?.find((u) => u.id === value) || null;
-            setSelectedUser(user);
-            setTimeEntryData((prev: TimeEntryInterface) => ({
-              ...prev,
-              user: user,
-              userId: user?.id,
-            }));
-          }}
-          loading={loading}
-        >
-          {users?.map((user) => (
-            <Select.Option key={user.id} value={user.id}>
-              {user.userName}
+        {!isUserCreator ? (
+          <Select
+            style={{ width: "100%" }}
+            placeholder="Select User"
+            value={isCreateMode ? timeEntryData?.user?.id : selectedUser?.id}
+            onChange={(value) => {
+              const user = users?.find((u) => u.id === value) || null;
+              setSelectedUser(user);
+              setTimeEntryData((prev: TimeEntryInterface) => ({
+                ...prev,
+                user: user,
+                userId: user?.id,
+              }));
+            }}
+            loading={loading}
+          >
+            {users?.map((user) => (
+              <Select.Option key={user.id} value={user.id}>
+                {user.userName}
+              </Select.Option>
+            ))}
+          </Select>
+        ) : (
+          <Select style={{ width: "100%" }} disabled value={selectedUser?.id}>
+            <Select.Option key={selectedUser?.id} value={selectedUser?.id}>
+              {selectedUser?.userName}
             </Select.Option>
-          ))}
-        </Select>
+          </Select>
+        )}
       </Form.Item>
       <Form.Item
         label="Project"

@@ -120,6 +120,9 @@ const ProjectTasksPage: React.FC = () => {
     selectedProject,
     handleCreateProjectTask,
     handleDeleteProjectTask,
+    handleAddUserToProjectTask,
+    handleRemoveUserFromProjectTask,
+    handleUpdateProjectTask,
     hideModal,
   ]);
 

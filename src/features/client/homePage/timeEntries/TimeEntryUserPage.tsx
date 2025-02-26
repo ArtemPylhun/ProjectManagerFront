@@ -1,6 +1,6 @@
 import { Button, Form, Space, Table, Tooltip } from "antd";
-import { useCallback, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useCallback, useState, useEffect, useMemo } from "react";
+import { EditOutlined } from "@ant-design/icons";
 import useTimeEntries from "../../../timeEntries/hooks/useTimeEntries";
 import useTimeEntryModal from "../../../timeEntries/hooks/useTimeEntryModal";
 import useProjects from "../../../projects/hooks/useProjects";
@@ -9,8 +9,6 @@ import useUserId from "../../../../hooks/useUserId";
 import { TimeEntryInterface } from "../../../timeEntries/interfaces/TimeEntryInterface";
 import { ModalModes } from "../../../../types/modalModes";
 import dayjs from "dayjs";
-import { ProjectTaskInterface } from "../../../projectTasks/interfaces/ProjectTaskInterface";
-import { ProjectInterface } from "../../../projects/interfaces/ProjectInterface";
 import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import SearchInput from "../../../../components/common/SearchInput";
 import CustomModal from "../../../../components/common/CustomModal";
@@ -20,6 +18,9 @@ import useUsers from "../../../users/hooks/useUsers";
 const TimeEntryUserPage: React.FC = () => {
   const [form] = Form.useForm();
   const [searchQuery, setSearchQuery] = useState("");
+  const [groupedTimeEntries, setGroupedTimeEntries] = useState<
+    Record<string, TimeEntryInterface[]>
+  >({});
 
   const { users } = useUsers();
 
@@ -27,8 +28,13 @@ const TimeEntryUserPage: React.FC = () => {
 
   const { projectTasks } = useProjectTasks(true);
 
-  const { timeEntries, handleCreateTimeEntry, handleDeleteTimeEntry, loading } =
-    useTimeEntries();
+  const {
+    timeEntries,
+    handleCreateTimeEntry,
+    handleDeleteTimeEntry,
+    handleUpdateTimeEntry,
+    loading,
+  } = useTimeEntries(true);
 
   const {
     modalMode,
@@ -66,6 +72,52 @@ const TimeEntryUserPage: React.FC = () => {
         .includes(searchQuery.toLowerCase())
   );
 
+  // Memoize filteredTimeEntries to prevent unnecessary recalculations
+  const memoizedFilteredTimeEntries = useMemo(() => {
+    if (!timeEntries || !Array.isArray(timeEntries)) return [];
+    return timeEntries.filter(
+      (timeEntry: TimeEntryInterface) =>
+        timeEntry.description
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase()) ||
+        (timeEntry.project?.name || "")
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase()) ||
+        (timeEntry.projectTask?.name || "")
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase())
+    );
+  }, [timeEntries, searchQuery]);
+
+  useEffect(() => {
+    try {
+      if (memoizedFilteredTimeEntries.length > 0) {
+        const grouped = memoizedFilteredTimeEntries.reduce(
+          (acc: Record<string, TimeEntryInterface[]>, entry) => {
+            if (!entry.startTime) {
+              console.warn("Skipping entry with missing startTime:", entry);
+              return acc;
+            }
+            const date = dayjs(entry.startTime).format("ddd, MMM DD"); // e.g., "Thu, Feb 27"
+            acc[date] = [...(acc[date] || []), entry];
+            return acc;
+          },
+          {}
+        );
+        setGroupedTimeEntries(grouped);
+      } else {
+        console.warn(
+          "No filtered time entries to group:",
+          memoizedFilteredTimeEntries
+        );
+        setGroupedTimeEntries({});
+      }
+    } catch (error) {
+      console.error("Error grouping time entries:", error);
+      setGroupedTimeEntries({});
+    }
+  }, [memoizedFilteredTimeEntries]); // Use memoized version to prevent frequent re-runs
+
   const handleSave = useCallback(async () => {
     if (!modalMode) return;
 
@@ -90,6 +142,17 @@ const TimeEntryUserPage: React.FC = () => {
           projectId: selectedProject.id,
           projectTaskId: selectedProjectTask?.id || "",
         });
+      } else if (modalMode === ModalModes.UPDATE && selectedTimeEntry) {
+        selectedTimeEntry.minutes = dayjs(selectedTimeEntry.endTime).diff(
+          selectedTimeEntry.startTime,
+          "minute"
+        );
+        result = await handleUpdateTimeEntry({
+          ...selectedTimeEntry,
+          userId: selectedUser!.id,
+          projectId: selectedProject!.id,
+          projectTaskId: selectedProjectTask!.id,
+        });
       } else if (modalMode === ModalModes.DELETE) {
         result = await handleDeleteTimeEntry(selectedTimeEntry?.id || "");
       }
@@ -110,58 +173,79 @@ const TimeEntryUserPage: React.FC = () => {
 
   const columns = [
     {
-      title: "Description",
+      title: "Description - Project - Task",
       dataIndex: "description",
       key: "description",
-      render: (description: string) => {
-        const maxLength = 20;
-        const truncated =
-          description.length > maxLength
-            ? `${description.substring(0, maxLength)}...`
-            : description;
-        return (
-          <Tooltip title={description} placement="top">
-            <div className="description">{truncated}</div>
-          </Tooltip>
-        );
+      render: (_: string, record: TimeEntryInterface) => {
+        try {
+          const maxLength = 40;
+          const description = record.description || "Add description";
+          const projectName = record.project?.name || "";
+          const taskName = record.projectTask?.name || "";
+          const fullText = `${description} - ${projectName} - ${taskName}`;
+          const truncated =
+            fullText.length > maxLength
+              ? `${fullText.substring(0, maxLength)}...`
+              : fullText;
+          return (
+            <Tooltip title={fullText} placement="top">
+              <div className="description">{truncated}</div>
+            </Tooltip>
+          );
+        } catch (error) {
+          console.error("Error rendering description:", error, record);
+          return <div className="description">Error loading entry</div>;
+        }
       },
     },
     {
-      title: "Start Time",
+      title: "Time From",
       dataIndex: "startTime",
       key: "startTime",
-      render: (startTime: Date) =>
-        dayjs(startTime).format("DD/MM/YYYY HH:mm:ss"),
+      render: (startTime: Date | string | null) => {
+        try {
+          if (!startTime) return "N/A";
+          return dayjs(startTime).isValid()
+            ? dayjs(startTime).format("HH:mm")
+            : "N/A";
+        } catch (error) {
+          console.error("Error rendering Time From:", error, startTime);
+          return "N/A";
+        }
+      },
     },
     {
-      title: "End Time",
+      title: "Time To",
       dataIndex: "endTime",
       key: "endTime",
-      render: (endTime: Date) => dayjs(endTime).format("DD/MM/YYYY HH:mm:ss"),
+      render: (endTime: Date | string | null) => {
+        try {
+          if (!endTime) return "N/A";
+          return dayjs(endTime).isValid()
+            ? dayjs(endTime).format("HH:mm")
+            : "N/A";
+        } catch (error) {
+          console.error("Error rendering Time To:", error, endTime);
+          return "N/A";
+        }
+      },
     },
     {
       title: "Minutes",
       dataIndex: "minutes",
       key: "minutes",
-    },
-
-    {
-      title: "Project",
-      dataIndex: "project",
-      key: "project",
-      render: (project: ProjectInterface) => project.name,
-    },
-    {
-      title: "Project Task",
-      dataIndex: "projectTask",
-      key: "projectTask",
-      render: (projectTask: ProjectTaskInterface) => projectTask.name,
+      render: (minutes: number | null) => minutes || 0,
     },
     {
       title: "Actions",
       key: "actions",
       render: (timeEntry: TimeEntryInterface) => (
         <Space>
+          <Button
+            className="action-button"
+            icon={<EditOutlined />}
+            onClick={() => showModal(timeEntry, ModalModes.UPDATE)}
+          />
           <Button
             className="action-button danger"
             icon={<DeleteOutlined />}
@@ -176,13 +260,19 @@ const TimeEntryUserPage: React.FC = () => {
     <>
       <div className="projects-page">
         <div className="projects-header">
-          <h1>My Time Entries</h1>
+          <h1>My Time Table</h1>
           <SearchInput
             query={searchQuery}
             onQueryChange={handleFilterQueryChange}
           />
         </div>
-        <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+            marginBottom: "16px",
+          }}
+        >
           <Button
             type="primary"
             icon={<PlusOutlined />}
@@ -192,20 +282,55 @@ const TimeEntryUserPage: React.FC = () => {
             Create Time Entry
           </Button>
         </div>
-        <Table
-          dataSource={filteredTimeEntries}
-          columns={columns}
-          rowKey="id"
-          className="modern-table"
-          pagination={{ pageSize: 5 }}
-          locale={{ emptyText: "No projects found." }}
-        />
+        <div className="time-entries-container">
+          {Object.entries(groupedTimeEntries).map(([date, entries]) => (
+            <div key={date} className="time-entry-day">
+              <div className="day-header">
+                <h2>{date}</h2>
+                <span className="day-total">
+                  Total:{" "}
+                  {Math.floor(
+                    entries.reduce(
+                      (sum, entry) => sum + (entry.minutes || 0),
+                      0
+                    ) / 60
+                  )
+                    .toString()
+                    .padStart(2, "0")}
+                  :
+                  {(
+                    entries.reduce(
+                      (sum, entry) => sum + (entry.minutes || 0),
+                      0
+                    ) % 60
+                  )
+                    .toString()
+                    .padStart(2, "0")}
+                </span>
+              </div>
+              <Table
+                dataSource={entries}
+                columns={columns}
+                rowKey="id"
+                className="modern-table"
+                pagination={false}
+                locale={{ emptyText: "No entries for this day." }}
+                size="small"
+              />
+            </div>
+          ))}
+          {Object.keys(groupedTimeEntries).length === 0 && !loading && (
+            <div className="empty-state">No time entries found.</div>
+          )}
+        </div>
       </div>
       <CustomModal
         visible={isModalVisible}
         title={
           modalMode === ModalModes.CREATE
             ? "Create Time Entry"
+            : modalMode === ModalModes.UPDATE
+            ? "Update Time Entry"
             : "Delete Time Entry"
         }
         isDanger={modalMode === ModalModes.DELETE}
@@ -222,6 +347,26 @@ const TimeEntryUserPage: React.FC = () => {
               userId: userId || "",
             }}
             setTimeEntryData={setNewTimeEntry}
+            isCreateMode={true}
+            users={users || []}
+            projects={projects || []}
+            projectTasks={projectTasks || []}
+            selectedUser={selectedUser}
+            selectedProject={selectedProject}
+            selectedProjectTask={selectedProjectTask}
+            setSelectedUser={setSelectedUser}
+            setSelectedProject={setSelectedProject}
+            setSelectedProjectTask={setSelectedProjectTask}
+            loading={loading}
+            isUserCreator={true}
+          />
+        )}
+
+        {modalMode === ModalModes.UPDATE && selectedTimeEntry && (
+          <TimeEntryForm
+            form={form}
+            timeEntryData={selectedTimeEntry}
+            setTimeEntryData={setSelectedTimeEntry}
             isCreateMode={true}
             users={users || []}
             projects={projects || []}

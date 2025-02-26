@@ -22,7 +22,6 @@ const useProjects = (isUserPage: boolean) => {
       turnOnLoading();
       try {
         const response = await ProjectService.getAllProjects(signal);
-        console.warn("Fetching all projects for Admin: ", response);
         if (Array.isArray(response)) {
           setProjects(response as ProjectInterface[]);
           return true;
@@ -37,7 +36,7 @@ const useProjects = (isUserPage: boolean) => {
         turnOffLoading();
       }
     },
-    [] // No dependencies, as this is static for Admins
+    []
   );
 
   const fetchUserProjects = useCallback(

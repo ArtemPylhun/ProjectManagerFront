@@ -75,7 +75,7 @@ const UsersTable: React.FC<UsersTableProps> = ({ users, showModal }) => {
       dataSource={users}
       rowKey="id"
       className="modern-table"
-      pagination={{ pageSize: 8 }}
+      pagination={{ pageSize: 5 }}
     />
   );
 };

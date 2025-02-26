@@ -172,7 +172,7 @@ const ProjectsTable: React.FC<ProjectsTableProps> = ({
         dataSource={projects}
         rowKey="id"
         className="modern-table"
-        pagination={{ pageSize: 8 }}
+        pagination={{ pageSize: 5 }}
       />
     </>
   );

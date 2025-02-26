@@ -18,6 +18,20 @@ export class TimeEntryService {
     return await httpClient.get("get-all");
   }
 
+  static async getAllTimeEntriesByUserId(
+    userId: string,
+    signal: AbortSignal
+  ): Promise<TimeEntryInterface[]> {
+    const apiUrl = import.meta.env.VITE_API_BASE_URL;
+    const httpClient = new HttpClient(
+      {
+        baseURL: `${apiUrl}/time-entries`,
+      },
+      signal
+    );
+    return await httpClient.get(`get-all-by-user-id/${userId}`);
+  }
+
   static async createTimeEntry(
     timeEntry: TimeEntryCreateInterface,
     signal: AbortSignal

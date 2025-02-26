@@ -119,7 +119,7 @@ const useProjectTasks = (isUserPage: boolean) => {
     };
 
     fetchWhenReady();
-    fetchProjectTaskStatuses(abortController.signal); // Fetch statuses separately, always
+    fetchProjectTaskStatuses(abortController.signal);
 
     return () => abortController.abort();
   }, [

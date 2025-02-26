@@ -104,7 +104,7 @@ const TimeEntriesTable: React.FC<TimeEntriesTableProps> = ({
       dataSource={timeEntries}
       rowKey="id"
       className="modern-table"
-      pagination={{ pageSize: 8 }}
+      pagination={{ pageSize: 5 }}
     />
   );
 };

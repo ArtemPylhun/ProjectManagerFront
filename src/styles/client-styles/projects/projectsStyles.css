@@ -494,3 +494,64 @@
     font-size: 0.7rem;
   }
 }
+
+/* Time Entries Container */
+.time-entries-container {
+  width: 100%;
+  max-width: 1200px; /* Limit width for better readability */
+  margin-bottom: 20px; /* Space below the container */
+}
+
+/* Time Entry Day */
+.time-entry-day {
+  margin-bottom: 24px; /* Spacing between days */
+  background: rgba(254, 254, 254, 0.15); /* Lighter glassy background */
+  border-radius: 12px; /* Match overall radius */
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1); /* Enhanced shadow for depth */
+  border: 1px solid rgba(255, 255, 255, 0.2); /* Subtler border */
+  padding: 16px; /* Padding for spacing */
+  backdrop-filter: blur(10px); /* Stronger glassy effect */
+  -webkit-backdrop-filter: blur(10px);
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transitions */
+}
+
+.time-entry-day:hover {
+  transform: translateY(-2px); /* Slight lift on hover */
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15); /* Enhanced shadow on hover */
+}
+
+/* Day Header */
+.day-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px; /* Spacing below header */
+  padding: 8px 0; /* Padding for header */
+  border-bottom: 1px solid rgba(115, 170, 238, 0.1); /* Subtle border using #73aaee */
+}
+
+.day-header h2 {
+  font-size: 1.2rem;
+  color: #526ab7; /* Dark blue for titles */
+  margin: 0;
+  font-weight: 600; /* Slightly bolder for modern look */
+}
+
+.day-total {
+  font-size: 0.9rem;
+  color: #526ab7; /* Dark blue for text */
+  font-weight: 500; /* Slightly bolder for modern look */
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 20px;
+  color: #526ab7; /* Dark blue for text */
+  font-size: 1rem;
+  background: rgba(254, 254, 254, 0.1); /* Light glassy background */
+  border-radius: 12px; /* Match overall radius */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  backdrop-filter: blur(5px); /* Light glassy effect */
+  -webkit-backdrop-filter: blur(5px);
+}

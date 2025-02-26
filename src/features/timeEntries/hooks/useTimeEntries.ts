@@ -5,18 +5,20 @@ import { TimeEntryService } from "../services/time.entry.service";
 import { TimeEntryCreateInterface } from "../interfaces/TimeEntryInterface";
 import { message } from "antd";
 import { TimeEntryUpdateInterface } from "../interfaces/TimeEntryInterface";
-const useTimeEntries = () => {
+import useUserId from "../../../hooks/useUserId";
+const useTimeEntries = (isUserPage: boolean) => {
   const [timeEntries, setTimeEntries] = useState<TimeEntryInterface[] | null>(
     null
   );
   const { loading, turnOnLoading, turnOffLoading } = useLoading();
 
-  const fetchTimeEntries = useCallback(
+  const { userId } = useUserId();
+
+  const fetchAllTimeEntries = useCallback(
     async (signal: AbortSignal): Promise<boolean> => {
       turnOnLoading();
       try {
         const response = await TimeEntryService.getAllTimeEntries(signal);
-        console.log("Time Entries: ", response);
         if (Array.isArray(response)) {
           setTimeEntries(response as TimeEntryInterface[]);
           return true;
@@ -34,11 +36,52 @@ const useTimeEntries = () => {
     []
   );
 
+  const fetchUserTimeEntries = useCallback(
+    async (signal: AbortSignal): Promise<boolean> => {
+      if (!userId) {
+        console.warn("User ID not available yet, skipping fetch");
+        return false;
+      }
+
+      turnOnLoading();
+      try {
+        const response = await TimeEntryService.getAllTimeEntriesByUserId(
+          userId,
+          signal
+        );
+        console.warn("Fetching user time entries: ", response);
+        if (Array.isArray(response)) {
+          setTimeEntries(response as TimeEntryInterface[]);
+          return true;
+        } else {
+          console.error("Invalid response format for time entries", response);
+          return false;
+        }
+      } catch (error) {
+        console.error("Error fetching user time entries:", error);
+        return false;
+      } finally {
+        turnOffLoading();
+      }
+    },
+    [userId]
+  );
+
   useEffect(() => {
     const abortController = new AbortController();
-    fetchTimeEntries(abortController.signal);
+
+    const fetchWhenReady = async () => {
+      if (isUserPage && userId) {
+        await fetchUserTimeEntries(abortController.signal);
+      } else {
+        await fetchAllTimeEntries(abortController.signal);
+      }
+    };
+
+    fetchWhenReady();
+
     return () => abortController.abort();
-  }, [fetchTimeEntries]);
+  }, [isUserPage, userId, fetchAllTimeEntries, fetchUserTimeEntries]);
 
   const handleCreateTimeEntry = async (
     newTimeEntry: TimeEntryCreateInterface
