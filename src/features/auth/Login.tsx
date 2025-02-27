@@ -1,11 +1,12 @@
-import React, { useState } from "react";
-import { Form, Input, Button } from "antd";
+import React, { useEffect, useState } from "react";
+import { Form, Input, Button, Space } from "antd";
 import { UserService } from "../users/services/user.service";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate, useLocation } from "react-router-dom";
 import { UserLoginInterface } from "../users/interfaces/UserInterface";
-import { validateEmail, validateName } from "../users/hooks/useUserValidators";
+import { validateName } from "../users/hooks/useUserValidators";
 import "../../styles/styles.css";
+import { FacebookFilled } from "@ant-design/icons";
 const Login: React.FC = () => {
   const [user, setUser] = useState<UserLoginInterface>({
     emailOrUsername: "",
@@ -14,6 +15,27 @@ const Login: React.FC = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
+
+  useEffect(() => {
+    // Check for token in URL after Facebook redirect
+    const params = new URLSearchParams(location.search);
+    const token = params.get("token");
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        localStorage.setItem("token", token);
+        localStorage.setItem("user", JSON.stringify(decoded));
+
+        let returnUrl = params.get("returnUrl") || "/";
+        if (returnUrl.includes("/login")) {
+          returnUrl = "/";
+        }
+        navigate(returnUrl, { replace: true });
+      } catch (error) {
+        console.error("Failed to process Facebook login");
+      }
+    }
+  }, [location, navigate]);
 
   const handleUserChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -41,6 +63,11 @@ const Login: React.FC = () => {
     } catch (error) {
       console.error("Login failed", error);
     }
+  };
+
+  const handleFacebookLogin = () => {
+    const returnUrl = `${window.location.origin}/login`;
+    UserService.initiateFacebookLogin(returnUrl);
   };
 
   return (
@@ -72,6 +99,16 @@ const Login: React.FC = () => {
       <Form.Item>
         <Button type="primary" htmlType="submit" className="submit-button">
           Login
+        </Button>
+      </Form.Item>
+      <Form.Item>
+        <Button
+          icon={<FacebookFilled />}
+          type="default"
+          onClick={handleFacebookLogin}
+          block
+        >
+          Login with Facebook
         </Button>
       </Form.Item>
     </Form>

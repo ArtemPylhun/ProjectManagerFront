@@ -6,8 +6,10 @@ import {
 } from "../interfaces/TimeEntryInterface";
 export class TimeEntryService {
   static async getAllTimeEntries(
+    page: number,
+    pageSize: number,
     signal: AbortSignal
-  ): Promise<TimeEntryInterface[]> {
+  ): Promise<{ timeEntries: TimeEntryInterface[]; totalCount: number }> {
     const apiUrl = import.meta.env.VITE_API_BASE_URL;
     const httpClient = new HttpClient(
       {
@@ -15,7 +17,25 @@ export class TimeEntryService {
       },
       signal
     );
-    return await httpClient.get("get-all");
+    return await httpClient.get(`get-all?page=${page}&pageSize=${pageSize}`);
+  }
+
+  static async getAllTimeEntriesByUserId(
+    userId: string,
+    page: number,
+    pageSize: number,
+    signal: AbortSignal
+  ): Promise<{ timeEntries: TimeEntryInterface[]; totalCount: number }> {
+    const apiUrl = import.meta.env.VITE_API_BASE_URL;
+    const httpClient = new HttpClient(
+      {
+        baseURL: `${apiUrl}/time-entries`,
+      },
+      signal
+    );
+    return await httpClient.get(
+      `get-all-by-user-id/${userId}?page=${page}&pageSize=${pageSize}`
+    );
   }
 
   static async createTimeEntry(

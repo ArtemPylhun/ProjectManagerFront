@@ -17,12 +17,20 @@ interface ProjectTasksTableProps {
     userTask: UserTaskInterface | null,
     mode: ModalMode
   ) => void;
+  currentPage: number;
+  pageSize: number;
+  totalCount: number;
+  handlePageChange: (page: number) => void;
 }
 const ProjectTasksTable: React.FC<ProjectTasksTableProps> = ({
   projectTasks,
   projectTaskStatuses,
   users,
   showModal,
+  currentPage,
+  pageSize,
+  totalCount,
+  handlePageChange,
 }) => {
   const columns: TableColumnsType<ProjectTaskInterface> = useMemo(
     () => [
@@ -138,7 +146,12 @@ const ProjectTasksTable: React.FC<ProjectTasksTableProps> = ({
       dataSource={projectTasks}
       rowKey="id"
       className="modern-table"
-      pagination={{ pageSize: 8 }}
+      pagination={{
+        current: currentPage,
+        pageSize,
+        total: totalCount,
+        onChange: handlePageChange,
+      }}
     />
   );
 };

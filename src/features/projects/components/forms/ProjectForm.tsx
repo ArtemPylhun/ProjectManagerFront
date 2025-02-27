@@ -42,7 +42,6 @@ const ProjectForm: React.FC<ProjectFormProps> = ({
         users?.find((x) => x.id === projectData?.creatorId) || null
       );
     form.setFieldsValue(projectData);
-    console.warn("SELECTED CREATOR:>>>> ", selectedCreator);
   }, [projectData]);
 
   const handleFinish = async () => {

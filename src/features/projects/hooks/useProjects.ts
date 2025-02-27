@@ -10,82 +10,68 @@ import { UserService } from "../../users/services/user.service";
 import { ProjectUserCreateInterface } from "../interfaces/ProjectUserInterface";
 import { useLoading } from "../../../hooks/useLoading";
 import useUserId from "../../../hooks/useUserId";
-const useProjects = (isUserPage: boolean) => {
+const useProjects = (isUserPage: boolean, isPaginated: boolean) => {
   const [projects, setProjects] = useState<ProjectInterface[] | null>(null);
-
+  const [totalCount, setTotalCount] = useState<number>(0);
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const { loading, turnOnLoading, turnOffLoading } = useLoading();
-
   const { userId } = useUserId();
+  const pageSize = 1;
 
   const fetchAllProjects = useCallback(
-    async (signal: AbortSignal): Promise<boolean> => {
+    async (
+      signal: AbortSignal
+    ): Promise<
+      { projects: ProjectInterface[]; totalCount: number } | ProjectInterface[]
+    > => {
       turnOnLoading();
       try {
-        const response = await ProjectService.getAllProjects(signal);
-        console.warn("Fetching all projects for Admin: ", response);
-        if (Array.isArray(response)) {
-          setProjects(response as ProjectInterface[]);
-          return true;
+        if (isPaginated) {
+          const response = isUserPage
+            ? await ProjectService.getAllProjectsByUserIdPaginated(
+                userId!,
+                currentPage,
+                pageSize,
+                signal
+              )
+            : await ProjectService.getAllProjectsPaginated(
+                currentPage,
+                pageSize,
+                signal
+              );
+          return response;
         } else {
-          console.error("Invalid response format for all projects", response);
-          return false;
+          const response = isUserPage
+            ? await ProjectService.getAllProjectsByUserId(userId!, signal)
+            : await ProjectService.getAllProjects(signal);
+          return response;
         }
       } catch (error) {
         console.error("Error fetching all projects:", error);
-        return false;
+        return isPaginated ? { projects: [], totalCount: 0 } : [];
       } finally {
         turnOffLoading();
       }
     },
-    [] // No dependencies, as this is static for Admins
-  );
-
-  const fetchUserProjects = useCallback(
-    async (signal: AbortSignal): Promise<boolean> => {
-      if (!userId) {
-        console.warn("User ID not available yet, skipping fetch");
-        return false;
-      }
-
-      turnOnLoading();
-      try {
-        const response = await ProjectService.getAllProjectsByUserId(
-          userId,
-          signal
-        );
-        console.warn("Fetching user projects: ", response);
-        if (Array.isArray(response)) {
-          setProjects(response as ProjectInterface[]);
-          return true;
-        } else {
-          console.error("Invalid response format for user projects", response);
-          return false;
-        }
-      } catch (error) {
-        console.error("Error fetching user projects:", error);
-        return false;
-      } finally {
-        turnOffLoading();
-      }
-    },
-    [userId] // Depends on userId for non-Admin users
+    [userId, isUserPage, isPaginated, currentPage, pageSize]
   );
 
   useEffect(() => {
+    if (!userId) return;
     const abortController = new AbortController();
-
-    const fetchWhenReady = async () => {
-      if (isUserPage && userId) {
-        await fetchUserProjects(abortController.signal);
+    fetchAllProjects(abortController.signal).then((response) => {
+      if ("projects" in response && "totalCount" in response) {
+        setProjects(response.projects);
+        setTotalCount(response.totalCount);
       } else {
-        await fetchAllProjects(abortController.signal);
+        setProjects(response as ProjectInterface[]);
       }
-    };
-
-    fetchWhenReady();
-
+    });
     return () => abortController.abort();
-  }, [isUserPage, userId, fetchAllProjects, fetchUserProjects]);
+  }, [fetchAllProjects, userId, currentPage, pageSize]);
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
 
   const handleCreateProject = async (
     newProject: ProjectCreateInterface
@@ -100,6 +86,7 @@ const useProjects = (isUserPage: boolean) => {
       setProjects((prevProjects) =>
         prevProjects ? [...prevProjects, createdProject] : [createdProject]
       );
+      setTotalCount((prevCount) => prevCount + 1);
       message.success("Project created successfully");
       return true;
     } catch (error) {
@@ -108,6 +95,18 @@ const useProjects = (isUserPage: boolean) => {
     }
   };
 
+  const fetchProjectById = useCallback(
+    async (id: string, signal: AbortSignal) => {
+      try {
+        const project = await ProjectService.getProjectById(id, signal);
+        if (project) return project;
+      } catch (error) {
+        console.error("Error fetching project by ID:", error);
+      }
+      return null;
+    },
+    []
+  );
   const handleUpdateProject = async (
     updatedProject: ProjectUpdateInterface
   ): Promise<boolean> => {
@@ -148,16 +147,24 @@ const useProjects = (isUserPage: boolean) => {
 
   const handleDeleteProject = async (projectId: string): Promise<boolean> => {
     try {
+      console.warn("SELECTED PROJECT ID: ", projectId);
       const response = await ProjectService.deleteProjectById(
         projectId,
         new AbortController().signal
       );
       if (!response) throw new Error("Project deletion failed");
-      setProjects((prevProjects) =>
-        prevProjects
+      setProjects((prevProjects) => {
+        const updatedProjects = prevProjects
           ? prevProjects.filter((project) => project.id !== projectId)
-          : []
-      );
+          : [];
+
+        if (updatedProjects.length === 0 && currentPage > 1) {
+          setCurrentPage((prevPage) => prevPage - 1);
+        }
+
+        return updatedProjects;
+      });
+      setTotalCount((prevCount) => prevCount - 1);
       message.success("Project deleted successfully");
       return true;
     } catch (error) {
@@ -245,6 +252,11 @@ const useProjects = (isUserPage: boolean) => {
     handleUpdateProject,
     handleAddUserToProject,
     handleRemoveUserFromProject,
+    currentPage,
+    pageSize,
+    totalCount,
+    handlePageChange,
+    fetchProjectById,
   };
 };
 

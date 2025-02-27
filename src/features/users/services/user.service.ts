@@ -98,4 +98,12 @@ export class UserService {
     );
     return await httpClient.put("/update", { ...user });
   }
+
+  static initiateFacebookLogin(returnUrl: string) {
+    const apiUrl = import.meta.env.VITE_API_BASE_URL;
+    const facebookLoginUrl = `${apiUrl}/users/login/facebook?returnUrl=${encodeURIComponent(
+      returnUrl
+    )}`;
+    window.location.href = facebookLoginUrl;
+  }
 }

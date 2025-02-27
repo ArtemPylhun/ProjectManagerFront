@@ -17,9 +17,18 @@ const ProjectsPage: React.FC = () => {
   const navigate = useNavigate();
   const [form] = Form.useForm();
   const [searchQuery, setSearchQuery] = useState("");
+  const {
+    projects,
+    handleCreateProject,
+    handleDeleteProject,
+    loading,
+    currentPage,
+    pageSize,
+    totalCount,
+    handlePageChange,
+  } = useProjects(true, true);
+
   const { users } = useUsers();
-  const { projects, handleCreateProject, handleDeleteProject, loading } =
-    useProjects(true);
 
   const {
     modalMode,
@@ -155,11 +164,16 @@ const ProjectsPage: React.FC = () => {
           </Button>
         </div>
         <Table
-          dataSource={filteredProjects}
+          dataSource={filteredProjects || []}
           columns={columns}
           rowKey="id"
           className="modern-table"
-          pagination={{ pageSize: 5 }}
+          pagination={{
+            current: currentPage,
+            pageSize,
+            total: totalCount,
+            onChange: handlePageChange,
+          }}
           locale={{ emptyText: "No projects found." }}
         />
       </div>

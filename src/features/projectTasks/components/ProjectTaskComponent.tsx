@@ -26,7 +26,11 @@ const ProjectTaskComponent = () => {
     handleUpdateProjectTask,
     handleAddUserToProjectTask,
     handleRemoveUserFromProjectTask,
-  } = useProjectTasks(false);
+    currentPage,
+    pageSize,
+    totalCount,
+    handlePageChange,
+  } = useProjectTasks(false, false);
 
   const {
     modalMode,
@@ -44,7 +48,7 @@ const ProjectTaskComponent = () => {
     setNewUserTask,
   } = useProjectTasksModal();
 
-  const { projects } = useProjects(false);
+  const { projects } = useProjects(false, true);
   const { users } = useUsers();
 
   const handleFilterQueryChange = (
@@ -131,6 +135,10 @@ const ProjectTaskComponent = () => {
           projectTasks={filteredProjectTasks}
           users={users!}
           showModal={showModal}
+          currentPage={currentPage}
+          pageSize={pageSize}
+          totalCount={totalCount}
+          handlePageChange={handlePageChange}
         />
       </LoaderComponent>
 

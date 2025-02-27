@@ -26,6 +26,10 @@ interface ProjectsTableProps {
     projectUser: ProjectUserInterface | null,
     mode: ModalMode
   ) => void;
+  currentPage: number;
+  pageSize: number;
+  totalCount: number;
+  handlePageChange: (page: number) => void;
 }
 
 const ProjectsTable: React.FC<ProjectsTableProps> = ({
@@ -33,6 +37,10 @@ const ProjectsTable: React.FC<ProjectsTableProps> = ({
   users,
   roles,
   showModal,
+  currentPage,
+  pageSize,
+  totalCount,
+  handlePageChange,
 }) => {
   const columns: TableColumnsType<ProjectInterface> = useMemo(
     () => [
@@ -144,17 +152,17 @@ const ProjectsTable: React.FC<ProjectsTableProps> = ({
       {
         title: "Actions",
         key: "actions",
-        render: (project: ProjectInterface) => (
+        render: (_: any, record: ProjectInterface) => (
           <Space>
             <Button
               className="action-button"
               icon={<EditOutlined />}
-              onClick={() => showModal(project, null, ModalModes.UPDATE)}
+              onClick={() => showModal(record, null, ModalModes.UPDATE)}
             />
             <Button
               className="action-button danger"
               icon={<DeleteOutlined />}
-              onClick={() => showModal(project, null, ModalModes.DELETE)}
+              onClick={() => showModal(record, null, ModalModes.DELETE)}
             />
           </Space>
         ),
@@ -172,7 +180,12 @@ const ProjectsTable: React.FC<ProjectsTableProps> = ({
         dataSource={projects}
         rowKey="id"
         className="modern-table"
-        pagination={{ pageSize: 8 }}
+        pagination={{
+          current: currentPage,
+          pageSize,
+          total: totalCount,
+          onChange: handlePageChange,
+        }}
       />
     </>
   );

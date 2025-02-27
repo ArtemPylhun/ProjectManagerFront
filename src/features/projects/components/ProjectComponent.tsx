@@ -27,7 +27,11 @@ const ProjectComponent = () => {
     handleUpdateProject,
     handleAddUserToProject,
     handleRemoveUserFromProject,
-  } = useProjects(false);
+    currentPage,
+    pageSize,
+    totalCount,
+    handlePageChange,
+  } = useProjects(false, true);
 
   const {
     modalMode,
@@ -142,6 +146,10 @@ const ProjectComponent = () => {
           users={users!}
           roles={roles!}
           showModal={showModal}
+          currentPage={currentPage}
+          pageSize={pageSize}
+          totalCount={totalCount}
+          handlePageChange={handlePageChange}
         />
       </LoaderComponent>
 

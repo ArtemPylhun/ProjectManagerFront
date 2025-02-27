@@ -27,7 +27,11 @@ const TimeEntryComponent = () => {
     handleCreateTimeEntry,
     handleUpdateTimeEntry,
     handleDeleteTimeEntry,
-  } = useTimeEntries();
+    currentPage,
+    pageSize,
+    totalCount,
+    handlePageChange,
+  } = useTimeEntries(true);
 
   const {
     modalMode,
@@ -47,8 +51,8 @@ const TimeEntryComponent = () => {
   } = useTimeEntryModal();
 
   const { users } = useUsers();
-  const { projects } = useProjects(false);
-  const { projectTasks } = useProjectTasks(false);
+  const { projects } = useProjects(false, false);
+  const { projectTasks } = useProjectTasks(false, false);
 
   const handleFilterQueryChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -144,6 +148,10 @@ const TimeEntryComponent = () => {
           projects={projects!}
           projectTasks={projectTasks!}
           showModal={showModal}
+          currentPage={currentPage}
+          pageSize={pageSize}
+          totalCount={totalCount}
+          handlePageChange={handlePageChange}
         />
       </LoaderComponent>
       <CustomModal

@@ -44,9 +44,42 @@
 }
 
 /* Table Pagination */
-.modern-table .ant-pagination {
+.ant-pagination {
   padding: 8px;
+  justify-content: right;
 }
+
+.ant-pagination {
+  .ant-pagination-item {
+    background: rgba(254, 254, 254, 0.15);
+    border: 1px solid rgba(115, 170, 238, 0.2);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .ant-pagination-item:hover,
+  .ant-pagination-item-active {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+    background: rgba(115, 170, 238, 0.2);
+  }
+
+  .ant-pagination-item-link {
+    background: rgba(254, 254, 254, 0.15);
+    border: 1px solid rgba(115, 170, 238, 0.2);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+  }
+
+  .ant-pagination-item-link:hover {
+    background: rgba(115, 170, 238, 0.2);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+  }
+}
+
 .user-form .ant-input-password {
   background: rgba(
     255,
@@ -357,7 +390,7 @@
 .custom-modal .ant-modal-body {
   padding: 1rem 1.5rem;
   border: 1px #7d8dc3 solid;
-  border-radius: 0px 0px 12px 12px;
+  border-bottom: 0px;
 }
 
 .custom-modal .modal-content {
@@ -371,6 +404,10 @@
   justify-content: flex-end;
   padding: 15px 20px;
   gap: 10px;
+  border: 1px #7d8dc3 solid;
+  border-top: 0px;
+  margin-top: 0px;
+  border-radius: 0px 0px 12px 12px;
 }
 
 /* Form Styles (Enhanced Glass Effect) */
