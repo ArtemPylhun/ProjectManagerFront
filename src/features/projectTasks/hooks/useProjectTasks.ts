@@ -92,11 +92,36 @@ const useProjectTasks = (isUserPage: boolean) => {
     fetchProjectTasks(abortController.signal);
     fetchProjectTaskStatuses(abortController.signal);
     return () => abortController.abort();
-  }, [fetchProjectTasks, fetchProjectTaskStatuses, userId]);
+  }, [
+    fetchProjectTasks,
+    fetchProjectTaskStatuses,
+    userId,
+    currentPage,
+    totalCount,
+  ]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
+
+  const fetchProjectTaskById = useCallback(
+    async (
+      projectTaskId: string,
+      signal: AbortSignal
+    ): Promise<ProjectTaskInterface | null> => {
+      try {
+        const response = await ProjectTaskService.getProjectTaskById(
+          projectTaskId,
+          signal
+        );
+        return response;
+      } catch (error) {
+        console.error(`Failed to fetch project task by ID: ${error}`);
+        return null;
+      }
+    },
+    []
+  );
 
   const handleCreateProjectTask = async (
     newProjectTask: ProjectTaskCreateInterface
@@ -161,13 +186,18 @@ const useProjectTasks = (isUserPage: boolean) => {
         new AbortController().signal
       );
       if (!response) throw new Error("Project deletion failed");
-      setProjectTasks((prevProjectTasks) =>
-        prevProjectTasks
+      setProjectTasks((prevProjectTasks) => {
+        const updatedProjectTasks = prevProjectTasks
           ? prevProjectTasks.filter(
               (projectTask) => projectTask.id !== projectTaskId
             )
-          : []
-      );
+          : [];
+
+        if (updatedProjectTasks.length === 0 && currentPage > 1) {
+          setCurrentPage((prevPage) => prevPage - 1);
+        }
+        return updatedProjectTasks;
+      });
       setTotalCount((prevCount) => prevCount - 1);
       message.success("Project task deleted successfully");
       return true;
@@ -260,6 +290,7 @@ const useProjectTasks = (isUserPage: boolean) => {
     pageSize,
     totalCount,
     handlePageChange,
+    fetchProjectTaskById,
   };
 };
 

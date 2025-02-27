@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import {
   ProjectTaskInterface,
   ProjectTaskCreateInterface,
@@ -9,6 +9,7 @@ import {
   UserTaskCreateInterface,
 } from "../interfaces/UserTaskInterface";
 import { ModalMode, ModalModes } from "../../../types/modalModes";
+import useProjectTasks from "./useProjectTasks";
 const useProjectTasksModal = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [modalMode, setModalMode] = useState<ModalMode>(ModalModes.CREATE);
@@ -35,6 +36,27 @@ const useProjectTasksModal = () => {
     projectTaskId: "",
     userId: "",
   });
+
+  const { fetchProjectTaskById } = useProjectTasks(true);
+
+  const setProjectTaskFromId = useCallback(
+    async (projectTaskId: string) => {
+      if (!projectTaskId) return;
+      const projectTask = await fetchProjectTaskById(
+        projectTaskId,
+        new AbortController().signal
+      );
+      if (projectTask) {
+        setSelectedProjectTask(projectTask);
+        setSelectedProject(projectTask.project);
+      } else {
+        console.warn("Project task not found for ID:", projectTaskId);
+        setSelectedProjectTask(null);
+        setSelectedProject(null);
+      }
+    },
+    [fetchProjectTaskById]
+  );
 
   const showModal = (
     projectTask: ProjectTaskInterface | null,
@@ -85,6 +107,7 @@ const useProjectTasksModal = () => {
     setSelectedUserTask,
     setSelectedProjectTask,
     setSelectedProject,
+    setProjectTaskFromId,
   };
 };
 

@@ -56,6 +56,20 @@ export class ProjectTaskService {
     return await httpClient.get("get-project-tasks-statuses");
   }
 
+  static async getProjectTaskById(
+    projectTaskId: string,
+    signal: AbortSignal
+  ): Promise<ProjectTaskInterface> {
+    const apiUrl = import.meta.env.VITE_API_BASE_URL;
+    const httpClient = new HttpClient(
+      {
+        baseURL: `${apiUrl}/project-tasks`,
+      },
+      signal
+    );
+    return await httpClient.get(projectTaskId);
+  }
+
   static async createProjectTask(
     projectTask: ProjectTaskCreateInterface,
     signal: AbortSignal

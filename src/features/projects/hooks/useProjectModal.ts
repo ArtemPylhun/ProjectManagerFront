@@ -9,7 +9,7 @@ import {
   ProjectUserCreateInterface,
 } from "../interfaces/ProjectUserInterface";
 import { ModalMode, ModalModes } from "../../../types/modalModes";
-import useProjects from "../hooks/useProjects"; // Assume this is the path to useProjects
+import useProjects from "../hooks/useProjects";
 
 const useProjectModal = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
