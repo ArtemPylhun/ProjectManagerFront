@@ -20,68 +20,47 @@ const useProjectTasks = (isUserPage: boolean) => {
     ProjectTaskStatusInterface[] | null
   >(null);
 
+  const [totalCount, setTotalCount] = useState<number>(0);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+
   const { loading, turnOnLoading, turnOffLoading } = useLoading();
 
   const { userId } = useUserId();
+  const pageSize = 1;
 
-  const fetchAllProjectTasks = useCallback(
-    async (signal: AbortSignal): Promise<boolean> => {
-      turnOnLoading();
-      try {
-        const response = await ProjectTaskService.getAllProjectTasks(signal);
-        console.warn("Fetching all project tasks for Admin: ", response);
-        if (Array.isArray(response)) {
-          setProjectTasks(response as ProjectTaskInterface[]);
-          return true;
-        } else {
-          console.error(
-            "Invalid response format for all project tasks",
-            response
-          );
-          return false;
-        }
-      } catch (error) {
-        console.error("Error fetching all project tasks:", error);
-        return false;
-      } finally {
-        turnOffLoading();
-      }
-    },
-    [] // No dependencies, as this is static for Admins
-  );
-
-  const fetchUserProjectTasks = useCallback(
-    async (signal: AbortSignal): Promise<boolean> => {
+  const fetchProjectTasks = useCallback(
+    async (signal: AbortSignal) => {
       if (!userId) {
-        console.warn("User ID not available yet, skipping fetch");
-        return false;
+        console.error("No userId found in localStorage");
+        return;
       }
-
       turnOnLoading();
       try {
-        const response = await ProjectTaskService.getAllProjectTasksByUserId(
-          userId,
-          signal
-        );
-        console.warn("Fetching user project tasks: ", response);
-        if (Array.isArray(response)) {
-          setProjectTasks(response as ProjectTaskInterface[]);
-          return true;
-        } else {
-          console.error(
-            "Invalid response format for user project tasks",
-            response
-          );
-          return false;
+        const response = isUserPage
+          ? await ProjectTaskService.getAllProjectTasksByUserId(
+              userId,
+              currentPage,
+              pageSize,
+              signal
+            )
+          : await ProjectTaskService.getAllProjectTasks(
+              currentPage,
+              pageSize,
+              signal
+            );
+        console.warn("Fetching all project tasks for Admin: ", response);
+        if (response.projectTasks) {
+          setProjectTasks(response.projectTasks);
+          setTotalCount(response.totalCount);
         }
       } catch (error) {
-        console.error("Error fetching user project tasks:", error);
+        console.error("Error fetching project tasks:", error);
         return false;
       } finally {
         turnOffLoading();
       }
     },
-    [userId] // Depends on userId for non-Admin users
+    [userId, isUserPage, currentPage]
   );
 
   const fetchProjectTaskStatuses = useCallback(
@@ -108,27 +87,16 @@ const useProjectTasks = (isUserPage: boolean) => {
   );
 
   useEffect(() => {
+    if (!userId) return;
     const abortController = new AbortController();
-
-    const fetchWhenReady = async () => {
-      if (isUserPage && userId) {
-        await fetchUserProjectTasks(abortController.signal);
-      } else {
-        await fetchAllProjectTasks(abortController.signal);
-      }
-    };
-
-    fetchWhenReady();
+    fetchProjectTasks(abortController.signal);
     fetchProjectTaskStatuses(abortController.signal);
-
     return () => abortController.abort();
-  }, [
-    isUserPage,
-    userId,
-    fetchAllProjectTasks,
-    fetchUserProjectTasks,
-    fetchProjectTaskStatuses,
-  ]);
+  }, [fetchProjectTasks, fetchProjectTaskStatuses, userId]);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
 
   const handleCreateProjectTask = async (
     newProjectTask: ProjectTaskCreateInterface
@@ -143,6 +111,7 @@ const useProjectTasks = (isUserPage: boolean) => {
       setProjectTasks((prevProjects) =>
         prevProjects ? [...prevProjects, createdProject] : [createdProject]
       );
+      setTotalCount((prevCount) => prevCount + 1);
       message.success("Project task created successfully");
       return true;
     } catch (error) {
@@ -199,6 +168,7 @@ const useProjectTasks = (isUserPage: boolean) => {
             )
           : []
       );
+      setTotalCount((prevCount) => prevCount - 1);
       message.success("Project task deleted successfully");
       return true;
     } catch (error) {
@@ -286,6 +256,10 @@ const useProjectTasks = (isUserPage: boolean) => {
     handleDeleteProjectTask,
     handleAddUserToProjectTask,
     handleRemoveUserFromProjectTask,
+    currentPage,
+    pageSize,
+    totalCount,
+    handlePageChange,
   };
 };
 

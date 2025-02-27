@@ -31,6 +31,10 @@ const ProjectTasksPage: React.FC = () => {
     handleRemoveUserFromProjectTask,
     handleUpdateProjectTask,
     loading,
+    currentPage,
+    pageSize,
+    totalCount,
+    handlePageChange,
   } = useProjectTasks(true);
 
   const {
@@ -255,7 +259,12 @@ const ProjectTasksPage: React.FC = () => {
           columns={columns}
           rowKey="id"
           className="modern-table"
-          pagination={{ pageSize: 5 }}
+          pagination={{
+            current: currentPage,
+            pageSize,
+            total: totalCount,
+            onChange: handlePageChange,
+          }}
           locale={{ emptyText: "No tasks found for this project." }}
           loading={loading}
         />

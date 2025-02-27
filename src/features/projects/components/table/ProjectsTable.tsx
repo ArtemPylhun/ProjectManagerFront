@@ -144,17 +144,17 @@ const ProjectsTable: React.FC<ProjectsTableProps> = ({
       {
         title: "Actions",
         key: "actions",
-        render: (project: ProjectInterface) => (
+        render: (_: any, record: ProjectInterface) => (
           <Space>
             <Button
               className="action-button"
               icon={<EditOutlined />}
-              onClick={() => showModal(project, null, ModalModes.UPDATE)}
+              onClick={() => showModal(record, null, ModalModes.UPDATE)}
             />
             <Button
               className="action-button danger"
               icon={<DeleteOutlined />}
-              onClick={() => showModal(project, null, ModalModes.DELETE)}
+              onClick={() => showModal(record, null, ModalModes.DELETE)}
             />
           </Space>
         ),
@@ -172,7 +172,7 @@ const ProjectsTable: React.FC<ProjectsTableProps> = ({
         dataSource={projects}
         rowKey="id"
         className="modern-table"
-        pagination={{ pageSize: 5 }}
+        pagination={false}
       />
     </>
   );

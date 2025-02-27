@@ -11,8 +11,10 @@ import {
 } from "../interfaces/UserTaskInterface";
 export class ProjectTaskService {
   static async getAllProjectTasks(
+    page: number,
+    pageSize: number,
     signal: AbortSignal
-  ): Promise<ProjectTaskInterface[]> {
+  ): Promise<{ projectTasks: ProjectTaskInterface[]; totalCount: number }> {
     const apiUrl = import.meta.env.VITE_API_BASE_URL;
     const httpClient = new HttpClient(
       {
@@ -20,13 +22,15 @@ export class ProjectTaskService {
       },
       signal
     );
-    return await httpClient.get("get-all");
+    return await httpClient.get(`get-all?page=${page}&pageSize=${pageSize}`);
   }
 
   static async getAllProjectTasksByUserId(
     userId: string,
+    page: number,
+    pageSize: number,
     signal: AbortSignal
-  ): Promise<ProjectTaskInterface[]> {
+  ): Promise<{ projectTasks: ProjectTaskInterface[]; totalCount: number }> {
     const apiUrl = import.meta.env.VITE_API_BASE_URL;
     const httpClient = new HttpClient(
       {
@@ -34,7 +38,9 @@ export class ProjectTaskService {
       },
       signal
     );
-    return await httpClient.get(`get-all-by-user-id/${userId}`);
+    return await httpClient.get(
+      `get-all-by-user-id/${userId}?page=${page}&pageSize=${pageSize}`
+    );
   }
 
   static async getAllTaskStatuses(

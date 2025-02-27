@@ -31,6 +31,7 @@ const ProjectDetailPage: React.FC = () => {
     handleUpdateProject,
     handleAddUserToProject,
     handleRemoveUserFromProject,
+    fetchProjectById,
   } = useProjects(true);
 
   const {
@@ -50,13 +51,29 @@ const ProjectDetailPage: React.FC = () => {
   } = useProjectModal();
 
   useEffect(() => {
-    if (allProjects && id) {
-      const foundProject = allProjects.find((p) => p.id === id);
+    if (!id) return;
+
+    const fetchProject = async () => {
+      const foundProject = allProjects?.find((p) => p.id === id);
       if (foundProject) {
         setProject(foundProject);
+      } else {
+        // Fetch the project directly if not in paginated list
+        const project = await fetchProjectById(
+          id,
+          new AbortController().signal
+        );
+        if (project) {
+          setProject(project);
+        } else {
+          console.warn("Project not found for ID:", id);
+          setProject(null);
+        }
       }
-    }
-  }, [allProjects, id]);
+    };
+
+    fetchProject();
+  }, [allProjects, id, fetchProjectById]);
 
   if (loading || !project) {
     return <div className="loading">Loading project details...</div>;

@@ -55,6 +55,12 @@ export class HttpClient {
         ...config,
         signal: this.signal,
       });
+
+      if (!response || !response.data) {
+        console.error("Unexpected response format:", response);
+        throw new Error("Empty response or invalid data format");
+      }
+
       return response.data;
     } catch (error) {
       if (axios.isCancel(error)) {
@@ -91,7 +97,6 @@ export class HttpClient {
     this.axiosInstance.interceptors.response.use(
       (response) => response,
       (error) => {
-        console.warn("ERROR RESPONSE:>>>>>>>>>>>>> ", error);
         if (error.response.data.message) {
           console.error(
             "Request failed with error:",

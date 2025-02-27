@@ -116,38 +116,37 @@
   border-radius: 0 0 12px 12px !important; /* Match table radius at bottom */
 }
 
-.modern-table .ant-pagination-item {
-  background: rgba(254, 254, 254, 0.2) !important; /* Light transparent white */
-  border: 1px solid rgba(115, 170, 238, 0.4) !important; /* Using #73aaee */
-  color: #526ab7 !important;
-  border-radius: 4px !important;
-  transition: all 0.3s ease !important;
+.modern-table .ant-pagination {
+  .ant-pagination-item {
+    background: rgba(254, 254, 254, 0.15);
+    border: 1px solid rgba(115, 170, 238, 0.2);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .ant-pagination-item:hover,
+  .ant-pagination-item-active {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+    background: rgba(115, 170, 238, 0.2);
+  }
+
+  .ant-pagination-item-link {
+    background: rgba(254, 254, 254, 0.15);
+    border: 1px solid rgba(115, 170, 238, 0.2);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+  }
+
+  .ant-pagination-item-link:hover {
+    background: rgba(115, 170, 238, 0.2);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+  }
 }
 
-.modern-table .ant-pagination-item-active {
-  background: rgba(
-    115,
-    170,
-    238,
-    0.5
-  ) !important; /* Using #73aaee, semi-transparent */
-  border-color: #73aaee !important;
-  color: #ffffff !important;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important; /* Subtle shadow for active state */
-}
-
-.modern-table .ant-pagination-item:hover {
-  background: rgba(
-    82,
-    106,
-    183,
-    0.3
-  ) !important; /* Using #526ab7, semi-transparent on hover */
-  border-color: #526ab7 !important;
-  color: #ffffff !important;
-}
-
-/* View Detail Button (Cooler, Modern Style) */
 /* View Detail Button (Cooler, Modern Style) */
 .view-detail-button {
   color: #73aaee !important; /* Using #73aaee for link color */
