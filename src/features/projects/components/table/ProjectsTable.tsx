@@ -26,6 +26,10 @@ interface ProjectsTableProps {
     projectUser: ProjectUserInterface | null,
     mode: ModalMode
   ) => void;
+  currentPage: number;
+  pageSize: number;
+  totalCount: number;
+  handlePageChange: (page: number) => void;
 }
 
 const ProjectsTable: React.FC<ProjectsTableProps> = ({
@@ -33,6 +37,10 @@ const ProjectsTable: React.FC<ProjectsTableProps> = ({
   users,
   roles,
   showModal,
+  currentPage,
+  pageSize,
+  totalCount,
+  handlePageChange,
 }) => {
   const columns: TableColumnsType<ProjectInterface> = useMemo(
     () => [
@@ -172,7 +180,12 @@ const ProjectsTable: React.FC<ProjectsTableProps> = ({
         dataSource={projects}
         rowKey="id"
         className="modern-table"
-        pagination={false}
+        pagination={{
+          current: currentPage,
+          pageSize,
+          total: totalCount,
+          onChange: handlePageChange,
+        }}
       />
     </>
   );

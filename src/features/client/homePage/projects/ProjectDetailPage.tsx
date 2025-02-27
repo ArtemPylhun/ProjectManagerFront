@@ -32,7 +32,7 @@ const ProjectDetailPage: React.FC = () => {
     handleAddUserToProject,
     handleRemoveUserFromProject,
     fetchProjectById,
-  } = useProjects(true);
+  } = useProjects(true, false);
 
   const {
     modalMode,

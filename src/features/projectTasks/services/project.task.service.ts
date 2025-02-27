@@ -11,6 +11,33 @@ import {
 } from "../interfaces/UserTaskInterface";
 export class ProjectTaskService {
   static async getAllProjectTasks(
+    signal: AbortSignal
+  ): Promise<ProjectTaskInterface[]> {
+    const apiUrl = import.meta.env.VITE_API_BASE_URL;
+    const httpClient = new HttpClient(
+      {
+        baseURL: `${apiUrl}/project-tasks`,
+      },
+      signal
+    );
+    return await httpClient.get(`get-all`);
+  }
+
+  static async getAllProjectTasksByUserId(
+    userId: string,
+    signal: AbortSignal
+  ): Promise<ProjectTaskInterface[]> {
+    const apiUrl = import.meta.env.VITE_API_BASE_URL;
+    const httpClient = new HttpClient(
+      {
+        baseURL: `${apiUrl}/project-tasks`,
+      },
+      signal
+    );
+    return await httpClient.get(`get-all-by-user-id/${userId}`);
+  }
+
+  static async getAllProjectTasksPaginated(
     page: number,
     pageSize: number,
     signal: AbortSignal
@@ -22,10 +49,12 @@ export class ProjectTaskService {
       },
       signal
     );
-    return await httpClient.get(`get-all?page=${page}&pageSize=${pageSize}`);
+    return await httpClient.get(
+      `get-all-paginated?page=${page}&pageSize=${pageSize}`
+    );
   }
 
-  static async getAllProjectTasksByUserId(
+  static async getAllProjectTasksByUserIdPaginated(
     userId: string,
     page: number,
     pageSize: number,
@@ -39,7 +68,7 @@ export class ProjectTaskService {
       signal
     );
     return await httpClient.get(
-      `get-all-by-user-id/${userId}?page=${page}&pageSize=${pageSize}`
+      `get-all-by-user-id-paginated/${userId}?page=${page}&pageSize=${pageSize}`
     );
   }
 

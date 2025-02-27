@@ -10,7 +10,7 @@ import { UserService } from "../../users/services/user.service";
 import { ProjectUserCreateInterface } from "../interfaces/ProjectUserInterface";
 import { useLoading } from "../../../hooks/useLoading";
 import useUserId from "../../../hooks/useUserId";
-const useProjects = (isUserPage: boolean) => {
+const useProjects = (isUserPage: boolean, isPaginated: boolean) => {
   const [projects, setProjects] = useState<ProjectInterface[] | null>(null);
   const [totalCount, setTotalCount] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -18,43 +18,57 @@ const useProjects = (isUserPage: boolean) => {
   const { userId } = useUserId();
   const pageSize = 1;
 
-  const fetchProjects = useCallback(
-    async (signal: AbortSignal) => {
-      if (!userId) {
-        console.error("No userId found in localStorage");
-        return;
-      }
+  const fetchAllProjects = useCallback(
+    async (
+      signal: AbortSignal
+    ): Promise<
+      { projects: ProjectInterface[]; totalCount: number } | ProjectInterface[]
+    > => {
       turnOnLoading();
       try {
-        const response = isUserPage
-          ? await ProjectService.getAllProjectsByUserId(
-              userId,
-              currentPage,
-              pageSize,
-              signal
-            )
-          : await ProjectService.getAllProjects(currentPage, pageSize, signal);
-        console.warn(response);
-        if (response.projects) {
-          setProjects(response.projects);
-          setTotalCount(response.totalCount);
+        if (isPaginated) {
+          const response = isUserPage
+            ? await ProjectService.getAllProjectsByUserIdPaginated(
+                userId!,
+                currentPage,
+                pageSize,
+                signal
+              )
+            : await ProjectService.getAllProjectsPaginated(
+                currentPage,
+                pageSize,
+                signal
+              );
+          return response;
+        } else {
+          const response = isUserPage
+            ? await ProjectService.getAllProjectsByUserId(userId!, signal)
+            : await ProjectService.getAllProjects(signal);
+          return response;
         }
       } catch (error) {
-        console.error("Error fetching projects:", error);
+        console.error("Error fetching all projects:", error);
+        return isPaginated ? { projects: [], totalCount: 0 } : [];
       } finally {
         turnOffLoading();
       }
     },
-    [userId, isUserPage, currentPage]
+    [userId, isUserPage, isPaginated, currentPage, pageSize]
   );
 
   useEffect(() => {
     if (!userId) return;
     const abortController = new AbortController();
-    fetchProjects(abortController.signal);
+    fetchAllProjects(abortController.signal).then((response) => {
+      if ("projects" in response && "totalCount" in response) {
+        setProjects(response.projects);
+        setTotalCount(response.totalCount);
+      } else {
+        setProjects(response as ProjectInterface[]);
+      }
+    });
     return () => abortController.abort();
-  }, [fetchProjects, userId, currentPage, totalCount]);
-
+  }, [fetchAllProjects, userId, currentPage, pageSize]);
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };

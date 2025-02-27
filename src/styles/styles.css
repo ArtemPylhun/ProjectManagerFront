@@ -390,7 +390,7 @@
 .custom-modal .ant-modal-body {
   padding: 1rem 1.5rem;
   border: 1px #7d8dc3 solid;
-  border-radius: 0px 0px 12px 12px;
+  border-bottom: 0px;
 }
 
 .custom-modal .modal-content {
@@ -404,6 +404,10 @@
   justify-content: flex-end;
   padding: 15px 20px;
   gap: 10px;
+  border: 1px #7d8dc3 solid;
+  border-top: 0px;
+  margin-top: 0px;
+  border-radius: 0px 0px 12px 12px;
 }
 
 /* Form Styles (Enhanced Glass Effect) */

@@ -11,11 +11,40 @@ import {
 
 export class ProjectService {
   static async getAllProjects(
+    signal: AbortSignal
+  ): Promise<ProjectInterface[]> {
+    const apiUrl = import.meta.env.VITE_API_BASE_URL;
+    console.warn("all");
+    const httpClient = new HttpClient(
+      {
+        baseURL: `${apiUrl}/projects`,
+      },
+      signal
+    );
+    return await httpClient.get("get-all");
+  }
+  static async getAllProjectsByUserId(
+    userId: string,
+    signal: AbortSignal
+  ): Promise<ProjectInterface[]> {
+    const apiUrl = import.meta.env.VITE_API_BASE_URL;
+    console.warn("by user id");
+    const httpClient = new HttpClient(
+      {
+        baseURL: `${apiUrl}/projects`,
+      },
+      signal
+    );
+    return await httpClient.get(`get-all-by-user-id/${userId}`);
+  }
+
+  static async getAllProjectsPaginated(
     page: number,
     pageSize: number,
     signal: AbortSignal
   ): Promise<{ projects: ProjectInterface[]; totalCount: number }> {
     const apiUrl = import.meta.env.VITE_API_BASE_URL;
+    console.warn("all paginated");
     const httpClient = new HttpClient(
       {
         baseURL: `${apiUrl}/projects`,
@@ -25,13 +54,14 @@ export class ProjectService {
     return await httpClient.get(`get-all?page=${page}&pageSize=${pageSize}`);
   }
 
-  static async getAllProjectsByUserId(
+  static async getAllProjectsByUserIdPaginated(
     userId: string,
     page: number,
     pageSize: number,
     signal: AbortSignal
   ): Promise<{ projects: ProjectInterface[]; totalCount: number }> {
     const apiUrl = import.meta.env.VITE_API_BASE_URL;
+    console.warn("by user id paginated");
     const httpClient = new HttpClient(
       {
         baseURL: `${apiUrl}/projects`,

@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { Button, Form, Pagination } from "antd";
+import { Button, Form } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import SearchInput from "../../../components/common/SearchInput";
 import LoaderComponent from "../../../components/common/Loader";
@@ -30,7 +30,7 @@ const ProjectTaskComponent = () => {
     pageSize,
     totalCount,
     handlePageChange,
-  } = useProjectTasks(false);
+  } = useProjectTasks(false, false);
 
   const {
     modalMode,
@@ -48,7 +48,7 @@ const ProjectTaskComponent = () => {
     setNewUserTask,
   } = useProjectTasksModal();
 
-  const { projects } = useProjects(false);
+  const { projects } = useProjects(false, true);
   const { users } = useUsers();
 
   const handleFilterQueryChange = (
@@ -135,15 +135,12 @@ const ProjectTaskComponent = () => {
           projectTasks={filteredProjectTasks}
           users={users!}
           showModal={showModal}
+          currentPage={currentPage}
+          pageSize={pageSize}
+          totalCount={totalCount}
+          handlePageChange={handlePageChange}
         />
       </LoaderComponent>
-
-      <Pagination
-        current={currentPage}
-        pageSize={pageSize}
-        total={totalCount}
-        onChange={handlePageChange}
-      />
 
       <CustomModal
         visible={isModalVisible}

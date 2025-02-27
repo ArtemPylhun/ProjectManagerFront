@@ -1,8 +1,5 @@
 import React, { useCallback, useState } from "react";
 import { Avatar, Button, Form, Space, Table, Tooltip } from "antd";
-import useProjectTasks from "../../../projectTasks/hooks/useProjectTasks";
-import useUsers from "../../../users/hooks/useUsers";
-import useProjectTasksModal from "../../../projectTasks/hooks/useProjectTasksModal";
 import { ModalModes } from "../../../../types/modalModes";
 import { ProjectInterface } from "../../../projects/interfaces/ProjectInterface";
 import { UserTaskInterface } from "../../../projectTasks/interfaces/UserTaskInterface";
@@ -11,8 +8,11 @@ import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 import CustomModal from "../../../../components/common/CustomModal";
 import ProjectTaskUserForm from "../../../projectTasks/components/forms/ProjectTaskUserForm";
 import ProjectTaskForm from "../../../projectTasks/components/forms/ProjectTaskForm";
-import useProjects from "../../../projects/hooks/useProjects";
 import SearchInput from "../../../../components/common/SearchInput";
+import useProjectTasks from "../../../projectTasks/hooks/useProjectTasks";
+import useUsers from "../../../users/hooks/useUsers";
+import useProjectTasksModal from "../../../projectTasks/hooks/useProjectTasksModal";
+import useProjects from "../../../projects/hooks/useProjects";
 import "../../../../styles/client-styles/projects/projectsStyles.css";
 
 const ProjectTasksPage: React.FC = () => {
@@ -20,7 +20,7 @@ const ProjectTasksPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
   const { users } = useUsers();
-  const { projects } = useProjects(true);
+  const { projects } = useProjects(true, false);
 
   const {
     projectTasks,
@@ -35,7 +35,7 @@ const ProjectTasksPage: React.FC = () => {
     pageSize,
     totalCount,
     handlePageChange,
-  } = useProjectTasks(true);
+  } = useProjectTasks(true, true);
 
   const {
     modalMode,

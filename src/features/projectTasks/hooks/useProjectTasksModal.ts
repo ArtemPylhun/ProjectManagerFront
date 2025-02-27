@@ -37,7 +37,7 @@ const useProjectTasksModal = () => {
     userId: "",
   });
 
-  const { fetchProjectTaskById } = useProjectTasks(true);
+  const { fetchProjectTaskById } = useProjectTasks(true, true);
 
   const setProjectTaskFromId = useCallback(
     async (projectTaskId: string) => {

@@ -1,18 +1,18 @@
 import { Button, Form, Space, Table, Tooltip } from "antd";
 import { useCallback, useState, useEffect, useMemo } from "react";
 import { EditOutlined } from "@ant-design/icons";
+import { TimeEntryInterface } from "../../../timeEntries/interfaces/TimeEntryInterface";
+import { ModalModes } from "../../../../types/modalModes";
+import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
+import SearchInput from "../../../../components/common/SearchInput";
+import CustomModal from "../../../../components/common/CustomModal";
+import TimeEntryForm from "../../../timeEntries/components/forms/TimeEntryForm";
 import useTimeEntries from "../../../timeEntries/hooks/useTimeEntries";
 import useTimeEntryModal from "../../../timeEntries/hooks/useTimeEntryModal";
 import useProjects from "../../../projects/hooks/useProjects";
 import useProjectTasks from "../../../projectTasks/hooks/useProjectTasks";
 import useUserId from "../../../../hooks/useUserId";
-import { TimeEntryInterface } from "../../../timeEntries/interfaces/TimeEntryInterface";
-import { ModalModes } from "../../../../types/modalModes";
 import dayjs from "dayjs";
-import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
-import SearchInput from "../../../../components/common/SearchInput";
-import CustomModal from "../../../../components/common/CustomModal";
-import TimeEntryForm from "../../../timeEntries/components/forms/TimeEntryForm";
 import useUsers from "../../../users/hooks/useUsers";
 
 const TimeEntryUserPage: React.FC = () => {
@@ -24,9 +24,9 @@ const TimeEntryUserPage: React.FC = () => {
 
   const { users } = useUsers();
 
-  const { projects } = useProjects(true);
+  const { projects } = useProjects(true, false);
 
-  const { projectTasks } = useProjectTasks(true);
+  const { projectTasks } = useProjectTasks(true, false);
 
   const {
     timeEntries,
@@ -34,6 +34,10 @@ const TimeEntryUserPage: React.FC = () => {
     handleDeleteTimeEntry,
     handleUpdateTimeEntry,
     loading,
+    currentPage,
+    pageSize,
+    totalCount,
+    handlePageChange,
   } = useTimeEntries(true);
 
   const {
@@ -61,18 +65,6 @@ const TimeEntryUserPage: React.FC = () => {
     setSearchQuery(event.target.value);
   };
 
-  const filteredTimeEntries = timeEntries?.filter(
-    (timeEntry: TimeEntryInterface) =>
-      timeEntry.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      timeEntry.project?.name
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase()) ||
-      timeEntry.projectTask?.name
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase())
-  );
-
-  // Memoize filteredTimeEntries to prevent unnecessary recalculations
   const memoizedFilteredTimeEntries = useMemo(() => {
     if (!timeEntries || !Array.isArray(timeEntries)) return [];
     return timeEntries.filter(
@@ -87,7 +79,7 @@ const TimeEntryUserPage: React.FC = () => {
           .toLowerCase()
           .includes(searchQuery.toLowerCase())
     );
-  }, [timeEntries, searchQuery]);
+  }, [timeEntries, searchQuery, currentPage, totalCount]);
 
   useEffect(() => {
     try {
@@ -98,7 +90,7 @@ const TimeEntryUserPage: React.FC = () => {
               console.warn("Skipping entry with missing startTime:", entry);
               return acc;
             }
-            const date = dayjs(entry.startTime).format("ddd, MMM DD"); // e.g., "Thu, Feb 27"
+            const date = dayjs(entry.startTime).format("ddd, MMM DD");
             acc[date] = [...(acc[date] || []), entry];
             return acc;
           },
@@ -116,7 +108,7 @@ const TimeEntryUserPage: React.FC = () => {
       console.error("Error grouping time entries:", error);
       setGroupedTimeEntries({});
     }
-  }, [memoizedFilteredTimeEntries]); // Use memoized version to prevent frequent re-runs
+  }, [memoizedFilteredTimeEntries]);
 
   const handleSave = useCallback(async () => {
     if (!modalMode) return;
@@ -313,9 +305,13 @@ const TimeEntryUserPage: React.FC = () => {
                 columns={columns}
                 rowKey="id"
                 className="modern-table"
-                pagination={false}
+                pagination={{
+                  current: currentPage,
+                  pageSize,
+                  total: totalCount,
+                  onChange: handlePageChange,
+                }}
                 locale={{ emptyText: "No entries for this day." }}
-                size="small"
               />
             </div>
           ))}
@@ -334,7 +330,13 @@ const TimeEntryUserPage: React.FC = () => {
             : "Delete Time Entry"
         }
         isDanger={modalMode === ModalModes.DELETE}
-        okText={modalMode === ModalModes.CREATE ? "Create" : "Delete"}
+        okText={
+          modalMode === ModalModes.CREATE
+            ? "Create"
+            : modalMode === ModalModes.UPDATE
+            ? "Update"
+            : "Delete"
+        }
         onOk={handleSave}
         onCancel={hideModal}
       >

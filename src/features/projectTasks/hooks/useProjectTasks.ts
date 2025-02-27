@@ -11,7 +11,7 @@ import { UserTaskCreateInterface } from "../interfaces/UserTaskInterface";
 import { ProjectTaskStatusInterface } from "../interfaces/ProjectTaskStatusInterface";
 import useUserId from "../../../hooks/useUserId";
 
-const useProjectTasks = (isUserPage: boolean) => {
+const useProjectTasks = (isUserPage: boolean, isPaginated: boolean) => {
   const [projectTasks, setProjectTasks] = useState<
     ProjectTaskInterface[] | null
   >(null);
@@ -28,34 +28,41 @@ const useProjectTasks = (isUserPage: boolean) => {
   const { userId } = useUserId();
   const pageSize = 1;
 
-  const fetchProjectTasks = useCallback(
-    async (signal: AbortSignal) => {
-      if (!userId) {
-        console.error("No userId found in localStorage");
-        return;
-      }
+  const fetchAllProjectTasks = useCallback(
+    async (
+      signal: AbortSignal
+    ): Promise<
+      | { projectTasks: ProjectTaskInterface[]; totalCount: number }
+      | ProjectTaskInterface[]
+    > => {
       turnOnLoading();
       try {
-        const response = isUserPage
-          ? await ProjectTaskService.getAllProjectTasksByUserId(
-              userId,
-              currentPage,
-              pageSize,
-              signal
-            )
-          : await ProjectTaskService.getAllProjectTasks(
-              currentPage,
-              pageSize,
-              signal
-            );
-        console.warn("Fetching all project tasks for Admin: ", response);
-        if (response.projectTasks) {
-          setProjectTasks(response.projectTasks);
-          setTotalCount(response.totalCount);
+        if (isPaginated) {
+          const response = isUserPage
+            ? await ProjectTaskService.getAllProjectTasksByUserIdPaginated(
+                userId!,
+                currentPage,
+                pageSize,
+                signal
+              )
+            : await ProjectTaskService.getAllProjectTasksPaginated(
+                currentPage,
+                pageSize,
+                signal
+              );
+          return response;
+        } else {
+          const response = isUserPage
+            ? await ProjectTaskService.getAllProjectTasksByUserId(
+                userId!,
+                signal
+              )
+            : await ProjectTaskService.getAllProjectTasks(signal);
+          return response;
         }
       } catch (error) {
         console.error("Error fetching project tasks:", error);
-        return false;
+        return isPaginated ? { projectTasks: [], totalCount: 0 } : [];
       } finally {
         turnOffLoading();
       }
@@ -89,11 +96,18 @@ const useProjectTasks = (isUserPage: boolean) => {
   useEffect(() => {
     if (!userId) return;
     const abortController = new AbortController();
-    fetchProjectTasks(abortController.signal);
+    fetchAllProjectTasks(abortController.signal).then((response) => {
+      if ("projectTasks" in response && "totalCount" in response) {
+        setProjectTasks(response.projectTasks);
+        setTotalCount(response.totalCount);
+      } else {
+        setProjectTasks(response as ProjectTaskInterface[]);
+      }
+    });
     fetchProjectTaskStatuses(abortController.signal);
     return () => abortController.abort();
   }, [
-    fetchProjectTasks,
+    fetchAllProjectTasks,
     fetchProjectTaskStatuses,
     userId,
     currentPage,

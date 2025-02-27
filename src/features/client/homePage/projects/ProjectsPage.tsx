@@ -26,7 +26,7 @@ const ProjectsPage: React.FC = () => {
     pageSize,
     totalCount,
     handlePageChange,
-  } = useProjects(true);
+  } = useProjects(true, true);
 
   const { users } = useUsers();
 

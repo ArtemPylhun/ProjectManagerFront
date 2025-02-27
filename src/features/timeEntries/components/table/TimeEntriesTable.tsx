@@ -13,11 +13,19 @@ interface TimeEntriesTableProps {
   projects: ProjectInterface[] | undefined;
   projectTasks: ProjectTaskInterface[] | undefined | null;
   showModal: (timeEntry: TimeEntryInterface | null, mode: ModalMode) => void;
+  currentPage: number;
+  pageSize: number;
+  totalCount: number;
+  handlePageChange: (page: number) => void;
 }
 
 const TimeEntriesTable: React.FC<TimeEntriesTableProps> = ({
   timeEntries,
   showModal,
+  currentPage,
+  pageSize,
+  totalCount,
+  handlePageChange,
 }) => {
   const columns: TableColumnsType<TimeEntryInterface> = useMemo(
     () => [
@@ -104,7 +112,12 @@ const TimeEntriesTable: React.FC<TimeEntriesTableProps> = ({
       dataSource={timeEntries}
       rowKey="id"
       className="modern-table"
-      pagination={{ pageSize: 5 }}
+      pagination={{
+        current: currentPage,
+        pageSize,
+        total: totalCount,
+        onChange: handlePageChange,
+      }}
     />
   );
 };

@@ -10,21 +10,40 @@ const useTimeEntries = (isUserPage: boolean) => {
   const [timeEntries, setTimeEntries] = useState<TimeEntryInterface[] | null>(
     null
   );
+
+  const [totalCount, setTotalCount] = useState<number>(0);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+
   const { loading, turnOnLoading, turnOffLoading } = useLoading();
 
   const { userId } = useUserId();
 
-  const fetchAllTimeEntries = useCallback(
-    async (signal: AbortSignal): Promise<boolean> => {
+  const pageSize = 1;
+
+  const fetchTimeEntries = useCallback(
+    async (signal: AbortSignal) => {
+      if (!userId) {
+        console.error("No userId found in localStorage");
+        return;
+      }
       turnOnLoading();
       try {
-        const response = await TimeEntryService.getAllTimeEntries(signal);
-        if (Array.isArray(response)) {
-          setTimeEntries(response as TimeEntryInterface[]);
-          return true;
-        } else {
-          console.error("Invalid response format", response);
-          return false;
+        const response = isUserPage
+          ? await TimeEntryService.getAllTimeEntriesByUserId(
+              userId,
+              currentPage,
+              pageSize,
+              signal
+            )
+          : await TimeEntryService.getAllTimeEntries(
+              currentPage,
+              pageSize,
+              signal
+            );
+        console.warn("Fetching all time entries: ", response);
+        if (response.timeEntries) {
+          setTimeEntries(response.timeEntries);
+          setTotalCount(response.totalCount);
         }
       } catch (error) {
         console.error("Error fetching time entries:", error);
@@ -33,55 +52,19 @@ const useTimeEntries = (isUserPage: boolean) => {
         turnOffLoading();
       }
     },
-    []
-  );
-
-  const fetchUserTimeEntries = useCallback(
-    async (signal: AbortSignal): Promise<boolean> => {
-      if (!userId) {
-        console.warn("User ID not available yet, skipping fetch");
-        return false;
-      }
-
-      turnOnLoading();
-      try {
-        const response = await TimeEntryService.getAllTimeEntriesByUserId(
-          userId,
-          signal
-        );
-        console.warn("Fetching user time entries: ", response);
-        if (Array.isArray(response)) {
-          setTimeEntries(response as TimeEntryInterface[]);
-          return true;
-        } else {
-          console.error("Invalid response format for time entries", response);
-          return false;
-        }
-      } catch (error) {
-        console.error("Error fetching user time entries:", error);
-        return false;
-      } finally {
-        turnOffLoading();
-      }
-    },
-    [userId]
+    [userId, isUserPage, currentPage]
   );
 
   useEffect(() => {
+    if (!userId) return;
     const abortController = new AbortController();
-
-    const fetchWhenReady = async () => {
-      if (isUserPage && userId) {
-        await fetchUserTimeEntries(abortController.signal);
-      } else {
-        await fetchAllTimeEntries(abortController.signal);
-      }
-    };
-
-    fetchWhenReady();
-
+    fetchTimeEntries(abortController.signal);
     return () => abortController.abort();
-  }, [isUserPage, userId, fetchAllTimeEntries, fetchUserTimeEntries]);
+  }, [fetchTimeEntries, userId, currentPage, totalCount]);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
 
   const handleCreateTimeEntry = async (
     newTimeEntry: TimeEntryCreateInterface
@@ -95,6 +78,8 @@ const useTimeEntries = (isUserPage: boolean) => {
       setTimeEntries((prevTimeEntry) =>
         prevTimeEntry ? [...prevTimeEntry, response] : [response]
       );
+      setTotalCount((prevCount) => prevCount + 1);
+
       message.success("Time entry created successfully");
       return true;
     } catch (error) {
@@ -144,11 +129,17 @@ const useTimeEntries = (isUserPage: boolean) => {
         new AbortController().signal
       );
       if (!response) throw new Error("Time Entry deletion failed");
-      setTimeEntries((prevTimeEntry) =>
-        prevTimeEntry
+      setTimeEntries((prevTimeEntry) => {
+        const updatedTimeEntries = prevTimeEntry
           ? prevTimeEntry.filter((timeEntry) => timeEntry.id !== timeEntryId)
-          : []
-      );
+          : [];
+
+        if (updatedTimeEntries.length === 0 && currentPage > 1) {
+          setCurrentPage((prevPage) => prevPage - 1);
+        }
+        return updatedTimeEntries;
+      });
+      setTotalCount((prevCount) => prevCount - 1);
       message.success("Time entry deleted successfully");
       return true;
     } catch (error) {
@@ -163,6 +154,10 @@ const useTimeEntries = (isUserPage: boolean) => {
     handleCreateTimeEntry,
     handleUpdateTimeEntry,
     handleDeleteTimeEntry,
+    currentPage,
+    totalCount,
+    pageSize,
+    handlePageChange,
   };
 };
 

@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { Button, Form, Pagination } from "antd";
+import { Button, Form } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { ModalModes } from "../../../types/modalModes";
 import SearchInput from "../../../components/common/SearchInput";
@@ -31,7 +31,7 @@ const ProjectComponent = () => {
     pageSize,
     totalCount,
     handlePageChange,
-  } = useProjects(false);
+  } = useProjects(false, true);
 
   const {
     modalMode,
@@ -146,15 +146,12 @@ const ProjectComponent = () => {
           users={users!}
           roles={roles!}
           showModal={showModal}
+          currentPage={currentPage}
+          pageSize={pageSize}
+          totalCount={totalCount}
+          handlePageChange={handlePageChange}
         />
       </LoaderComponent>
-
-      <Pagination
-        current={currentPage}
-        pageSize={pageSize}
-        total={totalCount}
-        onChange={handlePageChange}
-      />
 
       <CustomModal
         visible={isModalVisible}
