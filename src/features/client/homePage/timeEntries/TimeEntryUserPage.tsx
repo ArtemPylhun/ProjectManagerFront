@@ -22,7 +22,7 @@ const TimeEntryUserPage: React.FC = () => {
     Record<string, TimeEntryInterface[]>
   >({});
 
-  const { users } = useUsers();
+  const { users } = useUsers(false);
 
   const { projects } = useProjects(true, false);
 

@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import { Button, Select, Form } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import SearchInput from "../../../components/common/SearchInput";
@@ -13,7 +13,6 @@ import { ModalModes } from "../../../types/modalModes";
 import "../../../styles/styles.css";
 
 const UserComponent = () => {
-  const [filterQuery, setFilterQuery] = useState<string>("");
   const [form] = Form.useForm();
 
   const {
@@ -36,23 +35,24 @@ const UserComponent = () => {
     handleUpdateUser,
     handleUpdateRoles,
     handleDeleteUser,
-  } = useUsers();
+    handleSearch,
+    handlePageChange,
+    currentPage,
+    pageSize,
+    totalCount,
+    searchQuery,
+    setSearchQuery,
+  } = useUsers(true);
 
-  const { roles } = useRoles(false, true);
+  const { roles } = useRoles(false, true, false);
 
   const handleFilterQueryChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setFilterQuery(event.target.value);
+    const newSearchQuery = event.target.value;
+    setSearchQuery(newSearchQuery);
+    handleSearch();
   };
-
-  const filteredUsers = users
-    ? users.filter(
-        (user) =>
-          user.userName.toLowerCase().includes(filterQuery.toLowerCase()) ||
-          user.email.toLowerCase().includes(filterQuery.toLowerCase())
-      )
-    : null;
 
   const handleSave = useCallback(async () => {
     if (!modalMode) return;
@@ -93,7 +93,7 @@ const UserComponent = () => {
     <div>
       <div className="projects-header">
         <SearchInput
-          query={filterQuery}
+          query={searchQuery}
           onQueryChange={handleFilterQueryChange}
         />
         <Button
@@ -106,7 +106,16 @@ const UserComponent = () => {
       </div>
 
       <LoaderComponent loading={loading}>
-        <UsersTable users={filteredUsers} showModal={showModal} />
+        <UsersTable
+          users={users}
+          showModal={showModal}
+          currentPage={currentPage || 1}
+          pageSize={pageSize || 1}
+          totalCount={totalCount || 1}
+          handlePageChange={(page, newPageSize) =>
+            handlePageChange?.(page, newPageSize)
+          }
+        />
       </LoaderComponent>
 
       <CustomModal

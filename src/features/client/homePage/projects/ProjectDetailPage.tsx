@@ -23,8 +23,8 @@ const ProjectDetailPage: React.FC = () => {
   const [form] = Form.useForm();
 
   const { userId } = useUserId();
-  const { roles } = useRoles(true, false);
-  const { users } = useUsers();
+  const { roles } = useRoles(true, false, false);
+  const { users } = useUsers(false);
   const {
     projects: allProjects,
     loading: loading,

@@ -49,7 +49,7 @@ const ProjectTaskComponent = () => {
   } = useProjectTasksModal();
 
   const { projects } = useProjects(false, true);
-  const { users } = useUsers();
+  const { users } = useUsers(false);
 
   const handleFilterQueryChange = (
     event: React.ChangeEvent<HTMLInputElement>

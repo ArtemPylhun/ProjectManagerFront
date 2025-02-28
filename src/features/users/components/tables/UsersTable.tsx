@@ -7,9 +7,20 @@ import "../../../../styles/styles.css";
 interface UsersTableProps {
   users: UserInterface[] | null;
   showModal: (user: UserInterface | null, mode: ModalMode) => void;
+  currentPage: number;
+  pageSize: number;
+  totalCount: number;
+  handlePageChange: (page: number, newPageSize?: number | undefined) => void;
 }
 
-const UsersTable: React.FC<UsersTableProps> = ({ users, showModal }) => {
+const UsersTable: React.FC<UsersTableProps> = ({
+  users,
+  showModal,
+  currentPage,
+  pageSize,
+  totalCount,
+  handlePageChange,
+}) => {
   const columns: TableColumnsType<UserInterface> = useMemo(
     () => [
       {
@@ -75,7 +86,13 @@ const UsersTable: React.FC<UsersTableProps> = ({ users, showModal }) => {
       dataSource={users}
       rowKey="id"
       className="modern-table"
-      pagination={{ pageSize: 5 }}
+      pagination={{
+        current: currentPage,
+        pageSize: pageSize,
+        total: totalCount,
+        showSizeChanger: true,
+        onChange: handlePageChange,
+      }}
     />
   );
 };

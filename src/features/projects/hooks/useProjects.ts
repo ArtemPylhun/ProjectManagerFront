@@ -77,7 +77,6 @@ const useProjects = (isUserPage: boolean, isPaginated: boolean) => {
     newProject: ProjectCreateInterface
   ): Promise<boolean> => {
     try {
-      console.log("NewProject: ", newProject);
       const createdProject = await ProjectService.createProject(
         newProject,
         new AbortController().signal

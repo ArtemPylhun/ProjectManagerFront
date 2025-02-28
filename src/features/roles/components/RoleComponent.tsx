@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import { Form, Button } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { ModalModes } from "../../../types/modalModes";
@@ -11,7 +11,6 @@ import useRoleModal from "../hooks/useRoleModal";
 import "../../../styles/styles.css";
 import RoleForm from "./forms/RoleForm";
 const RoleComponent = () => {
-  const [filterQuery, setFilterQuery] = useState<string>("");
   const [form] = Form.useForm();
 
   const {
@@ -21,7 +20,14 @@ const RoleComponent = () => {
     handleCreateRole,
     handleUpdateRole,
     handleDeleteRole,
-  } = useRoles(false, false);
+    currentPage,
+    pageSize,
+    totalCount,
+    handlePageChange,
+    searchQuery,
+    setSearchQuery,
+    handleSearch,
+  } = useRoles(false, false, true);
 
   const {
     modalMode,
@@ -37,19 +43,11 @@ const RoleComponent = () => {
   const handleFilterQueryChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setFilterQuery(event.target.value);
+    const newSearchQuery = event.target.value.trim();
+    console.log("Search input changed, new searchQuery:", newSearchQuery);
+    setSearchQuery(newSearchQuery); // Update searchQuery state
+    handleSearch(newSearchQuery); // Pass the new search query
   };
-
-  const filteredRoles = roles
-    ? roles.filter((role) => {
-        const roleGroup = roleGroups?.find((g) => g.id === role.roleGroup);
-        return (
-          role.name.toLowerCase().includes(filterQuery.toLowerCase()) ||
-          (roleGroup &&
-            roleGroup.name.toLowerCase().includes(filterQuery.toLowerCase()))
-        );
-      })
-    : [];
 
   const handleSave = useCallback(async () => {
     if (!modalMode) return;
@@ -84,7 +82,7 @@ const RoleComponent = () => {
     <div>
       <div className="projects-header">
         <SearchInput
-          query={filterQuery}
+          query={searchQuery}
           onQueryChange={handleFilterQueryChange}
         />
         <Button
@@ -98,9 +96,15 @@ const RoleComponent = () => {
 
       <LoaderComponent loading={loading}>
         <RolesTable
-          roles={filteredRoles}
+          roles={roles || []}
           roleGroups={roleGroups}
           showModal={showModal}
+          currentPage={currentPage || 1}
+          pageSize={pageSize || 1}
+          totalCount={totalCount || 1}
+          handlePageChange={(page, newPageSize) =>
+            handlePageChange?.(page, newPageSize)
+          }
         />
       </LoaderComponent>
 

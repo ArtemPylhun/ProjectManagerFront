@@ -19,7 +19,7 @@ const ProjectTasksPage: React.FC = () => {
   const [form] = Form.useForm();
   const [searchQuery, setSearchQuery] = useState("");
 
-  const { users } = useUsers();
+  const { users } = useUsers(false);
   const { projects } = useProjects(true, false);
 
   const {

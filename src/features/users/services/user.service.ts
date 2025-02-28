@@ -17,6 +17,32 @@ export class UserService {
     return await httpClient.get("get-all-with-roles");
   }
 
+  static async getAllUsersPaginated(
+    page: number,
+    pageSize: number,
+    searchQuery: string,
+    signal: AbortSignal
+  ): Promise<{
+    items: UserInterface[];
+    totalCount: number;
+    currentPage: number;
+    pageSize: number;
+  }> {
+    const apiUrl = import.meta.env.VITE_API_BASE_URL;
+    const httpClient = new HttpClient(
+      {
+        baseURL: `${apiUrl}/users`,
+      },
+      signal
+    );
+    let url = `?page=${page}&pageSize=${pageSize}`;
+    if (searchQuery) {
+      url += `&search=${searchQuery}`;
+    }
+    console.warn("USER FINAL URL: ", url);
+    return await httpClient.get(`/get-all-with-roles-paginated${url}`);
+  }
+
   static async getUserWithRolesById(
     userId: string,
     signal: AbortSignal

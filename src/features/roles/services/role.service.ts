@@ -36,6 +36,33 @@ export class RoleService {
     return await httpClient.get("get-all");
   }
 
+  static async getAllRolesPaginated(
+    page: number,
+    pageSize: number,
+    searchQuery: string,
+    signal: AbortSignal
+  ): Promise<{
+    items: RoleInterface[];
+    totalCount: number;
+    currentPage: number;
+    pageSize: number;
+  }> {
+    const apiUrl = import.meta.env.VITE_API_BASE_URL;
+    const httpClient = new HttpClient(
+      {
+        baseURL: `${apiUrl}/roles`,
+      },
+      signal
+    );
+    let url = `?page=${page}&pageSize=${pageSize}`;
+    console.warn("FINAL SEARCH QUERY: ", searchQuery);
+    if (searchQuery) {
+      url += `&search=${searchQuery}`;
+    }
+    console.warn("FINAL URL: ", url);
+    return await httpClient.get(`/get-all-paginated${url}`);
+  }
+
   static async getRoleGroups(
     signal: AbortSignal
   ): Promise<RoleGroupInterface[]> {

@@ -50,7 +50,7 @@ const TimeEntryComponent = () => {
     setSelectedProjectTask,
   } = useTimeEntryModal();
 
-  const { users } = useUsers();
+  const { users } = useUsers(false);
   const { projects } = useProjects(false, false);
   const { projectTasks } = useProjectTasks(false, false);
 

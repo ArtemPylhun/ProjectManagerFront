@@ -10,12 +10,20 @@ interface RolesTableProps {
   roles: RoleInterface[] | undefined;
   roleGroups: RoleGroupInterface[] | null;
   showModal: (project: RoleInterface | null, mode: ModalMode) => void;
+  currentPage: number;
+  pageSize: number;
+  totalCount: number;
+  handlePageChange: (page: number, newPageSize?: number | undefined) => void;
 }
 
 const RolesTable: React.FC<RolesTableProps> = ({
   roles,
   roleGroups,
   showModal,
+  currentPage,
+  pageSize,
+  totalCount,
+  handlePageChange,
 }) => {
   const columns: TableColumnsType<RoleInterface> = useMemo(
     () => [
@@ -62,7 +70,13 @@ const RolesTable: React.FC<RolesTableProps> = ({
         dataSource={roles}
         rowKey="id"
         className="modern-table"
-        pagination={{ pageSize: 5 }}
+        pagination={{
+          current: currentPage,
+          pageSize: pageSize,
+          total: totalCount,
+          showSizeChanger: true,
+          onChange: handlePageChange,
+        }}
       />
     </>
   );

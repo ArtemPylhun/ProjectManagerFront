@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { message } from "antd";
 import { RoleService } from "../services/role.service";
 import {
@@ -8,40 +8,67 @@ import {
 import { useLoading } from "../../../hooks/useLoading";
 import { RoleGroupInterface } from "../interfaces/RoleGroupIntreface";
 
-const useRoles = (isProjectRoles: boolean, isGeneralRoles: boolean) => {
+const useRoles = (
+  isProjectRoles: boolean,
+  isGeneralRoles: boolean,
+  isPaginated: boolean
+) => {
   const [roles, setRoles] = useState<RoleInterface[] | null>(null);
-
   const [roleGroups, setRoleGroups] = useState<RoleGroupInterface[] | null>(
     null
   );
-
+  const [totalCount, setTotalCount] = useState<number>(0);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(1);
+  const [searchQuery, setSearchQuery] = useState<string>("");
   const { loading, turnOnLoading, turnOffLoading } = useLoading();
 
   const fetchRoles = useCallback(
-    async (signal: AbortSignal): Promise<boolean> => {
+    async (
+      signal: AbortSignal,
+      searchQueryParam: string = ""
+    ): Promise<void> => {
       turnOnLoading();
       try {
-        const response = isProjectRoles
-          ? await RoleService.getProjectRoles(signal)
-          : isGeneralRoles
-          ? await RoleService.getGeneralRoles(signal)
-          : await RoleService.getAllRoles(signal);
-        console.log("Roles: ", response);
-        if (Array.isArray(response)) {
-          setRoles(response as RoleInterface[]);
-          return true;
+        let response;
+        console.warn("Search Query in fetchRoles:", searchQueryParam);
+        console.log(
+          "Fetching roles with params - page:",
+          currentPage,
+          "pageSize:",
+          pageSize,
+          "searchQuery:",
+          searchQueryParam
+        );
+        if (isPaginated) {
+          response = await RoleService.getAllRolesPaginated(
+            currentPage,
+            pageSize,
+            searchQueryParam,
+            signal
+          );
+          console.warn("RESPONSE AFTER SEARCH", response);
+          setRoles(response.items ?? []);
+          setTotalCount(response.totalCount ?? 0);
+          setCurrentPage(response.currentPage ?? 1);
+          setPageSize(response.pageSize ?? 1);
         } else {
-          console.error("Invalid response format", response);
-          return false;
+          const response = isProjectRoles
+            ? await RoleService.getProjectRoles(signal)
+            : isGeneralRoles
+            ? await RoleService.getGeneralRoles(signal)
+            : await RoleService.getAllRoles(signal);
+          setRoles(response ?? []);
         }
       } catch (error) {
         console.error("Error fetching roles:", error);
-        return false;
+        setRoles([]);
+        if (isPaginated) setTotalCount(0);
       } finally {
         turnOffLoading();
       }
     },
-    []
+    [isPaginated, currentPage, pageSize] // Removed searchQuery from dependencies
   );
 
   const fetchRoleGroups = useCallback(
@@ -69,12 +96,49 @@ const useRoles = (isProjectRoles: boolean, isGeneralRoles: boolean) => {
 
   useEffect(() => {
     const abortController = new AbortController();
-    fetchRoles(abortController.signal);
+    fetchRoles(abortController.signal, searchQuery); // Use searchQuery state here
     if (!isProjectRoles && !isGeneralRoles) {
       fetchRoleGroups(abortController.signal);
     }
     return () => abortController.abort();
-  }, [fetchRoles, fetchRoleGroups]);
+  }, [
+    fetchRoles,
+    fetchRoleGroups,
+    searchQuery,
+    isProjectRoles,
+    isGeneralRoles,
+  ]); // Added searchQuery to dependencies
+
+  const handlePageChange = useCallback(
+    (page: number, newPageSize?: number) => {
+      if (isPaginated) {
+        setCurrentPage(page);
+        if (newPageSize) setPageSize(newPageSize);
+        const abortController = new AbortController();
+        fetchRoles(abortController.signal);
+        abortController.abort();
+      }
+    },
+    [isPaginated, fetchRoles]
+  );
+
+  const handleSearch = useCallback(
+    (newSearchQuery: string) => {
+      const trimmedQuery = newSearchQuery.trim();
+      setSearchQuery(trimmedQuery);
+      if (isPaginated) {
+        setCurrentPage(1);
+        const abortController = new AbortController();
+        fetchRoles(abortController.signal, trimmedQuery);
+        abortController.abort();
+      } else {
+        const abortController = new AbortController();
+        fetchRoles(abortController.signal, trimmedQuery);
+        abortController.abort();
+      }
+    },
+    [isPaginated, fetchRoles]
+  );
 
   const handleCreateRole = async (
     newRole: RoleCreateInterface
@@ -89,6 +153,8 @@ const useRoles = (isProjectRoles: boolean, isGeneralRoles: boolean) => {
       setRoles((prevRoles) =>
         prevRoles ? [...prevRoles, createdRole] : [createdRole]
       );
+      setTotalCount((prevCount) => prevCount + 1);
+
       message.success("Role created successfully");
       return true;
     } catch (error) {
@@ -128,9 +194,18 @@ const useRoles = (isProjectRoles: boolean, isGeneralRoles: boolean) => {
         new AbortController().signal
       );
       if (!response) throw new Error("Role deletion failed");
-      setRoles((prevRoles) =>
-        prevRoles ? prevRoles.filter((role) => role.id !== roleId) : []
-      );
+      setRoles((prevRoles) => {
+        const updatedRoles = prevRoles
+          ? prevRoles.filter((role) => role.id !== roleId)
+          : [];
+
+        if (updatedRoles.length === 0 && currentPage > 1) {
+          setCurrentPage((prevPage) => prevPage - 1);
+        }
+
+        return updatedRoles;
+      });
+      setTotalCount((prevCount) => prevCount - 1);
       message.success("Role deleted successfully");
       return true;
     } catch (error) {
@@ -139,16 +214,33 @@ const useRoles = (isProjectRoles: boolean, isGeneralRoles: boolean) => {
     }
   };
 
-  return {
-    roles,
-    roleGroups,
-    loading,
-    fetchRoles,
-    fetchRoleGroups,
-    handleCreateRole,
-    handleUpdateRole,
-    handleDeleteRole,
-  };
+  return isPaginated
+    ? {
+        roles,
+        roleGroups,
+        loading,
+        totalCount,
+        currentPage,
+        pageSize,
+        handlePageChange,
+        handleSearch,
+        handleCreateRole,
+        handleUpdateRole,
+        handleDeleteRole,
+        searchQuery,
+        setSearchQuery,
+      }
+    : {
+        roles,
+        roleGroups,
+        loading,
+        handleSearch,
+        handleCreateRole,
+        handleUpdateRole,
+        handleDeleteRole,
+        searchQuery,
+        setSearchQuery,
+      };
 };
 
 export default useRoles;

@@ -51,8 +51,8 @@ const ProjectComponent = () => {
     setNewProjectUser,
   } = useProjectModal();
 
-  const { users } = useUsers();
-  const { roles } = useRoles(true, false);
+  const { users } = useUsers(false);
+  const { roles } = useRoles(true, false, false);
 
   const handleFilterQueryChange = (
     event: React.ChangeEvent<HTMLInputElement>

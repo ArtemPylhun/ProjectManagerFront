@@ -28,7 +28,7 @@ const ProjectsPage: React.FC = () => {
     handlePageChange,
   } = useProjects(true, true);
 
-  const { users } = useUsers();
+  const { users } = useUsers(false);
 
   const {
     modalMode,
