@@ -124,7 +124,7 @@ const useRoles = (
 
   const handleSearch = useCallback(
     (newSearchQuery: string) => {
-      const trimmedQuery = newSearchQuery.trim();
+      const trimmedQuery = newSearchQuery;
       setSearchQuery(trimmedQuery);
       if (isPaginated) {
         setCurrentPage(1);

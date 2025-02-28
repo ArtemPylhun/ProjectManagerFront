@@ -57,7 +57,7 @@ export class RoleService {
     let url = `?page=${page}&pageSize=${pageSize}`;
     console.warn("FINAL SEARCH QUERY: ", searchQuery);
     if (searchQuery) {
-      url += `&search=${searchQuery}`;
+      url += `&search=${encodeURIComponent(searchQuery)}`;
     }
     console.warn("FINAL URL: ", url);
     return await httpClient.get(`/get-all-paginated${url}`);

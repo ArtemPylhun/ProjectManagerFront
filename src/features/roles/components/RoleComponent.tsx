@@ -43,7 +43,7 @@ const RoleComponent = () => {
   const handleFilterQueryChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    const newSearchQuery = event.target.value.trim();
+    const newSearchQuery = event.target.value;
     console.log("Search input changed, new searchQuery:", newSearchQuery);
     setSearchQuery(newSearchQuery); // Update searchQuery state
     handleSearch(newSearchQuery); // Pass the new search query

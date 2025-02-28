@@ -37,7 +37,7 @@ export class UserService {
     );
     let url = `?page=${page}&pageSize=${pageSize}`;
     if (searchQuery) {
-      url += `&search=${searchQuery}`;
+      url += `&search=${encodeURIComponent(searchQuery)}`;
     }
     console.warn("USER FINAL URL: ", url);
     return await httpClient.get(`/get-all-with-roles-paginated${url}`);
