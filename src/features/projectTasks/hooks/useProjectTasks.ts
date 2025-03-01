@@ -7,67 +7,68 @@ import {
 import { ProjectTaskService } from "../services/project.task.service";
 import { useLoading } from "../../../hooks/useLoading";
 import { message } from "antd";
-import { UserTaskCreateInterface } from "../interfaces/UserTaskInterface";
 import { ProjectTaskStatusInterface } from "../interfaces/ProjectTaskStatusInterface";
 import useUserId from "../../../hooks/useUserId";
 
-const useProjectTasks = (isUserPage: boolean, isPaginated: boolean) => {
+const useProjectTasks = (isPaginated: boolean) => {
   const [projectTasks, setProjectTasks] = useState<
     ProjectTaskInterface[] | null
   >(null);
-
   const [projectTaskStatuses, setProjectTaskStatuses] = useState<
     ProjectTaskStatusInterface[] | null
   >(null);
-
   const [totalCount, setTotalCount] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
-
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [pageSize, setPageSize] = useState<number>(5);
   const { loading, turnOnLoading, turnOffLoading } = useLoading();
-
-  const { userId } = useUserId();
-  const pageSize = 1;
+  const { userId, isAdmin } = useUserId();
 
   const fetchAllProjectTasks = useCallback(
     async (
-      signal: AbortSignal
-    ): Promise<
-      | { projectTasks: ProjectTaskInterface[]; totalCount: number }
-      | ProjectTaskInterface[]
-    > => {
+      signal: AbortSignal,
+      search: string = "",
+      userId: string,
+      isAdmin: boolean
+    ): Promise<void> => {
       turnOnLoading();
       try {
         if (isPaginated) {
-          const response = isUserPage
-            ? await ProjectTaskService.getAllProjectTasksByUserIdPaginated(
+          const response = isAdmin
+            ? await ProjectTaskService.getAllProjectTasksPaginated(
+                currentPage,
+                pageSize,
+                search,
+                signal
+              )
+            : await ProjectTaskService.getAllProjectTasksByUserIdPaginated(
                 userId!,
                 currentPage,
                 pageSize,
-                signal
-              )
-            : await ProjectTaskService.getAllProjectTasksPaginated(
-                currentPage,
-                pageSize,
+                search,
                 signal
               );
-          return response;
+          setProjectTasks(response.items);
+          setTotalCount(response.totalCount);
+          setCurrentPage(response.currentPage);
+          setPageSize(response.pageSize);
         } else {
-          const response = isUserPage
-            ? await ProjectTaskService.getAllProjectTasksByUserId(
+          const response = isAdmin
+            ? await ProjectTaskService.getAllProjectTasks(signal)
+            : await ProjectTaskService.getAllProjectTasksByUserId(
                 userId!,
                 signal
-              )
-            : await ProjectTaskService.getAllProjectTasks(signal);
-          return response;
+              );
+          setProjectTasks(response ?? []);
         }
       } catch (error) {
         console.error("Error fetching project tasks:", error);
-        return isPaginated ? { projectTasks: [], totalCount: 0 } : [];
+        setProjectTasks([]);
       } finally {
         turnOffLoading();
       }
     },
-    [userId, isUserPage, currentPage]
+    [isPaginated, currentPage, pageSize]
   );
 
   const fetchProjectTaskStatuses = useCallback(
@@ -75,7 +76,6 @@ const useProjectTasks = (isUserPage: boolean, isPaginated: boolean) => {
       turnOnLoading();
       try {
         const response = await ProjectTaskService.getAllTaskStatuses(signal);
-        console.log("Project Task Statuses: ", response);
         if (Array.isArray(response)) {
           setProjectTaskStatuses(response);
           return true;
@@ -94,29 +94,69 @@ const useProjectTasks = (isUserPage: boolean, isPaginated: boolean) => {
   );
 
   useEffect(() => {
-    if (!userId) return;
+    if (!userId && !isAdmin) return;
     const abortController = new AbortController();
-    fetchAllProjectTasks(abortController.signal).then((response) => {
-      if ("projectTasks" in response && "totalCount" in response) {
-        setProjectTasks(response.projectTasks);
-        setTotalCount(response.totalCount);
-      } else {
-        setProjectTasks(response as ProjectTaskInterface[]);
-      }
-    });
+    fetchAllProjectTasks(
+      abortController.signal,
+      searchQuery,
+      userId || "",
+      isAdmin
+    );
     fetchProjectTaskStatuses(abortController.signal);
     return () => abortController.abort();
   }, [
     fetchAllProjectTasks,
     fetchProjectTaskStatuses,
     userId,
-    currentPage,
-    totalCount,
+    isAdmin,
+    searchQuery,
   ]);
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
+  const handlePageChange = useCallback(
+    (page: number, newPageSize?: number) => {
+      if (isPaginated) {
+        setCurrentPage(page);
+        if (newPageSize) setPageSize(newPageSize);
+        const abortController = new AbortController();
+        fetchAllProjectTasks(
+          abortController.signal,
+          searchQuery,
+          userId || "",
+          isAdmin
+        );
+        abortController.abort();
+      }
+    },
+    [isPaginated, fetchAllProjectTasks]
+  );
+
+  const handleSearch = useCallback(
+    (newSearchQuery: string) => {
+      const query = newSearchQuery;
+      setSearchQuery(query);
+      if (isPaginated) {
+        setCurrentPage(1);
+        const abortController = new AbortController();
+        fetchAllProjectTasks(
+          abortController.signal,
+          query,
+          userId || "",
+          isAdmin
+        );
+        abortController.abort();
+      } else {
+        const abortController = new AbortController();
+        fetchAllProjectTasks(
+          abortController.signal,
+          query,
+          userId || "",
+          isAdmin
+        );
+        abortController.abort();
+      }
+    },
+    [isPaginated, fetchAllProjectTasks]
+  );
 
   const fetchProjectTaskById = useCallback(
     async (
@@ -177,7 +217,8 @@ const useProjectTasks = (isUserPage: boolean, isPaginated: boolean) => {
                 ? {
                     ...updatedProjectTask,
                     project: response.project,
-                    usersTask: projectTask.usersTask,
+                    createdAt: response.createdAt,
+                    creator: response.creator,
                   }
                 : projectTask
             )
@@ -221,76 +262,6 @@ const useProjectTasks = (isUserPage: boolean, isPaginated: boolean) => {
     }
   };
 
-  const handleAddUserToProjectTask = async (
-    userTask: UserTaskCreateInterface
-  ): Promise<boolean> => {
-    try {
-      console.log("userTask: ", userTask);
-      const response = await ProjectTaskService.addUserToTask(
-        userTask,
-        new AbortController().signal
-      );
-      if (!response) throw new Error("Adding user to project task failed");
-
-      setProjectTasks((prevProjectTasks) =>
-        prevProjectTasks
-          ? prevProjectTasks.map((projectTask) =>
-              projectTask.id === userTask.projectTaskId
-                ? {
-                    ...projectTask,
-                    usersTask: [
-                      ...projectTask.usersTask,
-                      {
-                        id: response.id,
-                        projectTaskId: response.projectTaskId,
-                        userId: response.userId,
-                      },
-                    ],
-                  }
-                : projectTask
-            )
-          : []
-      );
-      message.success("User added to project task successfully");
-      return true;
-    } catch (error) {
-      console.error(`Failed to add user to project task: ${error}`);
-      return false;
-    }
-  };
-
-  const handleRemoveUserFromProjectTask = async (
-    userTaskId: string
-  ): Promise<boolean> => {
-    try {
-      const response = await ProjectTaskService.removeUserFromTask(
-        userTaskId,
-        new AbortController().signal
-      );
-      if (!response) throw new Error("User deletion from project task failed");
-
-      setProjectTasks((prevProjectTasks) =>
-        prevProjectTasks
-          ? prevProjectTasks.map((projectTask) =>
-              projectTask.id === response.projectTaskId
-                ? {
-                    ...projectTask,
-                    usersTask: projectTask.usersTask.filter(
-                      (projectUser) => projectUser.id !== userTaskId
-                    ),
-                  }
-                : projectTask
-            )
-          : []
-      );
-      message.success("User removed from project task successfully");
-      return true;
-    } catch (error) {
-      console.error(`Failed to remove user from project task: ${error}`);
-      return false;
-    }
-  };
-
   return {
     projectTasks,
     projectTaskStatuses,
@@ -298,13 +269,13 @@ const useProjectTasks = (isUserPage: boolean, isPaginated: boolean) => {
     handleCreateProjectTask,
     handleUpdateProjectTask,
     handleDeleteProjectTask,
-    handleAddUserToProjectTask,
-    handleRemoveUserFromProjectTask,
     currentPage,
     pageSize,
     totalCount,
     handlePageChange,
     fetchProjectTaskById,
+    searchQuery,
+    handleSearch,
   };
 };
 

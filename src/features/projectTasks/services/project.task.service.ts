@@ -5,10 +5,7 @@ import {
   ProjectTaskUpdateInterface,
 } from "../interfaces/ProjectTaskInterface";
 import { ProjectTaskStatusInterface } from "../interfaces/ProjectTaskStatusInterface";
-import {
-  UserTaskCreateInterface,
-  UserTaskInterface,
-} from "../interfaces/UserTaskInterface";
+
 export class ProjectTaskService {
   static async getAllProjectTasks(
     signal: AbortSignal
@@ -40,8 +37,14 @@ export class ProjectTaskService {
   static async getAllProjectTasksPaginated(
     page: number,
     pageSize: number,
+    search: string,
     signal: AbortSignal
-  ): Promise<{ projectTasks: ProjectTaskInterface[]; totalCount: number }> {
+  ): Promise<{
+    items: ProjectTaskInterface[];
+    totalCount: number;
+    currentPage: number;
+    pageSize: number;
+  }> {
     const apiUrl = import.meta.env.VITE_API_BASE_URL;
     const httpClient = new HttpClient(
       {
@@ -49,17 +52,26 @@ export class ProjectTaskService {
       },
       signal
     );
-    return await httpClient.get(
-      `get-all-paginated?page=${page}&pageSize=${pageSize}`
-    );
+    let url = `get-all-paginated?page=${page}&pageSize=${pageSize}`;
+    if (search) {
+      url += `&search=${encodeURIComponent(search)}`;
+    }
+    console.warn("ProjectTaskService URL:", url);
+    return await httpClient.get(url);
   }
 
   static async getAllProjectTasksByUserIdPaginated(
     userId: string,
     page: number,
     pageSize: number,
+    search: string,
     signal: AbortSignal
-  ): Promise<{ projectTasks: ProjectTaskInterface[]; totalCount: number }> {
+  ): Promise<{
+    items: ProjectTaskInterface[];
+    totalCount: number;
+    currentPage: number;
+    pageSize: number;
+  }> {
     const apiUrl = import.meta.env.VITE_API_BASE_URL;
     const httpClient = new HttpClient(
       {
@@ -67,9 +79,12 @@ export class ProjectTaskService {
       },
       signal
     );
-    return await httpClient.get(
-      `get-all-by-user-id-paginated/${userId}?page=${page}&pageSize=${pageSize}`
-    );
+    let url = `get-all-by-user-id-paginated/${userId}?page=${page}&pageSize=${pageSize}`;
+    if (search) {
+      url += `&search=${encodeURIComponent(search)}`; // Match backend parameter name
+    }
+    console.warn("ProjectTaskService URL for user:", url);
+    return await httpClient.get(url);
   }
 
   static async getAllTaskStatuses(
@@ -136,37 +151,5 @@ export class ProjectTaskService {
       signal
     );
     return await httpClient.delete(`/delete/${id}`);
-  }
-
-  static async addUserToTask(
-    userTask: UserTaskCreateInterface,
-    signal: AbortSignal
-  ): Promise<UserTaskInterface> {
-    const apiUrl = import.meta.env.VITE_API_BASE_URL;
-    const httpClient = new HttpClient(
-      {
-        baseURL: `${apiUrl}/project-tasks`,
-      },
-      signal
-    );
-    return await httpClient.post(`/add-user-to-project-task`, {
-      ...userTask,
-    });
-  }
-
-  static async removeUserFromTask(
-    userTaskId: string,
-    signal: AbortSignal
-  ): Promise<UserTaskInterface> {
-    const apiUrl = import.meta.env.VITE_API_BASE_URL;
-    const httpClient = new HttpClient(
-      {
-        baseURL: `${apiUrl}/project-tasks`,
-      },
-      signal
-    );
-    return await httpClient.delete(
-      `/remove-user-from-project-task/${userTaskId}`
-    );
   }
 }

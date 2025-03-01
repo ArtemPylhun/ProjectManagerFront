@@ -1,5 +1,5 @@
 import { ProjectInterface } from "../../projects/interfaces/ProjectInterface";
-import { UserTaskInterface } from "./UserTaskInterface";
+import { UserInterface } from "../../users/interfaces/UserInterface";
 export interface ProjectTaskInterface {
   id: string;
   project: ProjectInterface;
@@ -7,11 +7,13 @@ export interface ProjectTaskInterface {
   estimatedTime: number;
   description: string;
   status: number;
-  usersTask: UserTaskInterface[];
+  createdAt: Date;
+  creator: UserInterface;
 }
 
 export interface ProjectTaskCreateInterface {
   projectId: string;
+  creatorId: string;
   name: string;
   estimatedTime: number;
   description: string;

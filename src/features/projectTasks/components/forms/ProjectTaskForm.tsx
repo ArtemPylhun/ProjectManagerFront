@@ -8,6 +8,8 @@ import {
   validateEstimatedTime,
 } from "../../hooks/useProjectTaskValidators";
 import "../../../../styles/styles.css";
+import { UserInterface } from "../../../users/interfaces/UserInterface";
+import useUserId from "../../../../hooks/useUserId";
 
 interface ProjectTaskFormProps {
   form: any;
@@ -15,9 +17,12 @@ interface ProjectTaskFormProps {
   setProjectTaskData: (data: any) => void;
   isCreateMode: boolean;
   projects: ProjectInterface[] | undefined;
+  users: UserInterface[] | null;
   projectTaskStatuses: { id: number; name: string }[] | null;
   selectedProject: ProjectInterface | null;
   setSelectedProject: (project: ProjectInterface | null) => void;
+  selectedCreator: UserInterface | null;
+  setSelectedCreator: (creator: UserInterface | null) => void;
   loading: boolean;
 }
 
@@ -25,6 +30,7 @@ const { TextArea } = Input;
 
 const ProjectTaskForm: React.FC<ProjectTaskFormProps> = ({
   form,
+  users,
   projectTaskData,
   setProjectTaskData,
   isCreateMode,
@@ -32,8 +38,12 @@ const ProjectTaskForm: React.FC<ProjectTaskFormProps> = ({
   projectTaskStatuses,
   selectedProject,
   setSelectedProject,
+  selectedCreator,
+  setSelectedCreator,
   loading,
 }) => {
+  const { userId, isAdmin } = useUserId();
+
   useEffect(() => {
     form.setFieldsValue(projectTaskData);
   }, [projectTaskData, form]);
@@ -133,6 +143,49 @@ const ProjectTaskForm: React.FC<ProjectTaskFormProps> = ({
               {project.name}
             </Select.Option>
           ))}
+        </Select>
+      </Form.Item>
+      <Form.Item
+        label="Creator"
+        name="creatorId"
+        rules={[{ required: true, message: "Please select a creator" }]}
+      >
+        <Select
+          style={{ width: "100%" }}
+          placeholder="Select Creator"
+          value={
+            isCreateMode
+              ? projectTaskData?.creator?.id || (isAdmin ? undefined : userId)
+              : selectedCreator?.id
+          }
+          onChange={(value) => {
+            if (isAdmin) {
+              const creator = users
+                ? users.find((u) => u.id === value) || null
+                : null;
+              setSelectedCreator(creator);
+              setProjectTaskData((prev: ProjectTaskInterface) => ({
+                ...prev,
+                creator: creator,
+                creatorId: creator?.id,
+              }));
+            }
+          }}
+          disabled={(!isAdmin && isCreateMode) || !isCreateMode}
+          loading={loading}
+        >
+          {isAdmin
+            ? users &&
+              users.map((user: UserInterface) => (
+                <Select.Option key={user.id} value={user.id}>
+                  {user.userName}
+                </Select.Option>
+              ))
+            : userId && (
+                <Select.Option key={userId} value={userId}>
+                  {selectedCreator?.userName}
+                </Select.Option>
+              )}
         </Select>
       </Form.Item>
       {!isCreateMode && (

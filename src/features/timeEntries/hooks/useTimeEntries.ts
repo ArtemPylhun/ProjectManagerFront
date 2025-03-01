@@ -6,45 +6,45 @@ import { TimeEntryCreateInterface } from "../interfaces/TimeEntryInterface";
 import { message } from "antd";
 import { TimeEntryUpdateInterface } from "../interfaces/TimeEntryInterface";
 import useUserId from "../../../hooks/useUserId";
-const useTimeEntries = (isUserPage: boolean) => {
+const useTimeEntries = () => {
   const [timeEntries, setTimeEntries] = useState<TimeEntryInterface[] | null>(
     null
   );
 
   const [totalCount, setTotalCount] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
-
+  const [pageSize, setPageSize] = useState<number>(5);
+  const [searchQuery, setSearchQuery] = useState<string>("");
   const { loading, turnOnLoading, turnOffLoading } = useLoading();
 
-  const { userId } = useUserId();
-
-  const pageSize = 1;
+  const { userId, isAdmin } = useUserId();
 
   const fetchTimeEntries = useCallback(
-    async (signal: AbortSignal) => {
-      if (!userId) {
-        console.error("No userId found in localStorage");
-        return;
-      }
+    async (
+      signal: AbortSignal,
+      search: string = "",
+      userId: string,
+      isAdmin: boolean
+    ) => {
       turnOnLoading();
       try {
-        const response = isUserPage
-          ? await TimeEntryService.getAllTimeEntriesByUserId(
+        const response = isAdmin
+          ? await TimeEntryService.getAllTimeEntriesPaginated(
+              currentPage,
+              pageSize,
+              search,
+              signal
+            )
+          : await TimeEntryService.getAllTimeEntriesByUserIdPaginated(
               userId,
               currentPage,
               pageSize,
-              signal
-            )
-          : await TimeEntryService.getAllTimeEntries(
-              currentPage,
-              pageSize,
+              search,
               signal
             );
+        setTimeEntries(response.items);
+        setTotalCount(response.totalCount);
         console.warn("Fetching all time entries: ", response);
-        if (response.timeEntries) {
-          setTimeEntries(response.timeEntries);
-          setTotalCount(response.totalCount);
-        }
       } catch (error) {
         console.error("Error fetching time entries:", error);
         return false;
@@ -52,19 +52,48 @@ const useTimeEntries = (isUserPage: boolean) => {
         turnOffLoading();
       }
     },
-    [userId, isUserPage, currentPage]
+    [currentPage, pageSize]
   );
 
   useEffect(() => {
-    if (!userId) return;
+    if (!userId && !isAdmin) return;
     const abortController = new AbortController();
-    fetchTimeEntries(abortController.signal);
+    fetchTimeEntries(
+      abortController.signal,
+      searchQuery,
+      userId || "",
+      isAdmin
+    );
     return () => abortController.abort();
-  }, [fetchTimeEntries, userId, currentPage, totalCount]);
+  }, [fetchTimeEntries, userId, isAdmin, searchQuery]);
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
+  const handlePageChange = useCallback(
+    (page: number, newPageSize?: number) => {
+      setCurrentPage(page);
+      if (newPageSize) setPageSize(newPageSize);
+      const abortController = new AbortController();
+      fetchTimeEntries(
+        abortController.signal,
+        searchQuery,
+        userId || "",
+        isAdmin
+      );
+      abortController.abort();
+    },
+    [fetchTimeEntries]
+  );
+
+  const handleSearch = useCallback(
+    (newSearchQuery: string) => {
+      const query = newSearchQuery;
+      setSearchQuery(query);
+      setCurrentPage(1);
+      const abortController = new AbortController();
+      fetchTimeEntries(abortController.signal, query, userId || "", isAdmin);
+      abortController.abort();
+    },
+    [fetchTimeEntries]
+  );
 
   const handleCreateTimeEntry = async (
     newTimeEntry: TimeEntryCreateInterface
@@ -157,7 +186,11 @@ const useTimeEntries = (isUserPage: boolean) => {
     currentPage,
     totalCount,
     pageSize,
+    searchQuery,
+    handleSearch,
     handlePageChange,
+    userId,
+    isAdmin,
   };
 };
 

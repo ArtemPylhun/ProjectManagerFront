@@ -3,7 +3,7 @@ import { Table, TableColumnsType, Space, Tag, Button } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { UserInterface } from "../../interfaces/UserInterface";
 import { ModalMode, ModalModes } from "../../../../types/modalModes";
-import "../../../../styles/styles.css";
+import "../../../../styles/client-styles/projects/projectsStyles.css";
 interface UsersTableProps {
   users: UserInterface[] | null;
   showModal: (user: UserInterface | null, mode: ModalMode) => void;
@@ -39,6 +39,11 @@ const UsersTable: React.FC<UsersTableProps> = ({
         key: "roles",
         render: (roles: string[] = [], user: UserInterface) => (
           <Space className="user-role-item">
+            <Button
+              className="action-button"
+              icon={<EditOutlined />}
+              onClick={() => showModal(user, ModalModes.UPDATE_ROLES)}
+            />
             {roles.map((role) => (
               <Tag
                 color={role === "Admin" ? "red" : "blue"}
@@ -48,11 +53,6 @@ const UsersTable: React.FC<UsersTableProps> = ({
                 {role}
               </Tag>
             ))}
-            <Button
-              className="action-button"
-              icon={<EditOutlined />}
-              onClick={() => showModal(user, ModalModes.UPDATE_ROLES)}
-            />
           </Space>
         ),
       },

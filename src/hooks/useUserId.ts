@@ -1,32 +1,39 @@
+import { UserService } from "../features/users/services/user.service";
+import { UserInterface } from "../features/users/interfaces/UserInterface";
 import { useState, useEffect } from "react";
 import { useLoading } from "./useLoading";
 
-/**
- * Custom hook to retrieve and manage the user's ID from localStorage.
- * Returns the userId (string or null) and loading/error states for robust handling.
- *
- * @returns {Object} An object containing:
- *   - userId: string | null - The user's ID (e.g., from user.sub) or null if not found/loaded.
- *   - isLoading: boolean - Indicates if the user ID is being loaded.
- *   - error: Error | null - Any error encountered while fetching the user ID.
- */
 const useUserId = () => {
   const [userId, setUserId] = useState<string | null>(null);
-  const { loading, turnOnLoading, turnOffLoading } = useLoading();
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
+  const [loggedInUser, setLoggedInUser] = useState<UserInterface | null>(null);
+  const { loading, turnOnLoading, turnOffLoading } = useLoading();
 
   useEffect(() => {
-    const fetchUserId = () => {
+    const fetchUserId = async () => {
+      var abortController = new AbortController();
       try {
         turnOnLoading();
         const user = JSON.parse(localStorage.getItem("user") || "{}");
         if (user?.sub) {
           setUserId(user.sub);
+          let response = await UserService.getUserWithRolesById(
+            user.sub,
+            abortController.signal
+          );
+          if (!response) throw new Error("User not found");
+          setLoggedInUser(response);
         } else {
           console.warn(
             "No user.sub found in localStorage or user data is invalid"
           );
           setUserId(null);
+        }
+        if (Array.isArray(user?.roles)) {
+          setIsAdmin(user.roles.includes("Admin"));
+        } else if (user?.roles === "Admin") {
+          setIsAdmin(true);
         }
         setError(null);
       } catch (error) {
@@ -45,7 +52,7 @@ const useUserId = () => {
     fetchUserId();
   }, []);
 
-  return { userId, loading, error };
+  return { userId, loading, error, isAdmin, loggedInUser };
 };
 
 export default useUserId;

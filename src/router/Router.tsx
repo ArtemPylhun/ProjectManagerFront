@@ -6,9 +6,6 @@ import Register from "../features/auth/Register";
 import ProtectedRoute from "./ProtectedRoute";
 import UserPage from "../features/users/UserPage";
 import RolePage from "../features/roles/RolePage";
-import ProjectPage from "../features/projects/ProjectPage";
-import ProjectTaskPage from "../features/projectTasks/ProjectTaskPage";
-import TimeEntryPage from "../features/timeEntries/TimeEntryPage";
 import HomePage from "../features/client/homePage/HomePage";
 import ProjectsPage from "../features/client/homePage/projects/ProjectsPage";
 import ProjectDetailPage from "../features/client/homePage/projects/ProjectDetailPage";
@@ -24,7 +21,7 @@ const Router = () => {
         <Route path="/" element={<Layout />}>
           <Route path="/" element={<HomePage />} />
           <Route
-            path="/users-admin"
+            path="/users"
             element={
               <ProtectedRoute allowedRoles={["Admin"]}>
                 <UserPage />
@@ -32,34 +29,10 @@ const Router = () => {
             }
           />
           <Route
-            path="/roles-admin"
+            path="/roles"
             element={
               <ProtectedRoute allowedRoles={["Admin"]}>
                 <RolePage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/projects-admin"
-            element={
-              <ProtectedRoute allowedRoles={["Admin"]}>
-                <ProjectPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/project-tasks-admin"
-            element={
-              <ProtectedRoute allowedRoles={["Admin"]}>
-                <ProjectTaskPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/time-entries-admin"
-            element={
-              <ProtectedRoute allowedRoles={["Admin"]}>
-                <TimeEntryPage />
               </ProtectedRoute>
             }
           />

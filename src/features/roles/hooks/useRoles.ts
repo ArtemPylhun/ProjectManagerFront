@@ -19,7 +19,7 @@ const useRoles = (
   );
   const [totalCount, setTotalCount] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [pageSize, setPageSize] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(5);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const { loading, turnOnLoading, turnOffLoading } = useLoading();
 
@@ -68,7 +68,7 @@ const useRoles = (
         turnOffLoading();
       }
     },
-    [isPaginated, currentPage, pageSize] // Removed searchQuery from dependencies
+    [isPaginated, currentPage, pageSize]
   );
 
   const fetchRoleGroups = useCallback(

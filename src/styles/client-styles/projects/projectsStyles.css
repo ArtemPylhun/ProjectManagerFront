@@ -135,7 +135,14 @@
 
   .ant-pagination-item-link {
     background: rgba(254, 254, 254, 0.15);
-    border: 1px solid rgba(115, 170, 238, 0.2);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+  }
+
+  .ant-pagination-item-link {
+    background: rgba(254, 254, 254, 0.15);
+    border: none;
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(10px);
@@ -145,6 +152,10 @@
     background: rgba(115, 170, 238, 0.2);
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
   }
+}
+
+.ant-pagination .ant-pagination-item-link {
+  border: none;
 }
 
 /* View Detail Button (Cooler, Modern Style) */
@@ -281,64 +292,124 @@
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15) !important; /* Enhanced shadow on hover */
 }
 
-/* Modern Descriptions for Project Details (Cooler, Modern Style) */
-.modern-descriptions .ant-descriptions {
-  background: rgba(254, 254, 254, 0.15) !important; /* Lighter glassy effect */
-  border-radius: 12px !important; /* Rounded corners for modern look */
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1) !important; /* Enhanced shadow for depth */
-  border: 1px solid rgba(255, 255, 255, 0.2) !important; /* Subtler border */
-  padding: 24px !important; /* Increased padding for better spacing */
-  max-width: 800px !important; /* Limit width for better readability */
-  width: 100% !important; /* Ensure full width up to max-width */
-  backdrop-filter: blur(10px) !important; /* Stronger glassy effect */
+/* List Item Styling for Users */
+.modern-descriptions .ant-list-item {
+  background: rgba(254, 254, 254, 0.15) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  backdrop-filter: blur(10px) !important;
   -webkit-backdrop-filter: blur(10px) !important;
-  transition: transform 0.3s ease, box-shadow 0.3s ease !important; /* Smooth transitions */
+  transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+  margin-bottom: 8px !important;
 }
 
-.modern-descriptions .ant-descriptions-item-label {
-  background: rgba(
-    184,
-    215,
-    251,
-    0.25
-  ) !important; /* Lighter label background */
-  color: #526ab7 !important; /* Dark blue for contrast */
-  font-weight: 600 !important; /* Slightly bolder for modern look */
-  padding: 12px 18px !important; /* Increased padding for better readability */
-  border-radius: 8px 0 0 8px !important; /* Slightly larger radius */
-  margin-right: 15px !important; /* Increased spacing */
-  width: 180px !important; /* Wider labels for readability */
-  text-align: left !important;
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05) !important; /* Subtle shadow for depth */
+.modern-descriptions .ant-list-item:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15) !important;
 }
 
-.modern-descriptions .ant-descriptions-item-content {
-  background: rgba(
-    254,
-    254,
-    254,
-    0.1
-  ) !important; /* Lighter content background */
-  color: #526ab7 !important; /* Dark blue for text */
-  padding: 12px 18px !important; /* Increased padding for better spacing */
-  border-radius: 0 8px 8px 0 !important; /* Match label radius */
-  flex: 1 !important;
-  display: flex !important;
-  align-items: center !important;
-  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.05) !important; /* Subtle shadow for depth */
+.ant-space-item {
+  gap: 20px;
+}
+/* User Role Item Styling for List */
+.modern-descriptions .ant-list-item-meta {
+  align-items: flex-start;
 }
 
-.modern-descriptions .ant-descriptions-item {
-  margin-bottom: 20px !important; /* Increased spacing between items */
+.modern-descriptions .ant-list-item-meta-title {
+  margin: 0 0 8px 0 !important;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.expand-users-button {
+  background: rgba(115, 170, 238, 0.5) !important;
+  border: 1px solid rgba(115, 170, 238, 0.7) !important;
+  color: #ffffff !important;
+  border-radius: 8px !important;
+  padding: 8px 16px !important;
+  font-size: 1rem !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1) !important;
   transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease !important;
 }
 
-.modern-descriptions .ant-descriptions-item:hover {
-  background: rgba(115, 170, 238, 0.15) !important; /* Subtler hover effect */
-  transform: translateY(-3px) !important; /* Slightly more pronounced lift */
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important; /* Enhanced shadow on hover */
+.expand-users-button:hover {
+  background: rgba(82, 106, 183, 0.7) !important;
+  border-color: #526ab7 !important;
+  transform: scale(1.05) !important;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15) !important;
 }
 
+.modern-descriptions .ant-list-item-meta-avatar {
+  padding: 0px 10px 0px 10px;
+  margin: 0px !important;
+}
+
+/* Role Row Styling */
+.modern-descriptions .role-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(184, 215, 251, 0.25) !important;
+  padding: 8px 12px !important;
+  border-radius: 4px !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1) !important;
+  margin-bottom: 8px !important;
+  transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+}
+
+.modern-descriptions .role-row:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Role Tag Styling */
+.modern-descriptions .ant-tag {
+  background: rgba(184, 215, 251, 0.25) !important;
+  border: 1px solid rgba(115, 170, 238, 0.2) !important;
+  color: #526ab7 !important;
+  padding: 4px 8px !important;
+  border-radius: 4px !important;
+  transition: background 0.3s ease, transform 0.3s ease !important;
+}
+
+.modern-descriptions .ant-tag:hover {
+  background: rgba(115, 170, 238, 0.3) !important;
+  transform: scale(1.05) !important;
+}
+
+/* Remove Button Styling */
+.modern-descriptions .ant-btn-danger {
+  background: rgba(255, 0, 0, 0.2) !important;
+  border: 1px solid #ff4d4f !important;
+  color: #ff4d4f !important;
+  transition: background 0.3s ease, transform 0.3s ease !important;
+  padding: 4px 12px !important;
+  border-radius: 4px !important;
+}
+
+.modern-descriptions .ant-btn-danger:hover {
+  background: rgba(255, 0, 0, 0.4) !important;
+  transform: scale(1.05) !important;
+  border-color: #ff7875 !important;
+}
+
+/* Collapse Button Styling */
+.modern-descriptions .ant-btn-link {
+  color: #73aaee !important;
+  font-size: 1rem;
+  padding: 0 !important;
+  margin-bottom: 8px !important;
+  transition: color 0.3s ease, transform 0.3s ease !important;
+}
+
+.modern-descriptions .ant-btn-link:hover {
+  color: #526ab7 !important;
+  transform: scale(1.05) !important;
+  background: rgba(115, 170, 238, 0.15) !important;
+}
 /* Loading State */
 .loading {
   text-align: center;

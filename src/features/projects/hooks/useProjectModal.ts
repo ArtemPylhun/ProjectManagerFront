@@ -39,7 +39,7 @@ const useProjectModal = () => {
     clientId: "",
   });
 
-  const { fetchProjectById } = useProjects(true);
+  const { fetchProjectById } = useProjects(false);
 
   const setProjectFromId = useCallback(
     async (projectId: string) => {

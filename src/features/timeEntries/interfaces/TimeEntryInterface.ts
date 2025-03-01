@@ -10,7 +10,7 @@ export interface TimeEntryInterface {
   minutes: number;
   user: UserInterface;
   project: ProjectInterface;
-  projectTask: ProjectTaskInterface | null;
+  projectTask: ProjectTaskInterface;
 }
 
 export interface TimeEntryCreateInterface {
@@ -20,7 +20,7 @@ export interface TimeEntryCreateInterface {
   minutes: number;
   userId: string;
   projectId: string;
-  projectTaskId: string | null;
+  projectTaskId: string;
 }
 
 export interface TimeEntryUpdateInterface {
@@ -31,5 +31,5 @@ export interface TimeEntryUpdateInterface {
   minutes: number;
   userId: string;
   projectId: string;
-  projectTaskId: string | null;
+  projectTaskId: string;
 }

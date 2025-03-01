@@ -4,7 +4,7 @@ import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { RoleInterface } from "../../interfaces/RoleInterface";
 import { RoleGroupInterface } from "../../interfaces/RoleGroupIntreface";
 import { ModalMode, ModalModes } from "../../../../types/modalModes";
-import "../../../../styles/styles.css";
+import "../../../../styles/client-styles/projects/projectsStyles.css";
 
 interface RolesTableProps {
   roles: RoleInterface[] | undefined;

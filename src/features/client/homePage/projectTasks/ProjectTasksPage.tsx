@@ -1,41 +1,39 @@
-import React, { useCallback, useState } from "react";
-import { Avatar, Button, Form, Space, Table, Tooltip } from "antd";
+import React, { useCallback } from "react";
+import { Button, Form, Space, Table, Tooltip } from "antd";
 import { ModalModes } from "../../../../types/modalModes";
 import { ProjectInterface } from "../../../projects/interfaces/ProjectInterface";
-import { UserTaskInterface } from "../../../projectTasks/interfaces/UserTaskInterface";
 import { ProjectTaskInterface } from "../../../projectTasks/interfaces/ProjectTaskInterface";
 import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 import CustomModal from "../../../../components/common/CustomModal";
-import ProjectTaskUserForm from "../../../projectTasks/components/forms/ProjectTaskUserForm";
 import ProjectTaskForm from "../../../projectTasks/components/forms/ProjectTaskForm";
 import SearchInput from "../../../../components/common/SearchInput";
 import useProjectTasks from "../../../projectTasks/hooks/useProjectTasks";
-import useUsers from "../../../users/hooks/useUsers";
 import useProjectTasksModal from "../../../projectTasks/hooks/useProjectTasksModal";
 import useProjects from "../../../projects/hooks/useProjects";
 import "../../../../styles/client-styles/projects/projectsStyles.css";
+import useUsers from "../../../users/hooks/useUsers";
+import dayjs from "dayjs";
+import { UserInterface } from "../../../users/interfaces/UserInterface";
 
 const ProjectTasksPage: React.FC = () => {
   const [form] = Form.useForm();
-  const [searchQuery, setSearchQuery] = useState("");
 
   const { users } = useUsers(false);
-  const { projects } = useProjects(true, false);
 
   const {
     projectTasks,
     projectTaskStatuses,
     handleCreateProjectTask,
     handleDeleteProjectTask,
-    handleAddUserToProjectTask,
-    handleRemoveUserFromProjectTask,
     handleUpdateProjectTask,
     loading,
     currentPage,
     pageSize,
     totalCount,
     handlePageChange,
-  } = useProjectTasks(true, true);
+    handleSearch,
+    searchQuery,
+  } = useProjectTasks(true);
 
   const {
     modalMode,
@@ -43,39 +41,23 @@ const ProjectTasksPage: React.FC = () => {
     newProjectTask,
     selectedProjectTask,
     selectedProject,
-    newUserTask,
-    selectedUserTask,
+    selectedCreator,
+    setSelectedCreator,
     setNewProjectTask,
     setSelectedProjectTask,
     setSelectedProject,
     showModal,
     hideModal,
-    setNewUserTask,
+    isAdmin,
   } = useProjectTasksModal();
+
+  const { projects } = useProjects(false);
 
   const handleFilterQueryChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setSearchQuery(event.target.value);
+    handleSearch(event.target.value);
   };
-
-  const filteredProjectTasks = projectTasks
-    ? projectTasks.filter((projectTask) => {
-        const projectTaskStatus = projectTaskStatuses?.find(
-          (s) => s.id === projectTask.status
-        );
-        return (
-          projectTask.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          projectTask.description
-            .toLowerCase()
-            .includes(searchQuery.toLowerCase()) ||
-          (projectTaskStatus &&
-            projectTaskStatus.name
-              .toLowerCase()
-              .includes(searchQuery.toLowerCase()))
-        );
-      })
-    : [];
 
   const handleSave = useCallback(async () => {
     if (!modalMode) return;
@@ -101,17 +83,6 @@ const ProjectTasksPage: React.FC = () => {
         });
       } else if (modalMode === ModalModes.DELETE && selectedProjectTask) {
         result = await handleDeleteProjectTask(selectedProjectTask.id);
-      } else if (
-        modalMode === ModalModes.ADD_USER &&
-        newUserTask &&
-        selectedProjectTask
-      ) {
-        result = await handleAddUserToProjectTask({
-          ...newUserTask,
-          projectTaskId: selectedProjectTask.id,
-        });
-      } else if (modalMode === ModalModes.REMOVE_USER && selectedUserTask) {
-        result = await handleRemoveUserFromProjectTask(selectedUserTask.id);
       }
 
       if (result) hideModal();
@@ -124,8 +95,6 @@ const ProjectTasksPage: React.FC = () => {
     selectedProject,
     handleCreateProjectTask,
     handleDeleteProjectTask,
-    handleAddUserToProjectTask,
-    handleRemoveUserFromProjectTask,
     handleUpdateProjectTask,
     hideModal,
   ]);
@@ -154,6 +123,12 @@ const ProjectTasksPage: React.FC = () => {
       },
     },
     {
+      title: "Created At",
+      dataIndex: "createdAt",
+      key: "createdAt",
+      render: (createdAt: Date) => dayjs(createdAt).format("DD/MM/YYYY HH:mm"),
+    },
+    {
       title: "Estimated Time",
       dataIndex: "estimatedTime",
       key: "estimatedTime",
@@ -172,46 +147,11 @@ const ProjectTasksPage: React.FC = () => {
         projectTaskStatuses?.find((s) => s.id === status)?.name,
     },
     {
-      title: "Users",
-      dataIndex: "usersTask",
-      key: "usersTask",
-      render: (
-        usersTask: UserTaskInterface[],
-        record: ProjectTaskInterface
-      ) => (
-        <Space direction="vertical" style={{ width: "100%" }}>
-          {usersTask.map((userTask) => {
-            const user = users?.find((user) => user.id === userTask.userId);
-            if (!user) return null;
-
-            return (
-              <div key={user.id} className="user-role-item">
-                <Avatar
-                  size={30}
-                  src={`https://ui-avatars.com/api/?name=${user.userName}`}
-                />
-                <span className="user-name">{user.userName}</span>
-                <Button
-                  danger
-                  size="small"
-                  onClick={() =>
-                    showModal(null, userTask, ModalModes.REMOVE_USER)
-                  }
-                >
-                  Remove
-                </Button>
-              </div>
-            );
-          })}
-          <Button
-            type="dashed"
-            size="small"
-            onClick={() => showModal(record, null, ModalModes.ADD_USER)}
-          >
-            + Add User
-          </Button>
-        </Space>
-      ),
+      title: "Creator",
+      dataIndex: "creator",
+      key: "creator",
+      render: (creator: UserInterface) => isAdmin && creator.userName,
+      hidden: !isAdmin,
     },
     {
       title: "Actions",
@@ -221,13 +161,15 @@ const ProjectTasksPage: React.FC = () => {
           <Button
             className="action-button"
             icon={<EditOutlined />}
-            onClick={() => showModal(projectTask, null, ModalModes.UPDATE)}
+            onClick={() => showModal(projectTask, ModalModes.UPDATE)}
           />
-          <Button
-            className="action-button danger"
-            icon={<DeleteOutlined />}
-            onClick={() => showModal(projectTask, null, ModalModes.DELETE)}
-          />
+          {isAdmin && (
+            <Button
+              className="action-button danger"
+              icon={<DeleteOutlined />}
+              onClick={() => showModal(projectTask, ModalModes.DELETE)}
+            />
+          )}
         </Space>
       ),
     },
@@ -243,19 +185,21 @@ const ProjectTasksPage: React.FC = () => {
             onQueryChange={handleFilterQueryChange}
           />
         </div>
-        <div style={{ display: "flex", justifyContent: "flex-end" }}>
-          <Button
-            type="primary"
-            icon={<PlusOutlined />}
-            className="create-project-button"
-            onClick={() => showModal(null, null, ModalModes.CREATE)}
-          >
-            Add Task
-          </Button>
-        </div>
+        {((projects && projects.length > 0) || isAdmin) && (
+          <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            <Button
+              type="primary"
+              icon={<PlusOutlined />}
+              className="create-project-button"
+              onClick={() => showModal(null, ModalModes.CREATE)}
+            >
+              Add Task
+            </Button>
+          </div>
+        )}
 
         <Table
-          dataSource={filteredProjectTasks}
+          dataSource={projectTasks || []}
           columns={columns}
           rowKey="id"
           className="modern-table"
@@ -275,30 +219,15 @@ const ProjectTasksPage: React.FC = () => {
               ? "Create Task"
               : modalMode === ModalModes.UPDATE
               ? "Update Task"
-              : modalMode === ModalModes.DELETE
-              ? "Delete Task"
-              : modalMode === ModalModes.ADD_USER
-              ? "Add User to Task"
-              : modalMode === ModalModes.REMOVE_USER
-              ? "Remove User from Task"
-              : "Unknown Action"
+              : "Delete Task"
           }
-          isDanger={
-            modalMode === ModalModes.DELETE ||
-            modalMode === ModalModes.REMOVE_USER
-          }
+          isDanger={modalMode === ModalModes.DELETE}
           okText={
             modalMode === ModalModes.CREATE
               ? "Create"
               : modalMode === ModalModes.UPDATE
               ? "Update"
-              : modalMode === ModalModes.DELETE
-              ? "Delete"
-              : modalMode === ModalModes.ADD_USER
-              ? "Add"
-              : modalMode === ModalModes.REMOVE_USER
-              ? "Remove"
-              : "OK"
+              : "Delete"
           }
           onOk={handleSave}
           onCancel={hideModal}
@@ -309,16 +238,20 @@ const ProjectTasksPage: React.FC = () => {
               projectTaskData={newProjectTask}
               setProjectTaskData={setNewProjectTask}
               isCreateMode={true}
+              users={isAdmin ? users : []}
               projectTaskStatuses={projectTaskStatuses}
               projects={projects || []}
               selectedProject={selectedProject}
               setSelectedProject={setSelectedProject}
+              selectedCreator={selectedCreator}
+              setSelectedCreator={setSelectedCreator}
               loading={loading}
             />
           )}
           {modalMode === ModalModes.UPDATE && selectedProjectTask && (
             <ProjectTaskForm
               form={form}
+              users={isAdmin ? users : []}
               projectTaskData={selectedProjectTask}
               setProjectTaskData={setSelectedProjectTask}
               isCreateMode={false}
@@ -326,26 +259,13 @@ const ProjectTasksPage: React.FC = () => {
               projects={projects || []}
               selectedProject={selectedProject}
               setSelectedProject={setSelectedProject}
+              selectedCreator={selectedCreator}
+              setSelectedCreator={setSelectedCreator}
               loading={loading}
             />
           )}
           {modalMode === ModalModes.DELETE && selectedProjectTask && (
             <p>Are you sure you want to delete this task?</p>
-          )}
-          {modalMode === ModalModes.ADD_USER && selectedProjectTask && (
-            <ProjectTaskUserForm
-              form={form}
-              userTaskData={newUserTask}
-              setUserTaskData={setNewUserTask}
-              selectedProjectTask={selectedProjectTask}
-              users={users || []}
-              loading={loading}
-            />
-          )}
-          {modalMode === ModalModes.REMOVE_USER && selectedUserTask && (
-            <p>
-              Are you sure you want to remove this user from this project task?
-            </p>
           )}
         </CustomModal>
       </div>

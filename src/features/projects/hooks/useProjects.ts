@@ -10,68 +10,104 @@ import { UserService } from "../../users/services/user.service";
 import { ProjectUserCreateInterface } from "../interfaces/ProjectUserInterface";
 import { useLoading } from "../../../hooks/useLoading";
 import useUserId from "../../../hooks/useUserId";
-const useProjects = (isUserPage: boolean, isPaginated: boolean) => {
+const useProjects = (isPaginated: boolean) => {
   const [projects, setProjects] = useState<ProjectInterface[] | null>(null);
   const [totalCount, setTotalCount] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [pageSize, setPageSize] = useState<number>(5);
   const { loading, turnOnLoading, turnOffLoading } = useLoading();
-  const { userId } = useUserId();
-  const pageSize = 1;
+  const { userId, isAdmin } = useUserId();
 
   const fetchAllProjects = useCallback(
     async (
-      signal: AbortSignal
-    ): Promise<
-      { projects: ProjectInterface[]; totalCount: number } | ProjectInterface[]
-    > => {
+      signal: AbortSignal,
+      search: string = "",
+      userId: string,
+      isAdmin: boolean
+    ): Promise<void> => {
       turnOnLoading();
       try {
         if (isPaginated) {
-          const response = isUserPage
-            ? await ProjectService.getAllProjectsByUserIdPaginated(
+          const response = isAdmin
+            ? await ProjectService.getAllProjectsPaginated(
+                currentPage,
+                pageSize,
+                search,
+                signal
+              )
+            : await ProjectService.getAllProjectsByUserIdPaginated(
                 userId!,
                 currentPage,
                 pageSize,
-                signal
-              )
-            : await ProjectService.getAllProjectsPaginated(
-                currentPage,
-                pageSize,
+                search,
                 signal
               );
-          return response;
+          setProjects(response.items);
+          setTotalCount(response.totalCount);
         } else {
-          const response = isUserPage
-            ? await ProjectService.getAllProjectsByUserId(userId!, signal)
-            : await ProjectService.getAllProjects(signal);
-          return response;
+          const response = isAdmin
+            ? await ProjectService.getAllProjects(signal)
+            : await ProjectService.getAllProjectsByUserId(userId!, signal);
+          setProjects(response ?? []);
         }
       } catch (error) {
         console.error("Error fetching all projects:", error);
-        return isPaginated ? { projects: [], totalCount: 0 } : [];
+        setProjects([]);
       } finally {
         turnOffLoading();
       }
     },
-    [userId, isUserPage, isPaginated, currentPage, pageSize]
+    [isPaginated, currentPage, pageSize]
   );
 
   useEffect(() => {
-    if (!userId) return;
+    if (!userId && !isAdmin) return;
     const abortController = new AbortController();
-    fetchAllProjects(abortController.signal).then((response) => {
-      if ("projects" in response && "totalCount" in response) {
-        setProjects(response.projects);
-        setTotalCount(response.totalCount);
-      } else {
-        setProjects(response as ProjectInterface[]);
-      }
-    });
+    fetchAllProjects(
+      abortController.signal,
+      searchQuery,
+      userId || "",
+      isAdmin
+    );
     return () => abortController.abort();
-  }, [fetchAllProjects, userId, currentPage, pageSize]);
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
+  }, [fetchAllProjects, userId, isAdmin, searchQuery]);
+
+  const handlePageChange = useCallback(
+    (page: number, newPageSize?: number) => {
+      if (isPaginated) {
+        setCurrentPage(page);
+        if (newPageSize) setPageSize(newPageSize);
+        const abortController = new AbortController();
+        fetchAllProjects(
+          abortController.signal,
+          searchQuery,
+          userId || "",
+          isAdmin
+        );
+        abortController.abort();
+      }
+    },
+    [isPaginated, fetchAllProjects]
+  );
+
+  const handleSearch = useCallback(
+    (newSearchQuery: string) => {
+      const query = newSearchQuery;
+      setSearchQuery(query);
+      if (isPaginated) {
+        setCurrentPage(1);
+        const abortController = new AbortController();
+        fetchAllProjects(abortController.signal, query, userId || "", isAdmin);
+        abortController.abort();
+      } else {
+        const abortController = new AbortController();
+        fetchAllProjects(abortController.signal, query, userId || "", isAdmin);
+        abortController.abort();
+      }
+    },
+    [isPaginated, fetchAllProjects]
+  );
 
   const handleCreateProject = async (
     newProject: ProjectCreateInterface
@@ -253,9 +289,13 @@ const useProjects = (isUserPage: boolean, isPaginated: boolean) => {
     handleRemoveUserFromProject,
     currentPage,
     pageSize,
+    searchQuery,
     totalCount,
     handlePageChange,
     fetchProjectById,
+    handleSearch,
+    isAdmin,
+    userId,
   };
 };
 

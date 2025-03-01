@@ -8,7 +8,7 @@ import LoaderComponent from "../../../components/common/Loader";
 import RolesTable from "./table/RolesTable";
 import useRoles from "../hooks/useRoles";
 import useRoleModal from "../hooks/useRoleModal";
-import "../../../styles/styles.css";
+import "../../../styles/client-styles/projects/projectsStyles.css";
 import RoleForm from "./forms/RoleForm";
 const RoleComponent = () => {
   const [form] = Form.useForm();
@@ -79,16 +79,19 @@ const RoleComponent = () => {
   ]);
 
   return (
-    <div>
+    <div className="projects-page">
       <div className="projects-header">
+        <h1>Roles</h1>
         <SearchInput
           query={searchQuery}
           onQueryChange={handleFilterQueryChange}
         />
+      </div>
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
         <Button
           icon={<PlusOutlined />}
           onClick={() => showModal(null, ModalModes.CREATE)}
-          className="create-button"
+          className="create-project-button"
         >
           Create Role
         </Button>

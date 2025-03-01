@@ -5,11 +5,17 @@ import {
   TimeEntryUpdateInterface,
 } from "../interfaces/TimeEntryInterface";
 export class TimeEntryService {
-  static async getAllTimeEntries(
+  static async getAllTimeEntriesPaginated(
     page: number,
     pageSize: number,
+    search: string,
     signal: AbortSignal
-  ): Promise<{ timeEntries: TimeEntryInterface[]; totalCount: number }> {
+  ): Promise<{
+    items: TimeEntryInterface[];
+    totalCount: number;
+    currentPage: number;
+    pageSize: number;
+  }> {
     const apiUrl = import.meta.env.VITE_API_BASE_URL;
     const httpClient = new HttpClient(
       {
@@ -17,15 +23,25 @@ export class TimeEntryService {
       },
       signal
     );
-    return await httpClient.get(`get-all?page=${page}&pageSize=${pageSize}`);
+    let url = `get-all?page=${page}&pageSize=${pageSize}`;
+    if (search) {
+      url += `&search=${encodeURIComponent(search)}`;
+    }
+    return await httpClient.get(url);
   }
 
-  static async getAllTimeEntriesByUserId(
+  static async getAllTimeEntriesByUserIdPaginated(
     userId: string,
     page: number,
     pageSize: number,
+    search: string,
     signal: AbortSignal
-  ): Promise<{ timeEntries: TimeEntryInterface[]; totalCount: number }> {
+  ): Promise<{
+    items: TimeEntryInterface[];
+    totalCount: number;
+    currentPage: number;
+    pageSize: number;
+  }> {
     const apiUrl = import.meta.env.VITE_API_BASE_URL;
     const httpClient = new HttpClient(
       {
@@ -33,9 +49,11 @@ export class TimeEntryService {
       },
       signal
     );
-    return await httpClient.get(
-      `get-all-by-user-id/${userId}?page=${page}&pageSize=${pageSize}`
-    );
+    let url = `get-all-by-user-id/${userId}?page=${page}&pageSize=${pageSize}`;
+    if (search) {
+      url += `&search=${encodeURIComponent(search)}`;
+    }
+    return await httpClient.get(url);
   }
 
   static async createTimeEntry(

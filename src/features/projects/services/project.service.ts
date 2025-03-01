@@ -14,7 +14,6 @@ export class ProjectService {
     signal: AbortSignal
   ): Promise<ProjectInterface[]> {
     const apiUrl = import.meta.env.VITE_API_BASE_URL;
-    console.warn("all");
     const httpClient = new HttpClient(
       {
         baseURL: `${apiUrl}/projects`,
@@ -28,7 +27,6 @@ export class ProjectService {
     signal: AbortSignal
   ): Promise<ProjectInterface[]> {
     const apiUrl = import.meta.env.VITE_API_BASE_URL;
-    console.warn("by user id");
     const httpClient = new HttpClient(
       {
         baseURL: `${apiUrl}/projects`,
@@ -41,36 +39,54 @@ export class ProjectService {
   static async getAllProjectsPaginated(
     page: number,
     pageSize: number,
+    search: string,
     signal: AbortSignal
-  ): Promise<{ projects: ProjectInterface[]; totalCount: number }> {
+  ): Promise<{
+    items: ProjectInterface[];
+    totalCount: number;
+    currentPage: number;
+    pageSize: number;
+  }> {
     const apiUrl = import.meta.env.VITE_API_BASE_URL;
-    console.warn("all paginated");
     const httpClient = new HttpClient(
       {
         baseURL: `${apiUrl}/projects`,
       },
       signal
     );
-    return await httpClient.get(`get-all?page=${page}&pageSize=${pageSize}`);
+
+    let url = `get-all-paginated?page=${page}&pageSize=${pageSize}`;
+    if (search) {
+      url += `&search=${encodeURIComponent(search)}`;
+    }
+    console.warn("ProjectService get all paginated URL:", url);
+    return await httpClient.get(url);
   }
 
   static async getAllProjectsByUserIdPaginated(
     userId: string,
     page: number,
     pageSize: number,
+    search: string,
     signal: AbortSignal
-  ): Promise<{ projects: ProjectInterface[]; totalCount: number }> {
+  ): Promise<{
+    items: ProjectInterface[];
+    totalCount: number;
+    currentPage: number;
+    pageSize: number;
+  }> {
     const apiUrl = import.meta.env.VITE_API_BASE_URL;
-    console.warn("by user id paginated");
     const httpClient = new HttpClient(
       {
         baseURL: `${apiUrl}/projects`,
       },
       signal
     );
-    return await httpClient.get(
-      `get-all-by-user-id/${userId}?page=${page}&pageSize=${pageSize}`
-    );
+    let url = `get-all-by-user-id-paginated/${userId}?page=${page}&pageSize=${pageSize}`;
+    if (search) {
+      url += `&search=${encodeURIComponent(search)}`;
+    }
+    return await httpClient.get(url);
   }
 
   static async getProjectById(

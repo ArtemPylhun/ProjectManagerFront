@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { Table, Button, Space, Form } from "antd";
 import { ProjectInterface } from "../../../projects/interfaces/ProjectInterface";
@@ -11,12 +11,10 @@ import { ModalModes } from "../../../../types/modalModes";
 import ProjectForm from "../../../projects/components/forms/ProjectForm";
 import useUsers from "../../../users/hooks/useUsers";
 import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
-import useUserId from "../../../../hooks/useUserId";
 
 const ProjectsPage: React.FC = () => {
   const navigate = useNavigate();
   const [form] = Form.useForm();
-  const [searchQuery, setSearchQuery] = useState("");
   const {
     projects,
     handleCreateProject,
@@ -25,8 +23,12 @@ const ProjectsPage: React.FC = () => {
     currentPage,
     pageSize,
     totalCount,
+    searchQuery,
     handlePageChange,
-  } = useProjects(true, true);
+    handleSearch,
+    isAdmin,
+    userId,
+  } = useProjects(true);
 
   const { users } = useUsers(false);
 
@@ -44,12 +46,10 @@ const ProjectsPage: React.FC = () => {
     setNewProject,
   } = useProjectModal();
 
-  const { userId } = useUserId();
-
   const handleFilterQueryChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setSearchQuery(event.target.value);
+    handleSearch(event.target.value);
   };
 
   const filteredProjects = projects?.filter(
@@ -129,7 +129,7 @@ const ProjectsPage: React.FC = () => {
           >
             View Details
           </Button>
-          {userId === record.creator.id && (
+          {isAdmin && (
             <Button
               danger
               icon={<DeleteOutlined />}
@@ -153,16 +153,18 @@ const ProjectsPage: React.FC = () => {
             onQueryChange={handleFilterQueryChange}
           />
         </div>
-        <div style={{ display: "flex", justifyContent: "flex-end" }}>
-          <Button
-            type="primary"
-            icon={<PlusOutlined />}
-            className="create-project-button"
-            onClick={() => showModal(null, null, ModalModes.CREATE)}
-          >
-            Create Project
-          </Button>
-        </div>
+        {isAdmin && (
+          <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            <Button
+              type="primary"
+              icon={<PlusOutlined />}
+              className="create-project-button"
+              onClick={() => showModal(null, null, ModalModes.CREATE)}
+            >
+              Create Project
+            </Button>
+          </div>
+        )}
         <Table
           dataSource={filteredProjects || []}
           columns={columns}

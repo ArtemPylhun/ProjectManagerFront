@@ -3,17 +3,24 @@ import { message } from "antd";
 import { UserInterface } from "../interfaces/UserInterface";
 import { UserService } from "../services/user.service";
 import { useLoading } from "../../../hooks/useLoading";
+import useUserId from "../../../hooks/useUserId";
 
-const useUsers = (isPaginated: boolean = true) => {
+const useUsers = (isPaginated: boolean = true, projectId?: string) => {
   const [users, setUsers] = useState<UserInterface[] | null>(null);
   const [totalCount, setTotalCount] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [pageSize, setPageSize] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(5);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const { loading, turnOnLoading, turnOffLoading } = useLoading();
+  const { userId, isAdmin } = useUserId();
 
   const fetchUsers = useCallback(
-    async (signal: AbortSignal, searchQuery: string = ""): Promise<void> => {
+    async (
+      signal: AbortSignal,
+      searchQuery: string = "",
+      userId: string,
+      isAdmin: boolean
+    ): Promise<void> => {
       turnOnLoading();
       try {
         let response;
@@ -29,8 +36,26 @@ const useUsers = (isPaginated: boolean = true) => {
           setPageSize(response.pageSize);
           setTotalCount(response.totalCount);
         } else {
-          response = await UserService.getAllUsers(signal);
-          setUsers(response);
+          if (isAdmin) {
+            response = await UserService.getAllUsers(signal);
+          } else if (!isAdmin && projectId) {
+            response = await UserService.getUsersByProjectId(
+              projectId || "",
+              signal
+            );
+            console.warn("Found users with roles by project id:", response);
+          } else if (userId) {
+            response = await UserService.getUserWithRolesById(userId, signal);
+          }
+
+          if (response && Array.isArray(response)) {
+            setUsers(response);
+          } else if (response) {
+            setUsers([response]);
+          } else {
+            setUsers([]);
+          }
+          console.warn("Found users", users);
         }
       } catch (error) {
         console.error("Error fetching users:", error);
@@ -43,11 +68,30 @@ const useUsers = (isPaginated: boolean = true) => {
     [isPaginated, currentPage, pageSize]
   );
 
+  const fetchUserById = useCallback(
+    async (
+      userId: string,
+      signal: AbortSignal
+    ): Promise<UserInterface | null> => {
+      turnOnLoading();
+      try {
+        return await UserService.getUserWithRolesById(userId, signal);
+      } catch (error) {
+        console.error("Error fetching user by ID:", error);
+        return null;
+      } finally {
+        turnOffLoading();
+      }
+    },
+    []
+  );
+
   useEffect(() => {
+    if (!userId && !isAdmin) return;
     const abortController = new AbortController();
-    fetchUsers(abortController.signal, searchQuery);
+    fetchUsers(abortController.signal, searchQuery, userId || "", isAdmin);
     return () => abortController.abort();
-  }, [fetchUsers, searchQuery]);
+  }, [fetchUsers, userId, isAdmin, searchQuery]);
 
   const handlePageChange = useCallback(
     (page: number, newPageSize?: number) => {
@@ -55,25 +99,30 @@ const useUsers = (isPaginated: boolean = true) => {
         setCurrentPage(page);
         if (newPageSize) setPageSize(newPageSize);
         const abortController = new AbortController();
-        fetchUsers(abortController.signal, searchQuery);
+        fetchUsers(abortController.signal, searchQuery, userId || "", isAdmin);
         abortController.abort();
       }
     },
     [isPaginated, fetchUsers]
   );
 
-  const handleSearch = useCallback(() => {
-    if (isPaginated) {
-      setCurrentPage(1);
-      const abortController = new AbortController();
-      fetchUsers(abortController.signal, searchQuery);
-      abortController.abort();
-    } else {
-      const abortController = new AbortController();
-      fetchUsers(abortController.signal, searchQuery);
-      abortController.abort();
-    }
-  }, [isPaginated, fetchUsers]);
+  const handleSearch = useCallback(
+    (newSearchQuery: string) => {
+      const trimmedQuery = newSearchQuery;
+      setSearchQuery(trimmedQuery);
+      if (isPaginated) {
+        setCurrentPage(1);
+        const abortController = new AbortController();
+        fetchUsers(abortController.signal, trimmedQuery, userId || "", isAdmin);
+        abortController.abort();
+      } else {
+        const abortController = new AbortController();
+        fetchUsers(abortController.signal, trimmedQuery, userId || "", isAdmin);
+        abortController.abort();
+      }
+    },
+    [isPaginated, fetchUsers]
+  );
 
   const handleCreateUser = async (newUser: UserInterface): Promise<boolean> => {
     try {
@@ -191,6 +240,7 @@ const useUsers = (isPaginated: boolean = true) => {
         handleDeleteUser,
         searchQuery,
         setSearchQuery,
+        fetchUserById,
       }
     : {
         users,
@@ -202,6 +252,7 @@ const useUsers = (isPaginated: boolean = true) => {
         handleDeleteUser,
         searchQuery,
         setSearchQuery,
+        fetchUserById,
       };
 };
 

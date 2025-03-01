@@ -41,7 +41,12 @@ const Sidebar = () => {
   const roles = Array.isArray(user?.roles)
     ? user.roles.map((role: string) => role.trim())
     : user.roles;
-  const isAdmin = roles.includes("Admin");
+  let isAdmin: boolean = false;
+  if (roles) {
+    isAdmin = roles.includes("Admin");
+  } else {
+    navigate("/login");
+  }
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -78,17 +83,20 @@ const Sidebar = () => {
     ...(isAdmin
       ? [
           getItem(
-            "Admin",
-            "admin",
+            "Users",
+            "users",
             <LockOutlined />,
+            "/users",
             undefined,
-            [
-              { name: "Projects", path: "/projects-admin" },
-              { name: "Project Tasks", path: "/project-tasks-admin" },
-              { name: "Time Entries", path: "/time-entries-admin" },
-              { name: "Roles", path: "/roles-admin" },
-              { name: "Users", path: "/users-admin" },
-            ].map((page) => getItem(page.name, page.path, undefined, page.path))
+            "user-menu-item"
+          ),
+          getItem(
+            "Roles",
+            "roles",
+            <LockOutlined />,
+            "/roles",
+            undefined,
+            "user-menu-item"
           ),
         ]
       : []),

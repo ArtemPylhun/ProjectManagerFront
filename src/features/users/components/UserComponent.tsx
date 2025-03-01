@@ -10,7 +10,7 @@ import useUserModal from "../hooks/useUserModal";
 import useUsers from "../hooks/useUsers";
 import useRoles from "../../roles/hooks/useRoles";
 import { ModalModes } from "../../../types/modalModes";
-import "../../../styles/styles.css";
+import "../../../styles/client-styles/projects/projectsStyles.css";
 
 const UserComponent = () => {
   const [form] = Form.useForm();
@@ -51,7 +51,7 @@ const UserComponent = () => {
   ) => {
     const newSearchQuery = event.target.value;
     setSearchQuery(newSearchQuery);
-    handleSearch();
+    handleSearch(newSearchQuery);
   };
 
   const handleSave = useCallback(async () => {
@@ -90,14 +90,17 @@ const UserComponent = () => {
   ]);
 
   return (
-    <div>
+    <div className="projects-page">
       <div className="projects-header">
+        <h1>Users</h1>
         <SearchInput
           query={searchQuery}
           onQueryChange={handleFilterQueryChange}
         />
+      </div>
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
         <Button
-          className="create-button"
+          className="create-project-button"
           icon={<PlusOutlined />}
           onClick={() => showModal(null, ModalModes.CREATE)}
         >

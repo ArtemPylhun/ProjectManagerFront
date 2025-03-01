@@ -1,5 +1,5 @@
-import { Button, Form, Space, Table, Tooltip } from "antd";
-import { useCallback, useState, useEffect, useMemo } from "react";
+import { Button, Form, Pagination, Space, Table, Tooltip } from "antd";
+import { useCallback, useState, useEffect } from "react";
 import { EditOutlined } from "@ant-design/icons";
 import { TimeEntryInterface } from "../../../timeEntries/interfaces/TimeEntryInterface";
 import { ModalModes } from "../../../../types/modalModes";
@@ -11,22 +11,20 @@ import useTimeEntries from "../../../timeEntries/hooks/useTimeEntries";
 import useTimeEntryModal from "../../../timeEntries/hooks/useTimeEntryModal";
 import useProjects from "../../../projects/hooks/useProjects";
 import useProjectTasks from "../../../projectTasks/hooks/useProjectTasks";
-import useUserId from "../../../../hooks/useUserId";
 import dayjs from "dayjs";
 import useUsers from "../../../users/hooks/useUsers";
 
 const TimeEntryUserPage: React.FC = () => {
   const [form] = Form.useForm();
-  const [searchQuery, setSearchQuery] = useState("");
   const [groupedTimeEntries, setGroupedTimeEntries] = useState<
     Record<string, TimeEntryInterface[]>
   >({});
 
   const { users } = useUsers(false);
 
-  const { projects } = useProjects(true, false);
+  const { projects } = useProjects(false);
 
-  const { projectTasks } = useProjectTasks(true, false);
+  const { projectTasks } = useProjectTasks(false);
 
   const {
     timeEntries,
@@ -38,7 +36,11 @@ const TimeEntryUserPage: React.FC = () => {
     pageSize,
     totalCount,
     handlePageChange,
-  } = useTimeEntries(true);
+    searchQuery,
+    isAdmin,
+    userId,
+    handleSearch,
+  } = useTimeEntries();
 
   const {
     modalMode,
@@ -57,34 +59,16 @@ const TimeEntryUserPage: React.FC = () => {
     hideModal,
   } = useTimeEntryModal();
 
-  const { userId } = useUserId();
-
   const handleFilterQueryChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setSearchQuery(event.target.value);
+    handleSearch(event.target.value);
   };
-
-  const memoizedFilteredTimeEntries = useMemo(() => {
-    if (!timeEntries || !Array.isArray(timeEntries)) return [];
-    return timeEntries.filter(
-      (timeEntry: TimeEntryInterface) =>
-        timeEntry.description
-          .toLowerCase()
-          .includes(searchQuery.toLowerCase()) ||
-        (timeEntry.project?.name || "")
-          .toLowerCase()
-          .includes(searchQuery.toLowerCase()) ||
-        (timeEntry.projectTask?.name || "")
-          .toLowerCase()
-          .includes(searchQuery.toLowerCase())
-    );
-  }, [timeEntries, searchQuery, currentPage, totalCount]);
 
   useEffect(() => {
     try {
-      if (memoizedFilteredTimeEntries.length > 0) {
-        const grouped = memoizedFilteredTimeEntries.reduce(
+      if (timeEntries && timeEntries.length > 0) {
+        const grouped = timeEntries.reduce(
           (acc: Record<string, TimeEntryInterface[]>, entry) => {
             if (!entry.startTime) {
               console.warn("Skipping entry with missing startTime:", entry);
@@ -98,17 +82,14 @@ const TimeEntryUserPage: React.FC = () => {
         );
         setGroupedTimeEntries(grouped);
       } else {
-        console.warn(
-          "No filtered time entries to group:",
-          memoizedFilteredTimeEntries
-        );
+        console.warn("No filtered time entries to group:", timeEntries);
         setGroupedTimeEntries({});
       }
     } catch (error) {
       console.error("Error grouping time entries:", error);
       setGroupedTimeEntries({});
     }
-  }, [memoizedFilteredTimeEntries]);
+  }, [timeEntries]);
 
   const handleSave = useCallback(async () => {
     if (!modalMode) return;
@@ -223,6 +204,13 @@ const TimeEntryUserPage: React.FC = () => {
       },
     },
     {
+      title: "User",
+      dataIndex: "user",
+      key: "user",
+      render: (_: string, record: TimeEntryInterface) => record.user.userName,
+      hidden: !isAdmin,
+    },
+    {
       title: "Minutes",
       dataIndex: "minutes",
       key: "minutes",
@@ -238,11 +226,13 @@ const TimeEntryUserPage: React.FC = () => {
             icon={<EditOutlined />}
             onClick={() => showModal(timeEntry, ModalModes.UPDATE)}
           />
-          <Button
-            className="action-button danger"
-            icon={<DeleteOutlined />}
-            onClick={() => showModal(timeEntry, ModalModes.DELETE)}
-          />
+          {isAdmin && (
+            <Button
+              className="action-button danger"
+              icon={<DeleteOutlined />}
+              onClick={() => showModal(timeEntry, ModalModes.DELETE)}
+            />
+          )}
         </Space>
       ),
     },
@@ -258,22 +248,27 @@ const TimeEntryUserPage: React.FC = () => {
             onQueryChange={handleFilterQueryChange}
           />
         </div>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "flex-end",
-            marginBottom: "16px",
-          }}
-        >
-          <Button
-            type="primary"
-            icon={<PlusOutlined />}
-            className="create-project-button"
-            onClick={() => showModal(null, ModalModes.CREATE)}
+        {((projects && projects.length > 0) ||
+          (projectTasks && projectTasks.length > 0) ||
+          isAdmin) && (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              marginBottom: "16px",
+            }}
           >
-            Create Time Entry
-          </Button>
-        </div>
+            <Button
+              type="primary"
+              icon={<PlusOutlined />}
+              className="create-project-button"
+              onClick={() => showModal(null, ModalModes.CREATE)}
+            >
+              Create Time Entry
+            </Button>
+          </div>
+        )}
+
         <div className="time-entries-container">
           {Object.entries(groupedTimeEntries).map(([date, entries]) => (
             <div key={date} className="time-entry-day">
@@ -305,12 +300,7 @@ const TimeEntryUserPage: React.FC = () => {
                 columns={columns}
                 rowKey="id"
                 className="modern-table"
-                pagination={{
-                  current: currentPage,
-                  pageSize,
-                  total: totalCount,
-                  onChange: handlePageChange,
-                }}
+                pagination={false}
                 locale={{ emptyText: "No entries for this day." }}
               />
             </div>
@@ -318,6 +308,12 @@ const TimeEntryUserPage: React.FC = () => {
           {Object.keys(groupedTimeEntries).length === 0 && !loading && (
             <div className="empty-state">No time entries found.</div>
           )}
+          <Pagination
+            current={currentPage}
+            pageSize={pageSize}
+            total={totalCount}
+            onChange={handlePageChange}
+          />
         </div>
       </div>
       <CustomModal
@@ -343,11 +339,7 @@ const TimeEntryUserPage: React.FC = () => {
         {modalMode === ModalModes.CREATE && (
           <TimeEntryForm
             form={form}
-            timeEntryData={{
-              ...newTimeEntry,
-              user: users?.find((x) => x.id === userId) || "",
-              userId: userId || "",
-            }}
+            timeEntryData={newTimeEntry}
             setTimeEntryData={setNewTimeEntry}
             isCreateMode={true}
             users={users || []}
@@ -360,7 +352,8 @@ const TimeEntryUserPage: React.FC = () => {
             setSelectedProject={setSelectedProject}
             setSelectedProjectTask={setSelectedProjectTask}
             loading={loading}
-            isUserCreator={true}
+            isAdmin={isAdmin}
+            userId={userId || ""}
           />
         )}
 
@@ -380,7 +373,8 @@ const TimeEntryUserPage: React.FC = () => {
             setSelectedProject={setSelectedProject}
             setSelectedProjectTask={setSelectedProjectTask}
             loading={loading}
-            isUserCreator={true}
+            isAdmin={isAdmin}
+            userId={userId || ""}
           />
         )}
         {modalMode === ModalModes.DELETE && (

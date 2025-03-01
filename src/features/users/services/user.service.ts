@@ -56,7 +56,21 @@ export class UserService {
     );
     return await httpClient.get(`/${userId}`);
   }
-
+  static async getUsersByProjectId(
+    projectId: string,
+    signal: AbortSignal
+  ): Promise<UserInterface[]> {
+    const apiUrl = import.meta.env.VITE_API_BASE_URL;
+    const httpClient = new HttpClient(
+      {
+        baseURL: `${apiUrl}/users`,
+      },
+      signal
+    );
+    return await httpClient.get(
+      `get-all-with-roles-by-project-id/${projectId}`
+    );
+  }
   static async loginUser(
     user: UserLoginInterface,
     signal: AbortSignal

@@ -28,7 +28,8 @@ interface TimeEntryFormProps {
   setSelectedProject: (project: ProjectInterface | null) => void;
   setSelectedProjectTask: (projectTask: ProjectTaskInterface | null) => void;
   loading: boolean;
-  isUserCreator: boolean;
+  isAdmin: boolean;
+  userId: string;
 }
 
 const { TextArea } = Input;
@@ -48,10 +49,11 @@ const TimeEntryForm: React.FC<TimeEntryFormProps> = ({
   setSelectedUser,
   setSelectedProject,
   setSelectedProjectTask,
-  isUserCreator,
+  isAdmin,
+  userId,
 }) => {
   useEffect(() => {
-    if (isUserCreator) {
+    if (!isAdmin) {
       setSelectedUser(
         users?.find(
           (user: UserInterface) => user.id === timeEntryData?.userId
@@ -65,7 +67,7 @@ const TimeEntryForm: React.FC<TimeEntryFormProps> = ({
         : null,
       endTime: timeEntryData?.endTime ? dayjs(timeEntryData.endTime) : null,
     });
-  }, [timeEntryData]);
+  }, [timeEntryData, form]);
 
   const handleFinish = async () => {
     try {
@@ -149,35 +151,37 @@ const TimeEntryForm: React.FC<TimeEntryFormProps> = ({
         name="userId"
         rules={[{ validator: validateUserId }]}
       >
-        {!isUserCreator ? (
-          <Select
-            style={{ width: "100%" }}
-            placeholder="Select User"
-            value={isCreateMode ? timeEntryData?.user?.id : selectedUser?.id}
-            onChange={(value) => {
-              const user = users?.find((u) => u.id === value) || null;
+        <Select
+          style={{ width: "100%" }}
+          placeholder="Select User"
+          value={isCreateMode ? timeEntryData?.user?.id : selectedUser?.id}
+          onChange={(value) => {
+            if (isAdmin) {
+              const user = users?.find((p) => p.id === value) || null;
               setSelectedUser(user);
-              setTimeEntryData((prev: TimeEntryInterface) => ({
+              setTimeEntryData((prev: ProjectTaskInterface) => ({
                 ...prev,
                 user: user,
                 userId: user?.id,
               }));
-            }}
-            loading={loading}
-          >
-            {users?.map((user) => (
-              <Select.Option key={user.id} value={user.id}>
-                {user.userName}
-              </Select.Option>
-            ))}
-          </Select>
-        ) : (
-          <Select style={{ width: "100%" }} disabled value={selectedUser?.id}>
-            <Select.Option key={selectedUser?.id} value={selectedUser?.id}>
-              {selectedUser?.userName}
-            </Select.Option>
-          </Select>
-        )}
+            }
+          }}
+          disabled={!isAdmin}
+          loading={loading}
+        >
+          {isAdmin
+            ? users &&
+              users.map((user: UserInterface) => (
+                <Select.Option key={user.id} value={user.id}>
+                  {user.userName}
+                </Select.Option>
+              ))
+            : userId && (
+                <Select.Option key={userId} value={userId}>
+                  {selectedUser?.userName}
+                </Select.Option>
+              )}
+        </Select>
       </Form.Item>
       <Form.Item
         label="Project"
@@ -229,13 +233,14 @@ const TimeEntryForm: React.FC<TimeEntryFormProps> = ({
           }}
           loading={loading}
         >
-          {projectTasks
-            ?.filter((pt) => pt.project.id === selectedProject?.id)
-            .map((projectTask) => (
-              <Select.Option key={projectTask.id} value={projectTask.id}>
-                {projectTask.name}
-              </Select.Option>
-            ))}
+          {projectTasks &&
+            projectTasks
+              .filter((pt) => pt.project.id === selectedProject?.id)
+              .map((projectTask) => (
+                <Select.Option key={projectTask.id} value={projectTask.id}>
+                  {projectTask.name}
+                </Select.Option>
+              ))}
         </Select>
       </Form.Item>
     </Form>

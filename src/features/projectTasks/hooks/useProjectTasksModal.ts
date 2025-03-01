@@ -1,30 +1,28 @@
-import { useCallback, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ProjectTaskInterface,
   ProjectTaskCreateInterface,
 } from "../interfaces/ProjectTaskInterface";
 import { ProjectInterface } from "../../projects/interfaces/ProjectInterface";
-import {
-  UserTaskInterface,
-  UserTaskCreateInterface,
-} from "../interfaces/UserTaskInterface";
 import { ModalMode, ModalModes } from "../../../types/modalModes";
-import useProjectTasks from "./useProjectTasks";
+import useUserId from "../../../hooks/useUserId";
+import { UserInterface } from "../../users/interfaces/UserInterface";
+
 const useProjectTasksModal = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [modalMode, setModalMode] = useState<ModalMode>(ModalModes.CREATE);
+  const { isAdmin, loggedInUser } = useUserId();
 
   const [selectedProjectTask, setSelectedProjectTask] =
     useState<ProjectTaskInterface | null>(null);
-
   const [selectedProject, setSelectedProject] =
     useState<ProjectInterface | null>(null);
-
-  const [selectedUserTask, setSelectedUserTask] =
-    useState<UserTaskInterface | null>(null);
-
+  const [selectedCreator, setSelectedCreator] = useState<UserInterface | null>(
+    null
+  );
   const [newProjectTask, setNewProjectTask] =
     useState<ProjectTaskCreateInterface>({
+      creatorId: "",
       projectId: "",
       name: "",
       estimatedTime: 0,
@@ -32,82 +30,77 @@ const useProjectTasksModal = () => {
       status: 0,
     });
 
-  const [newUserTask, setNewUserTask] = useState<UserTaskCreateInterface>({
-    projectTaskId: "",
-    userId: "",
-  });
-
-  const { fetchProjectTaskById } = useProjectTasks(true, true);
-
-  const setProjectTaskFromId = useCallback(
-    async (projectTaskId: string) => {
-      if (!projectTaskId) return;
-      const projectTask = await fetchProjectTaskById(
-        projectTaskId,
-        new AbortController().signal
-      );
-      if (projectTask) {
-        setSelectedProjectTask(projectTask);
-        setSelectedProject(projectTask.project);
-      } else {
-        console.warn("Project task not found for ID:", projectTaskId);
-        setSelectedProjectTask(null);
-        setSelectedProject(null);
-      }
-    },
-    [fetchProjectTaskById]
-  );
-
+  useEffect(() => {
+    if (!isAdmin && !loggedInUser) {
+      return;
+    }
+  }, [isAdmin, loggedInUser]);
   const showModal = (
     projectTask: ProjectTaskInterface | null,
-    userTask: UserTaskInterface | null,
     mode: ModalMode
   ) => {
     setModalMode(mode);
     if (mode !== ModalModes.CREATE && projectTask) {
       setSelectedProject({ ...projectTask.project });
+      setSelectedCreator({ ...projectTask.creator });
       setSelectedProjectTask({ ...projectTask });
-      setSelectedUserTask(userTask);
-      if (mode === ModalModes.ADD_USER) {
-        setNewUserTask((prev) => ({
-          ...prev!,
-          projectTaskId: projectTask.id,
-        }));
-      }
-    } else if (mode === ModalModes.REMOVE_USER && userTask) {
-      setSelectedUserTask(userTask);
     } else {
       setSelectedProject(null);
-      setNewUserTask({ projectTaskId: projectTask?.id || "", userId: "" });
-      setNewProjectTask({
-        projectId: projectTask?.project.id || "",
-        name: "",
-        estimatedTime: 0,
-        description: "",
-        status: 0,
-      });
+      if (!isAdmin && loggedInUser) {
+        setSelectedCreator(loggedInUser);
+        setNewProjectTask({
+          creatorId: loggedInUser.id,
+          projectId: projectTask?.project.id || "",
+          name: "",
+          estimatedTime: 0,
+          description: "",
+          status: 0,
+        });
+      } else {
+        setSelectedCreator(null);
+        setNewProjectTask({
+          creatorId: "",
+          projectId: projectTask?.project.id || "",
+          name: "",
+          estimatedTime: 0,
+          description: "",
+          status: 0,
+        });
+      }
     }
     setIsModalVisible(true);
   };
 
-  const hideModal = () => setIsModalVisible(false);
+  const hideModal = () => {
+    setIsModalVisible(false);
+    setSelectedProject(null);
+    setSelectedCreator(null);
+    setSelectedProjectTask(null);
+    setNewProjectTask({
+      creatorId: "",
+      projectId: "",
+      name: "",
+      estimatedTime: 0,
+      description: "",
+      status: 0,
+    });
+  };
 
   return {
     modalMode,
     isModalVisible,
     newProjectTask,
-    newUserTask,
     selectedProjectTask,
     selectedProject,
-    selectedUserTask,
+    selectedCreator,
     showModal,
     hideModal,
     setNewProjectTask,
-    setNewUserTask,
-    setSelectedUserTask,
+    setSelectedCreator,
     setSelectedProjectTask,
     setSelectedProject,
-    setProjectTaskFromId,
+    isAdmin,
+    loggedInUser,
   };
 };
 
