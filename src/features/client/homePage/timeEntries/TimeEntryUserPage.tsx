@@ -13,6 +13,7 @@ import useProjects from "../../../projects/hooks/useProjects";
 import useProjectTasks from "../../../projectTasks/hooks/useProjectTasks";
 import dayjs from "dayjs";
 import useUsers from "../../../users/hooks/useUsers";
+import "../../../../styles/client-styles/projects/projectsStyles.css";
 
 const TimeEntryUserPage: React.FC = () => {
   const [form] = Form.useForm();
@@ -308,12 +309,14 @@ const TimeEntryUserPage: React.FC = () => {
           {Object.keys(groupedTimeEntries).length === 0 && !loading && (
             <div className="empty-state">No time entries found.</div>
           )}
-          <Pagination
-            current={currentPage}
-            pageSize={pageSize}
-            total={totalCount}
-            onChange={handlePageChange}
-          />
+          <div className="modern-table">
+            <Pagination
+              current={currentPage}
+              pageSize={pageSize}
+              total={totalCount}
+              onChange={handlePageChange}
+            />
+          </div>
         </div>
       </div>
       <CustomModal

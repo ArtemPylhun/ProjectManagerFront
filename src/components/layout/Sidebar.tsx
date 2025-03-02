@@ -4,12 +4,13 @@ import Sider from "antd/es/layout/Sider";
 import { Menu } from "antd";
 import type { MenuProps } from "antd";
 import {
-  LockOutlined,
   HomeOutlined,
   FundProjectionScreenOutlined,
   ProjectOutlined,
   CalendarOutlined,
   LogoutOutlined,
+  TeamOutlined,
+  IdcardOutlined,
 } from "@ant-design/icons";
 import "../../styles/client-styles/sidebarStyles.css";
 
@@ -85,7 +86,7 @@ const Sidebar = () => {
           getItem(
             "Users",
             "users",
-            <LockOutlined />,
+            <TeamOutlined />,
             "/users",
             undefined,
             "user-menu-item"
@@ -93,7 +94,7 @@ const Sidebar = () => {
           getItem(
             "Roles",
             "roles",
-            <LockOutlined />,
+            <IdcardOutlined />,
             "/roles",
             undefined,
             "user-menu-item"

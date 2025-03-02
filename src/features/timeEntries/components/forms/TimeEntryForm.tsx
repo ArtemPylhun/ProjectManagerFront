@@ -108,44 +108,54 @@ const TimeEntryForm: React.FC<TimeEntryFormProps> = ({
           }
         />
       </Form.Item>
-      <Form.Item
-        label="Start Time"
-        name="startTime"
-        rules={[{ validator: validateStartTime }]}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          gap: "20px",
+        }}
       >
-        <DatePicker
-          showTime
-          allowClear={false}
-          value={
-            timeEntryData?.startTime ? dayjs(timeEntryData.startTime) : dayjs()
-          }
-          onChange={(value) =>
-            setTimeEntryData((prev: TimeEntryInterface) => ({
-              ...prev,
-              startTime: dayjs(value),
-            }))
-          }
-        />
-      </Form.Item>
-      <Form.Item
-        label="End Time"
-        name="endTime"
-        rules={[{ validator: validateEndTime }]}
-      >
-        <DatePicker
-          showTime
-          allowClear={false}
-          value={
-            timeEntryData?.endTime ? dayjs(timeEntryData.endTime) : dayjs()
-          }
-          onChange={(value) =>
-            setTimeEntryData((prev: TimeEntryInterface) => ({
-              ...prev,
-              endTime: dayjs(value),
-            }))
-          }
-        />
-      </Form.Item>
+        <Form.Item
+          label="Start Time"
+          name="startTime"
+          rules={[{ validator: validateStartTime }]}
+        >
+          <DatePicker
+            showTime
+            allowClear={false}
+            value={
+              timeEntryData?.startTime
+                ? dayjs(timeEntryData.startTime)
+                : dayjs()
+            }
+            onChange={(value) =>
+              setTimeEntryData((prev: TimeEntryInterface) => ({
+                ...prev,
+                startTime: dayjs(value),
+              }))
+            }
+          />
+        </Form.Item>
+        <Form.Item
+          label="End Time"
+          name="endTime"
+          rules={[{ validator: validateEndTime }]}
+        >
+          <DatePicker
+            showTime
+            allowClear={false}
+            value={
+              timeEntryData?.endTime ? dayjs(timeEntryData.endTime) : dayjs()
+            }
+            onChange={(value) =>
+              setTimeEntryData((prev: TimeEntryInterface) => ({
+                ...prev,
+                endTime: dayjs(value),
+              }))
+            }
+          />
+        </Form.Item>
+      </div>
       <Form.Item
         label="User"
         name="userId"

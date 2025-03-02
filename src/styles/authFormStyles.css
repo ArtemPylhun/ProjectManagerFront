@@ -1,0 +1,145 @@
+.auth-form {
+  width: 100%;
+  max-width: 400px;
+  background: rgba(254, 254, 254, 0.15);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.auth-form:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.auth-form .submit-button {
+  background: rgba(115, 170, 238, 0.5) !important;
+  border: 1px solid rgba(115, 170, 238, 0.7) !important;
+  color: #ffffff !important;
+  transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease !important;
+  border-radius: 8px !important;
+  padding: 10px 20px !important;
+  font-size: 1rem !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1) !important;
+  width: 100%;
+}
+
+.auth-form .submit-button:hover {
+  background: rgba(82, 106, 183, 0.7) !important;
+  border-color: #526ab7 !important;
+  transform: scale(1.05) !important;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15) !important;
+}
+
+.auth-form .ant-modal {
+  background: rgba(254, 254, 254, 0.15) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+.auth-form .ant-modal-content {
+  background: rgba(254, 254, 254, 0.15) !important;
+  border-radius: 12px !important;
+}
+
+.auth-form .ant-modal-header,
+.verification-modal .ant-modal-header {
+  background: rgba(82, 106, 183, 0.7) !important;
+  color: white !important;
+  padding: 10px 20px 10px 20px;
+  border-radius: 12px 12px 0 0 !important;
+  border-bottom: 2px solid #526ab7 !important;
+}
+
+.auth-form .ant-modal-footer .ant-btn-primary,
+.verification-modal .ant-modal-footer .ant-btn-primary {
+  background: rgba(115, 170, 238, 0.5) !important;
+  border: 1px solid rgba(115, 170, 238, 0.7) !important;
+  color: #ffffff !important;
+  transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease !important;
+  border-radius: 8px !important;
+  padding: 8px 16px !important;
+}
+
+.auth-form .ant-modal-footer .ant-btn-primary:hover,
+.verification-modal .ant-modal-footer .ant-btn-primary:hover {
+  background: rgba(82, 106, 183, 0.7) !important;
+  border-color: #526ab7 !important;
+  transform: scale(1.05) !important;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15) !important;
+}
+
+.verification-modal .ant-modal-close {
+  display: none !important;
+}
+
+.verification-modal .ant-modal-footer {
+  text-align: end;
+  background: transparent;
+  margin: 0px;
+  padding: 20px 10px 10px 0px;
+  border-top: none;
+  border-radius: 0;
+  border: 1px #526ab77d solid;
+  border-radius: 0px 0px 12px 12px;
+  border-top: 0px;
+}
+
+.verification-modal .ant-modal-footer .ant-btn-default:hover {
+  background: rgba(250, 251, 255, 0.907) !important;
+  border-color: #7f9dff !important;
+  transform: scale(1.05) !important;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15) !important;
+}
+
+.auth-form .ant-alert {
+  background: rgba(255, 0, 0, 0.1) !important;
+  border: 1px solid #ff4d4f !important;
+  color: #ff4d4f !important;
+  border-radius: 4px !important;
+  padding: 8px 16px !important;
+  margin-bottom: 16px !important;
+  transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+}
+
+.auth-form .ant-alert:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+.verification-modal .ant-modal-content {
+  background: rgba(254, 254, 254, 0.15);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.verification-modal .ant-modal .ant-modal-title {
+  padding: 20px;
+  margin: 0;
+  color: rgba(0, 0, 0, 0.88);
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 1.5;
+  word-wrap: break-word;
+}
+
+.verification-modal p {
+  padding: 20px 20px 0px 20px;
+  margin: 0px;
+  color: white;
+  border-right: 1px #526ab77d solid;
+  border-left: 1px #526ab77d solid;
+}
+
+.verification-modal .ant-modal-header {
+  margin: 0px;
+}

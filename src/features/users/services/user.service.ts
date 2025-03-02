@@ -139,6 +139,20 @@ export class UserService {
     return await httpClient.put("/update", { ...user });
   }
 
+  static async resendVerificationEmail(
+    email: string,
+    signal: AbortSignal
+  ): Promise<any> {
+    const apiUrl = import.meta.env.VITE_API_BASE_URL;
+    const httpClient = new HttpClient(
+      {
+        baseURL: `${apiUrl}/users`,
+      },
+      signal
+    );
+    return await httpClient.post("/resend-verification", { email });
+  }
+
   static initiateFacebookLogin(returnUrl: string) {
     const apiUrl = import.meta.env.VITE_API_BASE_URL;
     const facebookLoginUrl = `${apiUrl}/users/login/facebook?returnUrl=${encodeURIComponent(

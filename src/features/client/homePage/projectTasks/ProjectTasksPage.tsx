@@ -4,16 +4,16 @@ import { ModalModes } from "../../../../types/modalModes";
 import { ProjectInterface } from "../../../projects/interfaces/ProjectInterface";
 import { ProjectTaskInterface } from "../../../projectTasks/interfaces/ProjectTaskInterface";
 import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
+import { UserInterface } from "../../../users/interfaces/UserInterface";
 import CustomModal from "../../../../components/common/CustomModal";
 import ProjectTaskForm from "../../../projectTasks/components/forms/ProjectTaskForm";
 import SearchInput from "../../../../components/common/SearchInput";
 import useProjectTasks from "../../../projectTasks/hooks/useProjectTasks";
 import useProjectTasksModal from "../../../projectTasks/hooks/useProjectTasksModal";
 import useProjects from "../../../projects/hooks/useProjects";
-import "../../../../styles/client-styles/projects/projectsStyles.css";
 import useUsers from "../../../users/hooks/useUsers";
 import dayjs from "dayjs";
-import { UserInterface } from "../../../users/interfaces/UserInterface";
+import "../../../../styles/client-styles/projects/projectsStyles.css";
 
 const ProjectTasksPage: React.FC = () => {
   const [form] = Form.useForm();
