@@ -1,16 +1,16 @@
 import React, { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { Table, Button, Space, Form } from "antd";
-import { ProjectInterface } from "../../../projects/interfaces/ProjectInterface";
-import SearchInput from "../../../../components/common/SearchInput";
-import useProjects from "../../../projects/hooks/useProjects";
-import "../../../../styles/client-styles/projects/projectsStyles.css";
-import useProjectModal from "../../../projects/hooks/useProjectModal";
-import CustomModal from "../../../../components/common/CustomModal";
-import { ModalModes } from "../../../../types/modalModes";
-import ProjectForm from "../../../projects/components/forms/ProjectForm";
-import useUsers from "../../../users/hooks/useUsers";
+import { ProjectInterface } from "../interfaces/ProjectInterface";
+import SearchInput from "../../../components/common/SearchInput";
+import useProjects from "../hooks/useProjects";
+import useProjectModal from "../hooks/useProjectModal";
+import CustomModal from "../../../components/common/CustomModal";
+import { ModalModes } from "../../../types/modalModes";
+import ProjectForm from "./forms/ProjectForm";
+import useUsers from "../../users/hooks/useUsers";
 import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
+import "../../../styles/client-styles/projects/projectsStyles.css";
 
 const ProjectsPage: React.FC = () => {
   const navigate = useNavigate();
@@ -147,7 +147,7 @@ const ProjectsPage: React.FC = () => {
     <>
       <div className="projects-page">
         <div className="projects-header">
-          <h1>My Projects</h1>
+          <h1>Projects</h1>
           <SearchInput
             query={searchQuery}
             onQueryChange={handleFilterQueryChange}

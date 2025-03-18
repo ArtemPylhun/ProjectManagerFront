@@ -1,38 +1,27 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import {
-  Button,
-  Space,
-  Form,
-  Descriptions,
-  Avatar,
-  Tag,
-  Collapse,
-  List,
-} from "antd";
-import { ProjectInterface } from "../../../projects/interfaces/ProjectInterface";
-import { ProjectUserInterface } from "../../../projects/interfaces/ProjectUserInterface";
-import { UserInterface } from "../../../users/interfaces/UserInterface";
-import { RoleInterface } from "../../../roles/interfaces/RoleInterface";
-import { ModalModes } from "../../../../types/modalModes";
-import CustomModal from "../../../../components/common/CustomModal";
-import ProjectForm from "../../../projects/components/forms/ProjectForm";
-import ProjectUserForm from "../../../projects/components/forms/ProjectUserForm";
-import useRoles from "../../../roles/hooks/useRoles";
-import useUsers from "../../../users/hooks/useUsers";
-import useProjects from "../../../projects/hooks/useProjects";
-import useProjectModal from "../../../projects/hooks/useProjectModal";
-import useUserId from "../../../../hooks/useUserId";
-import "../../../../styles/client-styles/projects/projectsStyles.css";
+import { Button, Space, Form, Descriptions, Avatar, Tag, List } from "antd";
+import { ProjectInterface } from "../interfaces/ProjectInterface";
+import { ProjectUserInterface } from "../interfaces/ProjectUserInterface";
+import { UserInterface } from "../../users/interfaces/UserInterface";
+import { RoleInterface } from "../../roles/interfaces/RoleInterface";
+import { ModalModes } from "../../../types/modalModes";
+import CustomModal from "../../../components/common/CustomModal";
+import ProjectForm from "./forms/ProjectForm";
+import ProjectUserForm from "./forms/ProjectUserForm";
+import useRoles from "../../roles/hooks/useRoles";
+import useUsers from "../../users/hooks/useUsers";
+import useProjects from "../hooks/useProjects";
+import useProjectModal from "../hooks/useProjectModal";
+import "../../../styles/client-styles/projects/projectsStyles.css";
 
 const ProjectDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>() || { id: undefined };
   const navigate = useNavigate();
   const [project, setProject] = useState<ProjectInterface | null>(null);
   const [form] = Form.useForm();
-  const [isUsersExpanded, setIsUsersExpanded] = useState(false); // State for collapse
+  const [isUsersExpanded, setIsUsersExpanded] = useState(false);
 
-  const { userId } = useUserId();
   const { roles } = useRoles(true, false, false);
   const { users } = useUsers(false, id);
   const {

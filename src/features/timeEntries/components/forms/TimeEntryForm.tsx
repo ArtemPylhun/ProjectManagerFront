@@ -78,7 +78,6 @@ const TimeEntryForm: React.FC<TimeEntryFormProps> = ({
         );
       }
       await form.validateFields();
-      console.log("Validation passed!");
     } catch (error) {
       console.error("Validation failed:", error);
     }

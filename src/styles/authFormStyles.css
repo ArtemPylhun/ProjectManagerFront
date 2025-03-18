@@ -143,3 +143,39 @@
 .verification-modal .ant-modal-header {
   margin: 0px;
 }
+
+.or-separator {
+  display: flex;
+  align-items: center;
+}
+
+.or-line {
+  flex: 1;
+  border: 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.3);
+  margin: 0 8px;
+}
+
+.or-text {
+  color: rgba(0, 0, 0, 0.7);
+  font-size: 14px;
+  margin: 0 8px;
+}
+
+.auth-form .facebook-button {
+  background: #3b5998 !important; /* Facebook blue */
+  border: 1px solid #3b5998 !important;
+  color: #ffffff !important;
+  transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease !important;
+  border-radius: 8px !important;
+  padding: 10px 20px !important;
+  font-size: 1rem !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1) !important;
+}
+
+.auth-form .facebook-button:hover {
+  background: #2d4373 !important; /* Darker Facebook blue */
+  border-color: #2d4373 !important;
+  transform: scale(1.05) !important;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15) !important;
+}

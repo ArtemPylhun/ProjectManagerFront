@@ -40,10 +40,7 @@ const Register: React.FC = () => {
         <Form.Item
           label="Email"
           name="email"
-          rules={[
-            { required: true, message: "Email is required" },
-            { validator: validateEmail },
-          ]}
+          rules={[{ validator: validateEmail }]}
         >
           <Input
             type="email"
@@ -56,10 +53,7 @@ const Register: React.FC = () => {
         <Form.Item
           label="Username"
           name="userName"
-          rules={[
-            { required: true, message: "Username is required" },
-            { validator: validateName },
-          ]}
+          rules={[{ validator: validateName }]}
         >
           <Input
             type="text"
@@ -72,7 +66,7 @@ const Register: React.FC = () => {
         <Form.Item
           label="Password"
           name="password"
-          rules={[{ required: true, validator: validatePassword }]}
+          rules={[{ validator: validatePassword }]}
         >
           <Input.Password
             id="password-auth"

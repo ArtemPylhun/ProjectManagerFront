@@ -44,7 +44,6 @@ const RoleComponent = () => {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const newSearchQuery = event.target.value;
-    console.log("Search input changed, new searchQuery:", newSearchQuery);
     setSearchQuery(newSearchQuery); // Update searchQuery state
     handleSearch(newSearchQuery); // Pass the new search query
   };

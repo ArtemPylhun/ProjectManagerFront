@@ -181,7 +181,6 @@ const useProjectTasks = (isPaginated: boolean) => {
     newProjectTask: ProjectTaskCreateInterface
   ): Promise<boolean> => {
     try {
-      console.log("NewProjectTask: ", newProjectTask);
       const createdProject = await ProjectTaskService.createProjectTask(
         newProjectTask,
         new AbortController().signal

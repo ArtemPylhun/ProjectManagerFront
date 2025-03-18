@@ -31,15 +31,6 @@ const useRoles = (
       turnOnLoading();
       try {
         let response;
-        console.warn("Search Query in fetchRoles:", searchQueryParam);
-        console.log(
-          "Fetching roles with params - page:",
-          currentPage,
-          "pageSize:",
-          pageSize,
-          "searchQuery:",
-          searchQueryParam
-        );
         if (isPaginated) {
           response = await RoleService.getAllRolesPaginated(
             currentPage,
@@ -76,7 +67,6 @@ const useRoles = (
       turnOnLoading();
       try {
         const response = await RoleService.getRoleGroups(signal);
-        console.log("Role Groups: ", response);
         if (Array.isArray(response)) {
           setRoleGroups(response);
           return true;
@@ -144,7 +134,6 @@ const useRoles = (
     newRole: RoleCreateInterface
   ): Promise<boolean> => {
     try {
-      console.log(newRole);
       const createdRole = await RoleService.createRole(
         newRole,
         new AbortController().signal

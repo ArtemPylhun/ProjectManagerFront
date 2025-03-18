@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "antd";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
-import "../../../styles/client-styles/homePageStyles.css"; // Keep the stylesheet import
+import "../../styles/client-styles/homePageStyles.css"; // Keep the stylesheet import
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate(); // Initialize useNavigate

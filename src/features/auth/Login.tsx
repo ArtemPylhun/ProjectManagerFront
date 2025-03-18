@@ -67,7 +67,6 @@ const Login: React.FC = () => {
         navigate(returnUrl, { replace: true });
       }
     } catch (error: any) {
-      console.log(error.response.data);
       if (error.status === 409) {
         if (error.response.data == "User email is not verified!") {
           setIsVerificationModalVisible(true);
@@ -133,6 +132,11 @@ const Login: React.FC = () => {
               Login
             </Button>
           </Form.Item>
+          <div className="or-separator">
+            <hr className="or-line" />
+            <p className="or-text">or</p>
+            <hr className="or-line" />
+          </div>
           <Form.Item>
             <Button
               icon={<FacebookFilled />}

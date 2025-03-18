@@ -1,19 +1,19 @@
 import { Button, Form, Pagination, Space, Table, Tooltip } from "antd";
 import { useCallback, useState, useEffect } from "react";
 import { EditOutlined } from "@ant-design/icons";
-import { TimeEntryInterface } from "../../../timeEntries/interfaces/TimeEntryInterface";
-import { ModalModes } from "../../../../types/modalModes";
+import { TimeEntryInterface } from "../interfaces/TimeEntryInterface";
+import { ModalModes } from "../../../types/modalModes";
 import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
-import SearchInput from "../../../../components/common/SearchInput";
-import CustomModal from "../../../../components/common/CustomModal";
-import TimeEntryForm from "../../../timeEntries/components/forms/TimeEntryForm";
-import useTimeEntries from "../../../timeEntries/hooks/useTimeEntries";
-import useTimeEntryModal from "../../../timeEntries/hooks/useTimeEntryModal";
-import useProjects from "../../../projects/hooks/useProjects";
-import useProjectTasks from "../../../projectTasks/hooks/useProjectTasks";
+import SearchInput from "../../../components/common/SearchInput";
+import CustomModal from "../../../components/common/CustomModal";
+import TimeEntryForm from "./forms/TimeEntryForm";
+import useTimeEntries from "../hooks/useTimeEntries";
+import useTimeEntryModal from "../hooks/useTimeEntryModal";
+import useProjects from "../../projects/hooks/useProjects";
+import useProjectTasks from "../../projectTasks/hooks/useProjectTasks";
 import dayjs from "dayjs";
-import useUsers from "../../../users/hooks/useUsers";
-import "../../../../styles/client-styles/projects/projectsStyles.css";
+import useUsers from "../../users/hooks/useUsers";
+import "../../../styles/client-styles/projects/projectsStyles.css";
 
 const TimeEntryUserPage: React.FC = () => {
   const [form] = Form.useForm();
@@ -243,7 +243,7 @@ const TimeEntryUserPage: React.FC = () => {
     <>
       <div className="projects-page">
         <div className="projects-header">
-          <h1>My Time Table</h1>
+          <h1>Time Table</h1>
           <SearchInput
             query={searchQuery}
             onQueryChange={handleFilterQueryChange}
@@ -309,14 +309,16 @@ const TimeEntryUserPage: React.FC = () => {
           {Object.keys(groupedTimeEntries).length === 0 && !loading && (
             <div className="empty-state">No time entries found.</div>
           )}
-          <div className="modern-table">
-            <Pagination
-              current={currentPage}
-              pageSize={pageSize}
-              total={totalCount}
-              onChange={handlePageChange}
-            />
-          </div>
+          {timeEntries && timeEntries.length > 0 && (
+            <div className="modern-table">
+              <Pagination
+                current={currentPage}
+                pageSize={pageSize}
+                total={totalCount}
+                onChange={handlePageChange}
+              />
+            </div>
+          )}
         </div>
       </div>
       <CustomModal

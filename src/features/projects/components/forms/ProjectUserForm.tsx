@@ -31,7 +31,6 @@ const ProjectUserForm: React.FC<ProjectUserFormProps> = ({
   const handleFinish = async () => {
     try {
       await form.validateFields();
-      console.log("Validation passed!");
     } catch (error) {
       console.error("Validation failed:", error);
     }

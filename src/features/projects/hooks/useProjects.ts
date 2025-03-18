@@ -146,7 +146,6 @@ const useProjects = (isPaginated: boolean) => {
     updatedProject: ProjectUpdateInterface
   ): Promise<boolean> => {
     try {
-      console.log("Updated project: ", updatedProject);
       const response = await ProjectService.updateProject(
         updatedProject,
         new AbortController().signal
@@ -212,7 +211,6 @@ const useProjects = (isPaginated: boolean) => {
     projectUser: ProjectUserCreateInterface
   ): Promise<boolean> => {
     try {
-      console.log("projectUser: ", projectUser);
       const response = await ProjectService.addUserToProject(
         projectUser,
         new AbortController().signal

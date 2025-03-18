@@ -6,11 +6,11 @@ import Register from "../features/auth/Register";
 import ProtectedRoute from "./ProtectedRoute";
 import UserPage from "../features/users/UserPage";
 import RolePage from "../features/roles/RolePage";
-import HomePage from "../features/client/homePage/HomePage";
-import ProjectsPage from "../features/client/homePage/projects/ProjectsPage";
-import ProjectDetailPage from "../features/client/homePage/projects/ProjectDetailPage";
-import ProjectTasksPage from "../features/client/homePage/projectTasks/ProjectTasksPage";
-import TimeEntryUserPage from "../features/client/homePage/timeEntries/TimeEntryUserPage";
+import HomePage from "../features/homePage/HomePage";
+import ProjectsPage from "../features/projects/components/ProjectsPage";
+import ProjectDetailPage from "../features/projects/components/ProjectDetailPage";
+import ProjectTasksPage from "../features/projectTasks/components/ProjectTasksPage";
+import TimeEntryUserPage from "../features/timeEntries/components/TimeEntryUserPage";
 const Router = () => {
   return (
     <BrowserRouter>

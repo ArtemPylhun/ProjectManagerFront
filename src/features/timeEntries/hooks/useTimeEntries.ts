@@ -121,7 +121,6 @@ const useTimeEntries = () => {
     updatedTimeEntry: TimeEntryUpdateInterface
   ): Promise<boolean> => {
     try {
-      console.log("Updated Time Entry: ", updatedTimeEntry);
       const response = await TimeEntryService.updateTimeEntry(
         updatedTimeEntry,
         new AbortController().signal

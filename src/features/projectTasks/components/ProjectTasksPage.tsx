@@ -1,19 +1,19 @@
 import React, { useCallback } from "react";
 import { Button, Form, Space, Table, Tooltip } from "antd";
-import { ModalModes } from "../../../../types/modalModes";
-import { ProjectInterface } from "../../../projects/interfaces/ProjectInterface";
-import { ProjectTaskInterface } from "../../../projectTasks/interfaces/ProjectTaskInterface";
+import { ModalModes } from "../../../types/modalModes";
+import { ProjectInterface } from "../../projects/interfaces/ProjectInterface";
+import { ProjectTaskInterface } from "../interfaces/ProjectTaskInterface";
 import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
-import { UserInterface } from "../../../users/interfaces/UserInterface";
-import CustomModal from "../../../../components/common/CustomModal";
-import ProjectTaskForm from "../../../projectTasks/components/forms/ProjectTaskForm";
-import SearchInput from "../../../../components/common/SearchInput";
-import useProjectTasks from "../../../projectTasks/hooks/useProjectTasks";
-import useProjectTasksModal from "../../../projectTasks/hooks/useProjectTasksModal";
-import useProjects from "../../../projects/hooks/useProjects";
-import useUsers from "../../../users/hooks/useUsers";
+import { UserInterface } from "../../users/interfaces/UserInterface";
+import CustomModal from "../../../components/common/CustomModal";
+import ProjectTaskForm from "./forms/ProjectTaskForm";
+import SearchInput from "../../../components/common/SearchInput";
+import useProjectTasks from "../hooks/useProjectTasks";
+import useProjectTasksModal from "../hooks/useProjectTasksModal";
+import useProjects from "../../projects/hooks/useProjects";
+import useUsers from "../../users/hooks/useUsers";
 import dayjs from "dayjs";
-import "../../../../styles/client-styles/projects/projectsStyles.css";
+import "../../../styles/client-styles/projects/projectsStyles.css";
 
 const ProjectTasksPage: React.FC = () => {
   const [form] = Form.useForm();
